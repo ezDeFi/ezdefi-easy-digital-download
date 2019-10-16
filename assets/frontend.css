@@ -1,0 +1,67 @@
+#edd-ezpay-select {
+  width: 400px;
+}
+#edd-ezpay-select .edd-ezpay-btn {
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  background-image: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
+  cursor: pointer;
+  line-height: 1.5;
+  padding: 0;
+  box-shadow: none;
+  outline: 0;
+  background: none;
+}
+#edd-ezpay-select .coin-icon {
+  width: 40px;
+  float: left;
+}
+#edd-ezpay-select .selected-coin-row {
+  display: flex;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8e8e8;
+  justify-content: space-between;
+  align-content: center;
+  display: none;
+}
+#edd-ezpay-select .choose-coin-row .priority-coin-list {
+  display: flex;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e8e8e8;
+}
+#edd-ezpay-select .choose-coin-row .priority-coin-list .coin-priority {
+  margin-right: 15px;
+  border: none;
+}
+#edd-ezpay-select .choose-coin-row .priority-coin-list .coin-priority span {
+  display: none;
+}
+#edd-ezpay-select .choose-coin-row .other-coin-list .coin-search {
+  display: block;
+}
+#edd-ezpay-select .choose-coin-row .other-coin-list .coin-other {
+  padding: 0 10px 0 2px;
+  background: #e8e8e8;
+  border-radius: 25px;
+  margin: 0 5px 5px;
+  min-width: 100px;
+}
+#edd-ezpay-select .choose-coin-row .other-coin-list .coin-other span {
+  float: left;
+  padding: 7px 5px 5px 3px;
+  line-height: 25px;
+  font-size: 15px;
+}
+#edd-ezpay-select .choose-coin-row .other-coin-list .coin-other:hover {
+  background-color: #1890ff;
+  color: #fff;
+}
+
+/*# sourceMappingURL=frontend.css.map */

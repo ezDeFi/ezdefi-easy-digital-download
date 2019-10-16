@@ -1,0 +1,78 @@
+.edd_ezpay_loading_td {
+  text-align: center;
+}
+.edd_ezpay_loading_td .edd_ezpay_loading {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-animation: edd-spinning 1.1s infinite linear;
+  animation: edd-spinning 1.1s infinite linear;
+  border-top: 0.2em solid rgba(0, 0, 0, 0.2);
+  border-right: 0.2em solid rgba(0, 0, 0, 0.2);
+  border-bottom: 0.2em solid rgba(0, 0, 0, 0.2);
+  border-left: 0.2em solid #000;
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  border-radius: 50%;
+  width: 1.5em;
+  height: 1.5em;
+}
+
+.edd_ezpay_crypto_table_top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#edd_ezpay_crypto_table {
+  margin-top: 15px;
+}
+#edd_ezpay_crypto_table thead th {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+#edd_ezpay_crypto_table thead th.edd_ezpay_crypto_lifetime, #edd_ezpay_crypto_table thead th.edd_ezpay_crypto_wallet {
+  min-width: 90px;
+}
+#edd_ezpay_crypto_table thead th.edd_ezpay_crypto_distance {
+  min-width: 110px;
+}
+#edd_ezpay_crypto_table tbody .edd_ezpay_discount_input {
+  max-width: 50px;
+}
+
+.edd_ezpay_crypto_table_bottom {
+  margin-top: 15px;
+  text-align: right;
+}
+
+#edd_ezpay_currency_table thead th {
+  padding: 15px 10px;
+}
+#edd_ezpay_currency_table tbody input {
+  max-width: 150px;
+}
+#edd_ezpay_currency_table tbody .ezpay_currency_select {
+  min-width: 180px;
+}
+#edd_ezpay_currency_table tbody .ezpay_currency_select .select2-container {
+  width: 180px !important;
+}
+#edd_ezpay_currency_table tbody .ezpay_currency_discount input {
+  width: 50px;
+}
+
+.select2-currency {
+  display: flex;
+  align-items: center;
+}
+.select2-currency .select2-currency__icon {
+  margin-right: 10px;
+}
+.select2-currency .select2-currency__icon img {
+  width: 24px;
+}
+.select2-currency .select2-currency__name {
+  text-transform: capitalize;
+}
+
+/*# sourceMappingURL=admin.css.map */

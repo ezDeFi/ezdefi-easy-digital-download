@@ -51,6 +51,10 @@
 #edd_ezpay_currency_table tbody input {
   max-width: 150px;
 }
+#edd_ezpay_currency_table tbody .ezpay_currency_logo {
+  float: left;
+  margin-right: 5px;
+}
 #edd_ezpay_currency_table tbody .ezpay_currency_select {
   min-width: 180px;
 }
@@ -59,6 +63,55 @@
 }
 #edd_ezpay_currency_table tbody .ezpay_currency_discount input {
   width: 50px;
+}
+
+.ezpay-currency-table thead th {
+  padding: 15px 10px;
+  font-weight: normal;
+}
+.ezpay-currency-table tbody tr:hover .actions {
+  opacity: 1;
+  visibility: visible;
+}
+.ezpay-currency-table tbody tr td {
+  vertical-align: top;
+}
+.ezpay-currency-table tbody tr td .actions {
+  color: #ddd;
+  font-size: 13px;
+  padding: 2px 0 0;
+  opacity: 0;
+  visibility: hidden;
+}
+.ezpay-currency-table tbody tr td .edit {
+  display: none;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-name {
+  min-width: 160px;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-name img {
+  float: left;
+  margin-right: 8px;
+  margin-top: 5px;
+  width: 32px;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-name span {
+  text-transform: capitalize;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-name .select2-container {
+  width: 100% !important;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-discount input {
+  max-width: 50px;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-lifetime input {
+  max-width: 80px;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-wallet .view {
+  max-width: 170px;
+}
+.ezpay-currency-table tbody tr td.ezpay-currency-distance input {
+  max-width: 80px;
 }
 
 .select2-currency {
@@ -75,4 +128,4 @@
   text-transform: capitalize;
 }
 
-/*# sourceMappingURL=admin.css.map */
+/*# sourceMappingURL=edd-ezpay-admin.css.map */

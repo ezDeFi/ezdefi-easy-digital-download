@@ -66,6 +66,11 @@
       max-width: 150px;
     }
 
+    .ezpay_currency_logo {
+      float: left;
+      margin-right: 5px;
+    }
+
     .ezpay_currency_select {
       min-width: 180px;
       .select2-container {
@@ -75,6 +80,85 @@
 
     .ezpay_currency_discount input {
       width: 50px;
+    }
+  }
+}
+
+.ezpay-currency-table {
+  thead {
+    th {
+      padding: 15px 10px;
+      font-weight: normal;
+    }
+  }
+
+  tbody {
+    tr {
+      &:hover {
+        .actions {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+
+      td {
+        vertical-align: top;
+
+        .actions {
+          color: #ddd;
+          font-size: 13px;
+          padding: 2px 0 0;
+          opacity: 0;
+          visibility: hidden;
+        }
+
+        .edit {
+          display: none;
+        }
+
+        &.ezpay-currency-name {
+          min-width: 160px;
+
+          img {
+            float: left;
+            margin-right: 8px;
+            margin-top: 5px;
+            width: 32px;
+          }
+
+          span {
+            text-transform: capitalize;
+          }
+
+          .select2-container {
+            width: 100% !important;
+          }
+        }
+
+        &.ezpay-currency-discount {
+          input {
+            max-width: 50px;
+          }
+        }
+
+        &.ezpay-currency-lifetime {
+          input {
+            max-width: 80px;
+          }
+        }
+
+        &.ezpay-currency-wallet {
+          .view {
+            max-width: 170px;
+          }
+        }
+
+        &.ezpay-currency-distance {
+          input {
+            max-width: 80px;
+          }
+        }
+      }
     }
   }
 }

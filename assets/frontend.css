@@ -64,4 +64,18 @@
   color: #fff;
 }
 
+#ezpay-currency-select .currency-select__item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+#ezpay-currency-select .currency-select__item label {
+  display: flex;
+  text-transform: capitalize;
+  line-height: 24px;
+}
+#ezpay-currency-select .currency-select__item label img {
+  margin-right: 5px;
+}
+
 /*# sourceMappingURL=frontend.css.map */

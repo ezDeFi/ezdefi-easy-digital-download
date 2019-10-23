@@ -1,15 +1,21 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
+}
+
 class EDD_EZPay_Listener
 {
     protected $base_url = '';
 
+    /** Constructor */
     public function __construct($base_url)
     {
         $this->base_url = rtrim( $base_url, '/' ) . '/';
     }
 
-    public function listen($url)
+    /** Get action name from url */
+    public function get_action($url)
     {
         if( strpos( $url, $this->base_url ) !== 0 ) {
             return '';

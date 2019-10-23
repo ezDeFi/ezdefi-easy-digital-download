@@ -64,6 +64,10 @@
 #edd_ezpay_currency_table tbody .ezpay_currency_discount input {
   width: 50px;
 }
+#edd_ezpay_currency_table tbody .ezpay-currency-wallet span.error {
+  color: #a00;
+  font-size: 13px;
+}
 
 .ezpay-currency-table thead th {
   padding: 15px 10px;

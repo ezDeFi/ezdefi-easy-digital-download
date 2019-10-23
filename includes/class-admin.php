@@ -150,10 +150,10 @@ class EDD_EZPay_Admin
                         </td>
                         <td class="ezpay-currency-discount">
                             <div class="view" data-currency-view>
-                                <?php echo (isset($c['discount'])) ? $c['discount'] : ''; ?>
+                                <?php echo (isset($c['discount'])) ? $c['discount'] : ''; ?><span> %</span>
                             </div>
                             <div class="edit" data-currency-edit>
-                                <input type="number" name="edd_settings[ezpay_currency][<?php echo $index; ?>][discount]" value="<?php echo (isset($c['discount'])) ? $c['discount'] : ''; ?>">
+                                <input type="number" name="edd_settings[ezpay_currency][<?php echo $index; ?>][discount]" value="<?php echo (isset($c['discount'])) ? $c['discount'] : ''; ?>"><span> %</span>
                             </div>
                         </td>
                         <td class="ezpay-currency-lifetime">
@@ -217,7 +217,7 @@ class EDD_EZPay_Admin
                     <div class="view" data-currency-view>
                     </div>
                     <div class="edit" data-currency-edit>
-                        <input type="number" name="edd_settings[ezpay_currency][0][discount]" value="">
+                        <input type="number" name="edd_settings[ezpay_currency][0][discount]" value=""><span> %</span>
                     </div>
                 </td>
                 <td class="ezpay-currency-lifetime">

@@ -96,7 +96,7 @@ class EDD_EZPay_Payment
             'ucid' => $edd_payment->user_id,
             'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
 //            'callback' => home_url( $wp->request ) . '/edd-ezpay/nextypay'
-            'callback' => 'http://bc18b943.ngrok.io/edd-ezpay/nextypay'
+            'callback' => 'http://64fdfd6f.ngrok.io/edd-ezpay/nextypay'
         ];
 
         $response = $this->get_api()->callApi('payment/create', 'post', $data);

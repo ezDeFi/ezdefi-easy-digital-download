@@ -81,6 +81,13 @@
     .ezpay_currency_discount input {
       width: 50px;
     }
+
+    .ezpay-currency-wallet {
+      span.error {
+        color: #a00;
+        font-size: 13px;
+      }
+    }
   }
 }
 

@@ -14,13 +14,3 @@ function edd_ezpay_get_qrcode_page_uri()
 
     return $qrcode_page;
 }
-
-function edd_ezpay_get_payment_success_uri()
-{
-    return EDD_EZPay()->redirect->success();
-}
-
-function edd_ezpay_get_payment_timeout_uri()
-{
-    return EDD_EZPay()->redirect->timeout();
-}

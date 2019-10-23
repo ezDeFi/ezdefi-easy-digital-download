@@ -60,9 +60,6 @@ final class EDD_EZPay_Class
         include_once $this->plugin_path() . '/includes/class-api.php';
         $this->api = EDD_EZPay_Api::instance();
 
-        include_once $this->plugin_path() . '/includes/class-redirect.php';
-        $this->redirect = EDD_EZPay_Redirect::instance();
-
         include_once $this->plugin_path() . '/includes/class-payment.php';
         EDD_EZPay_Payment::instance()->init();
 

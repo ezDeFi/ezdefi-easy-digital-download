@@ -33,27 +33,17 @@ class EDD_EZPay_Payment
     /** Process payment for EZPay Gateway */
     public function process_payment($purchase_data)
     {
-        // If client not choose currency, set error then send back to checkout page
-        if( !isset( $purchase_data['post_data']['edd_ezpay_currency_symbol'] ) ) {
-            edd_set_error( 'missing_ezpay_currency', __( 'Missing Ezpay Currency', 'edd-ezpay' ) );
-            return $this->redirect_back_to_checkout();
-        }
-
-        $ezpay_currency_symbol = $purchase_data['post_data']['edd_ezpay_currency_symbol'];
-
-        $ezpay_currency_config = $this->get_ezpay_currency_config( $ezpay_currency_symbol );
-
-        // If client choose not accepted currency, set error then send back to checkout page
-        if( !$ezpay_currency_config ) {
-            edd_set_error( 'ezpay_currency_not_accepted', __( 'This currency is not accepted', 'edd-ezpay' ) );
-            return $this->redirect_back_to_checkout();
-        }
-
-        // Create EDD Payment
         $edd_payment_id = $this->create_edd_payment($purchase_data);
 
-        // Create EZPay Payment
-        $this->create_ezpay_payment($edd_payment_id, $ezpay_currency_config);
+        $ezpay_payment = $this->create_ezpay_payment( $edd_payment_id, $purchase_data['post_data']['edd_ezpay_currency_symbol'] );
+
+        if(!$ezpay_payment) {
+            return $this->redirect_back_to_checkout();
+        }
+
+        EDD()->session->set( 'edd_ezpay_payment', $ezpay_payment );
+
+        return $this->redirect_to_success_page();
     }
 
     /** Create pending EDD Payment */
@@ -80,48 +70,51 @@ class EDD_EZPay_Payment
         return $payment_id;
     }
 
-    /** Create EZPay Payment then redirect to QRCode Page */
-    protected function create_ezpay_payment($edd_payment_id, $currency_data)
+    /** Create EZPay Payment */
+    protected function create_ezpay_payment($edd_payment_id, $symbol)
     {
-        global $wp;
+        $currency_data = $this->get_ezpay_currency_config( $symbol );
+        $edd_payment = edd_get_payment( $edd_payment_id );
 
-        $edd_payment = edd_get_payment($edd_payment_id);
+        $subtotal = intval($edd_payment->subtotal);
+        $discount = intval($currency_data['discount']);
+        $value = $subtotal - ($subtotal * ($discount / 100));
 
         $data = [
             'uoid' => $edd_payment_id,
             'to' => ( isset( $currency_data['wallet'] ) ? $currency_data['wallet'] : '' ),
-            'value' => $edd_payment->subtotal,
+            'value' => $value,
             'currency' => $edd_payment->currency . '/' . $currency_data['symbol'],
             'safedist' => (isset($currency_data['distance'])) ? $currency_data['distance'] : '',
             'ucid' => $edd_payment->user_id,
             'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
 //            'callback' => home_url( $wp->request ) . '/edd-ezpay/nextypay'
-            'callback' => 'http://64fdfd6f.ngrok.io/edd-ezpay/nextypay'
+            'callback' => 'http://877be640.ngrok.io/edd-ezpay/nextypay'
         ];
 
         $response = $this->get_api()->callApi('payment/create', 'post', $data);
 
         if( is_wp_error( $response ) ) {
-            edd_set_error( 'ezpay_payment_fail', __( 'Create Ezpay payment failed', 'edd-ezpay' ) );
-            return $this->redirect_back_to_checkout();
+            return false;
         }
 
         $ezpay_payment = json_decode( $response['body'], true );
 
-        EDD()->session->set( 'edd_ezpay_payment', $ezpay_payment );
-
-        return $this->send_to_qrcode_page();
+        return $ezpay_payment;
     }
 
     /** Redirect client back to checkout page */
     public function redirect_back_to_checkout()
     {
+        EDD()->session->set( 'edd_ezpay_payment', '' );
+
         edd_send_back_to_checkout( '?payment-mode=ezpay' );
     }
 
-    public function send_to_qrcode_page()
+    /** Redirect client to ezpay checkout page */
+    public function redirect_to_success_page()
     {
-        wp_redirect( edd_ezpay_get_qrcode_page_uri() );
+        edd_send_to_success_page();
     }
 
     /** Nexty payment callback handle */
@@ -152,13 +145,18 @@ class EDD_EZPay_Payment
     /** Nexty payment success handle */
     private function nextypay_success_handle($payment_id)
     {
-        EDD()->session->set( 'edd_ezpay_payment', '' );
+        EDD()->session->set( 'edd_ezpay_uoid', '' );
         edd_update_payment_status( $payment_id, 'publish' );
         edd_empty_cart();
     }
 
+    /** Get API instance */
+    protected function get_api()
+    {
+        return EDD_EZPay()->api;
+    }
     /** Get config for ezpay currency */
-    private function get_ezpay_currency_config($symbol)
+    protected function get_ezpay_currency_config($symbol)
     {
         $config = edd_get_option( 'ezpay_currency' );
 
@@ -168,13 +166,7 @@ class EDD_EZPay_Payment
             }
         }
 
-        // return false if currency isn't accepted
         return false;
     }
 
-    /** Get API instance */
-    protected function get_api()
-    {
-        return EDD_EZPay()->api;
-    }
 }

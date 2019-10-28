@@ -8,6 +8,8 @@ class Test_EDD_EZPay_Payment extends WP_UnitTestCase
     {
         parent::setUp();
 
+        require_once 'helpers/class-helper-download.php';
+        require_once 'helpers/class-helper-payment.php';
         require_once 'includes/class-payment.php';
 
         $this->object = EDD_EZPay_Payment::instance();
@@ -20,7 +22,7 @@ class Test_EDD_EZPay_Payment extends WP_UnitTestCase
         parent::tearDown();
     }
 
-    public function test_init()
+    public function ttest_init()
     {
         $this->assertFalse( has_action( 'edd_gateway_ezpay', array(
             $this->object,
@@ -43,50 +45,7 @@ class Test_EDD_EZPay_Payment extends WP_UnitTestCase
         ) ) );
     }
 
-    public function test_purchase_no_currency_fail()
-    {
-        $purchase_data = $this->create_fake_purchase_data();
-
-        $mock = $this->getMockBuilder(EDD_EZPay_Payment::class)
-            ->setMethods(['redirect_back_to_checkout'])
-            ->getMock();
-
-        $mock->expects($this->once())->method('redirect_back_to_checkout');
-
-        $process = $mock->process_payment( $purchase_data );
-
-        $this->assertFalse( empty( edd_get_errors() ) );
-        $this->assertTrue( isset( edd_get_errors()['missing_ezpay_currency'] ) );
-        $this->assertTrue( true !== $process );
-    }
-
-    public function test_purchase_not_accepted_currency_fail()
-    {
-        global $edd_options;
-        $edd_options['ezpay_currency'] = array(
-            array ( 'symbol' => 'accepted' )
-        );
-
-        $post_data = array(
-            'edd_ezpay_currency_symbol' => 'not_accepted'
-        );
-
-        $purchase_data = $this->create_fake_purchase_data( $post_data );
-
-        $mock = $this->getMockBuilder(EDD_EZPay_Payment::class)
-            ->setMethods(['redirect_back_to_checkout'])
-            ->getMock();
-
-        $mock->expects($this->once())->method('redirect_back_to_checkout');
-
-        $process = $mock->process_payment( $purchase_data );
-
-        $this->assertFalse( empty( edd_get_errors() ) );
-        $this->assertTrue( isset( edd_get_errors()['ezpay_currency_not_accepted'] ) );
-        $this->assertTrue( true !== $process );
-    }
-
-    public function test_when_create_ezpay_payment_fail()
+    public function test_redirect_to_success_page()
     {
         global $edd_options;
         $edd_options['ezpay_currency'] = array(
@@ -94,164 +53,43 @@ class Test_EDD_EZPay_Payment extends WP_UnitTestCase
                 'symbol' => 'nusd',
                 'wallet' => 'currency-wallet',
                 'lifetime' => 'currency-lifetime',
-                'distance' => 'currency-distance'
+                'distance' => 'currency-distance',
+                'discount' => '10'
             )
         );
-
-        $post_data = array(
-            'edd_ezpay_currency_symbol' => 'nusd'
+        $purchase_data = [
+            'post_data' => [
+                'edd_ezpay_currency_symbol' => 'nusd'
+            ]
+        ];
+        $gateway_response = array(
+            'body' => '{"code":1,"data":[{"$__":{},"isNew":false,"_doc":{"_id":"id"},"$locals": {},"qr":""}],"message": "ok"}'
         );
-
-        $purchase_data = $this->create_fake_purchase_data( $post_data );
-
-        $mock_api = $this->getMockBuilder(EDD_EZPay_Api::class)
-            ->setMethods(['callApi'])
-            ->getMock();
-        $mock_api->expects($this->once())->method('callApi')->willReturn(new WP_Error());
-
-        $mock = $this->getMockBuilder(EDD_EZPay_Payment::class)
-            ->setMethods(['redirect_back_to_checkout', 'create_edd_payment', 'get_api'])
-            ->getMock();
-
-        $mock->expects($this->once())->method('redirect_back_to_checkout');
-
-        require_once 'helpers/class-helper-payment.php';
         $payment_id = EDD_Helper_Payment::create_simple_payment();
-        $mock->expects($this->once())->method('create_edd_payment')->willReturn($payment_id);
-        $mock->expects($this->once())->method('get_api')->willReturn($mock_api);
-
-        $process = $mock->process_payment($purchase_data);
-
-        $this->assertFalse( empty( edd_get_errors() ) );
-        $this->assertTrue( isset( edd_get_errors()['ezpay_payment_fail'] ) );
-        $this->assertTrue( true !== $process );
-    }
-
-    public function test_create_ezpay_payment_success()
-    {
-        global $edd_options;
-        $edd_options['ezpay_currency'] = array(
-            array (
-                'symbol' => 'nusd',
-                'wallet' => 'currency-wallet',
-                'lifetime' => 'currency-lifetime',
-                'distance' => 'currency-distance'
-            )
-        );
-
-        $post_data = array(
-            'edd_ezpay_currency_symbol' => 'nusd'
-        );
-
-        $purchase_data = $this->create_fake_purchase_data( $post_data );
-
-        $fake_response = array(
-            'body' => '{"code":1,"data":{},"message": "ok"}'
-        );
-        $mock_api = $this->getMockBuilder(EDD_EZPay_Api::class)
-            ->setMethods(['callApi'])
-            ->getMock();
-        $mock_api->expects($this->once())->method('callApi')->willReturn($fake_response);
 
         $mock = $this->getMockBuilder(EDD_EZPay_Payment::class)
-            ->setMethods(['create_edd_payment', 'get_api', 'send_to_qrcode_page'])
-            ->getMock();
-
-        $mock->expects($this->once())->method('send_to_qrcode_page');
-
-        require_once 'helpers/class-helper-payment.php';
-        $payment_id = EDD_Helper_Payment::create_simple_payment();
-        $mock->expects($this->once())->method('create_edd_payment')->willReturn($payment_id);
-        $mock->expects($this->once())->method('get_api')->willReturn($mock_api);
-
-        $process = $mock->process_payment($purchase_data);
-
-        $this->assertTrue( empty( edd_get_errors() ) );
-        $this->assertEquals(
-            json_decode( $fake_response['body'], true ),
-            EDD()->session->get( 'edd_ezpay_payment' )
-        );
-        $this->assertTrue( true !== $process );
-    }
-
-    public function test_can_handle_callback_from_gateway()
-    {
-        require_once 'helpers/class-helper-download.php';
-        require_once 'helpers/class-helper-payment.php';
-        $edd_payment_id = EDD_Helper_Payment::create_simple_payment();
-
-        $_GET['uoid'] = $edd_payment_id;
-        $_GET['paymentid'] = 123;
-
-        $done_response = array(
-            'body' => '{"code":1,"data":{"payment":{"status":"DONE"}},"message": "ok"}'
-        );
-        $mock_api = $this->getMockBuilder(EDD_EZPay_Api::class)
-            ->setMethods(['callApi'])
-            ->getMock();
-        $mock_api->expects($this->once())
-            ->method('callApi')
-            ->willReturn($done_response);
-
-        $mock = $this->getMockBuilder(EDD_EZPay_Payment::class)
-            ->setMethods(['get_api'])
+            ->setMethods(['redirect_to_success_page', 'create_edd_payment', 'create_ezpay_payment'])
             ->getMock();
 
         $mock->expects($this->once())
-            ->method('get_api')
-            ->willReturn($mock_api);
-
-        $mock->nextypay_action_handle();
-
-        $edd_payment  = edd_get_payment($edd_payment_id);
-        $this->assertEquals( 'publish', $edd_payment->post_status );
-        $this->assertEmpty( EDD()->session->get( 'edd_ezpay_payment' ) );
-        $this->assertEmpty( edd_get_cart_contents() );
-    }
-
-    public function test_callback_when_ezpay_payment_not_done()
-    {
-        require_once 'helpers/class-helper-download.php';
-        require_once 'helpers/class-helper-payment.php';
-        $edd_payment_id = EDD_Helper_Payment::create_simple_payment();
-
-        $_GET['uoid'] = $edd_payment_id;
-        $_GET['paymentid'] = 123;
-
-        $pending_response = array(
-            'body' => '{"code":1,"data":{"payment":{"status":"PENDING"}},"message": "ok"}'
-        );
-
-        $mock_api = $this->getMockBuilder(EDD_EZPay_Api::class)
-            ->setMethods(['callApi'])
-            ->getMock();
-        $mock_api->expects($this->once())
-            ->method('callApi')
-            ->willReturn($pending_response);
-
-        $edd_payment_id = EDD_Helper_Payment::create_simple_payment();
-
-        $_GET['uoid'] = $edd_payment_id;
-        $_GET['paymentid'] = 123;
-
-        $mock = $this->getMockBuilder(EDD_EZPay_Payment::class)
-            ->setMethods(['get_api'])
-            ->getMock();
-
+            ->method('create_edd_payment')
+            ->with($purchase_data)
+            ->willReturn($payment_id);
         $mock->expects($this->once())
-            ->method('get_api')
-            ->willReturn($mock_api);
+            ->method('create_ezpay_payment')
+            ->with($payment_id, 'nusd')
+            ->willReturn(json_decode($gateway_response['body']));
+        $mock->expects($this->once())->method('redirect_to_success_page');
 
-        $mock->nextypay_action_handle();
+        $process = $mock->process_payment($purchase_data);
 
-        $edd_payment  = edd_get_payment($edd_payment_id);
-        $this->assertEquals( 'pending', $edd_payment->post_status );
+        $this->assertTrue( true !== $process );
+        $this->assertNotNull( EDD()->session->get('edd_ezpay_payment') );
+        $this->assertEquals( 'id', EDD()->session->get('edd_ezpay_payment')['data']['_doc']['_id'] );
     }
 
-    private function create_fake_purchase_data($post_data = array())
+    private function create_fake_purchase_data()
     {
-        require_once 'helpers/class-helper-download.php';
-
         $simple_download   = EDD_Helper_Download::create_simple_download();
         $variable_download = EDD_Helper_Download::create_variable_download();
 
@@ -327,7 +165,6 @@ class Test_EDD_EZPay_Payment extends WP_UnitTestCase
             'downloads'     => $download_details,
             'cart_details'  => $cart_details,
             'status'        => 'pending',
-            'post_data' => $post_data
         );
 
         return $purchase_data;

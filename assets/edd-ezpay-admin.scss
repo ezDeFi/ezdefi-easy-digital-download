@@ -1,168 +1,197 @@
-.edd_ezpay_loading_td {
-  text-align: center;
-
-  .edd_ezpay_loading {
-    display: inline-block;
-    vertical-align: middle;
-    -webkit-animation: edd-spinning 1.1s infinite linear;
-    animation: edd-spinning 1.1s infinite linear;
-    border-top: 0.2em solid rgba(0, 0, 0, 0.2);
-    border-right: 0.2em solid rgba(0, 0, 0, 0.2);
-    border-bottom: 0.2em solid rgba(0, 0, 0, 0.2);
-    border-left: 0.2em solid #000;
-    -ms-transform: translateZ(0);
-    transform: translateZ(0);
-    border-radius: 50%;
-    width: 1.5em;
-    height: 1.5em;
+form {
+  .error {
+    font-size: 13px;
+    color: #dc3232;
+    display: block;
   }
-}
 
-.edd_ezpay_crypto_table_top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#edd_ezpay_crypto_table {
-  margin-top: 15px;
-
-  thead {
-    th {
-      padding-left: 10px;
-      padding-right: 10px;
-
-      &.edd_ezpay_crypto_lifetime, &.edd_ezpay_crypto_wallet {
-        min-width: 90px;
-      }
-
-      &.edd_ezpay_crypto_distance {
-        min-width: 110px;
-      }
+  td.form-invalid {
+    .select2-selection {
+      border-color: #dc3232!important;
+      box-shadow: 0 0 2px rgba(204,0,0,.8);
     }
   }
 
-  tbody {
-    .edd_ezpay_discount_input {
-      max-width: 50px;
-    }
-  }
-}
+  .ezpay-currency-table {
+    thead {
+      th {
+        padding: 15px 10px;
+        vertical-align: middle;
 
-.edd_ezpay_crypto_table_bottom {
-  margin-top: 15px;
-  text-align: right;
-}
+        &.sortable-zone {
+          width: 24px;
 
-#edd_ezpay_currency_table {
-  thead {
-    th {
-      padding: 15px 10px;
-    }
-  }
-
-  tbody {
-    input {
-      max-width: 150px;
-    }
-
-    .ezpay_currency_logo {
-      float: left;
-      margin-right: 5px;
-    }
-
-    .ezpay_currency_select {
-      min-width: 180px;
-      .select2-container {
-        width: 180px !important;
+          .help-tip {
+            color: #666;
+            width: 16px;
+            height: 16px;
+            font-size: 16px;
+            line-height: 16px;
+            cursor: help;
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+          }
+        }
       }
     }
 
-    .ezpay_currency_discount input {
-      width: 50px;
-    }
+    .logo {
+      width: 32px;
+      vertical-align: middle;
 
-    .ezpay-currency-wallet {
-      span.error {
-        color: #a00;
-        font-size: 13px;
+      img {
+        display: block;
+        width: 32px;
       }
     }
-  }
-}
 
-.ezpay-currency-table {
-  thead {
-    th {
-      padding: 15px 10px;
-      font-weight: normal;
-    }
-  }
-
-  tbody {
-    tr {
-      &:hover {
-        .actions {
-          opacity: 1;
-          visibility: visible;
+    .name {
+      .view {
+        span {
+          text-transform: capitalize;
         }
       }
 
-      td {
-        vertical-align: top;
+      .edit {
+        .select2-container {
+          .select2-selection {
+            text-transform: capitalize;
+          }
+        }
+      }
+    }
+
+    .discount, .lifetime, .distance {
+      width: 100px;
+    }
+
+    .wallet {
+      width: 180px;
+
+      .edit {
+        input {
+          width: 100%;
+        }
+
+        .checking {
+          display: flex;
+          padding: 2px 0;
+
+          span {
+            font-size: 13px;
+
+            &.text {
+              color: #0073aa;
+            }
+
+            &.correct {
+              color: #567622;
+            }
+          }
+
+          .dots {
+            margin-left: 5px;
+            display: flex;
+            padding-bottom: 4px;
+            align-items: flex-end;
+
+            .dot {
+              display: inline-block;
+              width: 2px;
+              height: 2px;
+              margin-right: 2px;
+              border-radius: 50%;
+              background: #0073aa;
+              -webkit-animation: dot-dot-dot 1.4s linear infinite;
+              animation: dot-dot-dot 1.4s linear infinite;
+
+              &:nth-child(2) {
+                animation-delay: .2s;
+              }
+
+              &:nth-child(3) {
+                animation-delay: .4s;
+              }
+
+              @keyframes dot-dot-dot {
+                0%, 60%, 100% {
+                  -webkit-transform: initial;
+                  -ms-transform: initial;
+                  transform: initial;
+                }
+                30% {
+                  -webkit-transform: translateY(-4px);
+                  -ms-transform: translateY(-4px);
+                  transform: translateY(-4px);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        &:hover {
+          .actions {
+            position: static;
+          }
+        }
+
+        td {
+          vertical-align: top;
+
+          &.sortable-handle {
+            cursor: move;
+            font-size: 15px;
+            text-align: center;
+            vertical-align: middle;
+
+            span {
+              width: 17px;
+              font-size: 17px;
+              color: #999;
+              display: block;
+              line-height: 24px;
+            }
+
+            &:hover {
+              span {
+                color: #333;
+              }
+            }
+          }
+        }
 
         .actions {
           color: #ddd;
           font-size: 13px;
           padding: 2px 0 0;
-          opacity: 0;
-          visibility: hidden;
+          position: relative;
+          left: -9999em;
+        }
+
+        .view {
+          display: block;
         }
 
         .edit {
           display: none;
         }
 
-        &.ezpay-currency-name {
-          min-width: 160px;
-
-          img {
-            float: left;
-            margin-right: 8px;
-            margin-top: 5px;
-            width: 32px;
-          }
-
-          span {
-            text-transform: capitalize;
-          }
-
-          .select2-container {
-            width: 100% !important;
-          }
-        }
-
-        &.ezpay-currency-discount {
-          input {
-            max-width: 50px;
-          }
-        }
-
-        &.ezpay-currency-lifetime {
-          input {
-            max-width: 80px;
-          }
-        }
-
-        &.ezpay-currency-wallet {
+        &.editing {
           .view {
-            max-width: 170px;
-          }
-        }
+            display: none;
 
-        &.ezpay-currency-distance {
-          input {
-            max-width: 80px;
+            .actions {
+              position: static;
+            }
+          }
+
+          .edit {
+            display: block;
           }
         }
       }
@@ -186,3 +215,5 @@
     text-transform: capitalize;
   }
 }
+
+#tiptip_holder{display:none;z-index:8675309;position:absolute;top:0;left:0}#tiptip_holder.tip_top{padding-bottom:5px}#tiptip_holder.tip_top #tiptip_arrow_inner{margin-top:-7px;margin-left:-6px;border-top-color:#333}#tiptip_holder.tip_bottom{padding-top:5px}#tiptip_holder.tip_bottom #tiptip_arrow_inner{margin-top:-5px;margin-left:-6px;border-bottom-color:#333}#tiptip_holder.tip_right{padding-left:5px}#tiptip_holder.tip_right #tiptip_arrow_inner{margin-top:-6px;margin-left:-5px;border-right-color:#333}#tiptip_holder.tip_left{padding-right:5px}#tiptip_holder.tip_left #tiptip_arrow_inner{margin-top:-6px;margin-left:-7px;border-left-color:#333}#tiptip_content,.chart-tooltip,.wc_error_tip{color:#fff;font-size:.8em;max-width:150px;background:#333;text-align:center;border-radius:3px;padding:.618em 1em;box-shadow:0 1px 3px rgba(0,0,0,.2)}#tiptip_content code,.chart-tooltip code,.wc_error_tip code{padding:1px;background:#888}#tiptip_arrow,#tiptip_arrow_inner{position:absolute;border-color:transparent;border-style:solid;border-width:6px;height:0;width:0}

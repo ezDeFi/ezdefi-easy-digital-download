@@ -1,121 +1,143 @@
-.edd_ezpay_loading_td {
-  text-align: center;
+form .error {
+  font-size: 13px;
+  color: #dc3232;
+  display: block;
 }
-.edd_ezpay_loading_td .edd_ezpay_loading {
-  display: inline-block;
-  vertical-align: middle;
-  -webkit-animation: edd-spinning 1.1s infinite linear;
-  animation: edd-spinning 1.1s infinite linear;
-  border-top: 0.2em solid rgba(0, 0, 0, 0.2);
-  border-right: 0.2em solid rgba(0, 0, 0, 0.2);
-  border-bottom: 0.2em solid rgba(0, 0, 0, 0.2);
-  border-left: 0.2em solid #000;
-  -ms-transform: translateZ(0);
-  transform: translateZ(0);
-  border-radius: 50%;
-  width: 1.5em;
-  height: 1.5em;
+form td.form-invalid .select2-selection {
+  border-color: #dc3232 !important;
+  box-shadow: 0 0 2px rgba(204, 0, 0, 0.8);
 }
-
-.edd_ezpay_crypto_table_top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#edd_ezpay_crypto_table {
-  margin-top: 15px;
-}
-#edd_ezpay_crypto_table thead th {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-#edd_ezpay_crypto_table thead th.edd_ezpay_crypto_lifetime, #edd_ezpay_crypto_table thead th.edd_ezpay_crypto_wallet {
-  min-width: 90px;
-}
-#edd_ezpay_crypto_table thead th.edd_ezpay_crypto_distance {
-  min-width: 110px;
-}
-#edd_ezpay_crypto_table tbody .edd_ezpay_discount_input {
-  max-width: 50px;
-}
-
-.edd_ezpay_crypto_table_bottom {
-  margin-top: 15px;
-  text-align: right;
-}
-
-#edd_ezpay_currency_table thead th {
+form .ezpay-currency-table thead th {
   padding: 15px 10px;
+  vertical-align: middle;
 }
-#edd_ezpay_currency_table tbody input {
-  max-width: 150px;
+form .ezpay-currency-table thead th.sortable-zone {
+  width: 24px;
 }
-#edd_ezpay_currency_table tbody .ezpay_currency_logo {
-  float: left;
-  margin-right: 5px;
+form .ezpay-currency-table thead th.sortable-zone .help-tip {
+  color: #666;
+  width: 16px;
+  height: 16px;
+  font-size: 16px;
+  line-height: 16px;
+  cursor: help;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
 }
-#edd_ezpay_currency_table tbody .ezpay_currency_select {
-  min-width: 180px;
+form .ezpay-currency-table .logo {
+  width: 32px;
+  vertical-align: middle;
 }
-#edd_ezpay_currency_table tbody .ezpay_currency_select .select2-container {
-  width: 180px !important;
+form .ezpay-currency-table .logo img {
+  display: block;
+  width: 32px;
 }
-#edd_ezpay_currency_table tbody .ezpay_currency_discount input {
-  width: 50px;
+form .ezpay-currency-table .name .view span {
+  text-transform: capitalize;
 }
-#edd_ezpay_currency_table tbody .ezpay-currency-wallet span.error {
-  color: #a00;
+form .ezpay-currency-table .name .edit .select2-container .select2-selection {
+  text-transform: capitalize;
+}
+form .ezpay-currency-table .discount, form .ezpay-currency-table .lifetime, form .ezpay-currency-table .distance {
+  width: 100px;
+}
+form .ezpay-currency-table .wallet {
+  width: 180px;
+}
+form .ezpay-currency-table .wallet .edit input {
+  width: 100%;
+}
+form .ezpay-currency-table .wallet .edit .checking {
+  display: flex;
+  padding: 2px 0;
+}
+form .ezpay-currency-table .wallet .edit .checking span {
   font-size: 13px;
 }
-
-.ezpay-currency-table thead th {
-  padding: 15px 10px;
-  font-weight: normal;
+form .ezpay-currency-table .wallet .edit .checking span.text {
+  color: #0073aa;
 }
-.ezpay-currency-table tbody tr:hover .actions {
-  opacity: 1;
-  visibility: visible;
+form .ezpay-currency-table .wallet .edit .checking span.correct {
+  color: #567622;
 }
-.ezpay-currency-table tbody tr td {
+form .ezpay-currency-table .wallet .edit .checking .dots {
+  margin-left: 5px;
+  display: flex;
+  padding-bottom: 4px;
+  align-items: flex-end;
+}
+form .ezpay-currency-table .wallet .edit .checking .dots .dot {
+  display: inline-block;
+  width: 2px;
+  height: 2px;
+  margin-right: 2px;
+  border-radius: 50%;
+  background: #0073aa;
+  -webkit-animation: dot-dot-dot 1.4s linear infinite;
+  animation: dot-dot-dot 1.4s linear infinite;
+}
+form .ezpay-currency-table .wallet .edit .checking .dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+form .ezpay-currency-table .wallet .edit .checking .dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+@keyframes dot-dot-dot {
+  0%, 60%, 100% {
+    -webkit-transform: initial;
+    -ms-transform: initial;
+    transform: initial;
+  }
+  30% {
+    -webkit-transform: translateY(-4px);
+    -ms-transform: translateY(-4px);
+    transform: translateY(-4px);
+  }
+}
+form .ezpay-currency-table tbody tr:hover .actions {
+  position: static;
+}
+form .ezpay-currency-table tbody tr td {
   vertical-align: top;
 }
-.ezpay-currency-table tbody tr td .actions {
+form .ezpay-currency-table tbody tr td.sortable-handle {
+  cursor: move;
+  font-size: 15px;
+  text-align: center;
+  vertical-align: middle;
+}
+form .ezpay-currency-table tbody tr td.sortable-handle span {
+  width: 17px;
+  font-size: 17px;
+  color: #999;
+  display: block;
+  line-height: 24px;
+}
+form .ezpay-currency-table tbody tr td.sortable-handle:hover span {
+  color: #333;
+}
+form .ezpay-currency-table tbody tr .actions {
   color: #ddd;
   font-size: 13px;
   padding: 2px 0 0;
-  opacity: 0;
-  visibility: hidden;
+  position: relative;
+  left: -9999em;
 }
-.ezpay-currency-table tbody tr td .edit {
+form .ezpay-currency-table tbody tr .view {
+  display: block;
+}
+form .ezpay-currency-table tbody tr .edit {
   display: none;
 }
-.ezpay-currency-table tbody tr td.ezpay-currency-name {
-  min-width: 160px;
+form .ezpay-currency-table tbody tr.editing .view {
+  display: none;
 }
-.ezpay-currency-table tbody tr td.ezpay-currency-name img {
-  float: left;
-  margin-right: 8px;
-  margin-top: 5px;
-  width: 32px;
+form .ezpay-currency-table tbody tr.editing .view .actions {
+  position: static;
 }
-.ezpay-currency-table tbody tr td.ezpay-currency-name span {
-  text-transform: capitalize;
-}
-.ezpay-currency-table tbody tr td.ezpay-currency-name .select2-container {
-  width: 100% !important;
-}
-.ezpay-currency-table tbody tr td.ezpay-currency-discount input {
-  max-width: 50px;
-}
-.ezpay-currency-table tbody tr td.ezpay-currency-lifetime input {
-  max-width: 80px;
-}
-.ezpay-currency-table tbody tr td.ezpay-currency-wallet .view {
-  max-width: 170px;
-}
-.ezpay-currency-table tbody tr td.ezpay-currency-distance input {
-  max-width: 80px;
+form .ezpay-currency-table tbody tr.editing .edit {
+  display: block;
 }
 
 .select2-currency {
@@ -130,6 +152,79 @@
 }
 .select2-currency .select2-currency__name {
   text-transform: capitalize;
+}
+
+#tiptip_holder {
+  display: none;
+  z-index: 8675309;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#tiptip_holder.tip_top {
+  padding-bottom: 5px;
+}
+
+#tiptip_holder.tip_top #tiptip_arrow_inner {
+  margin-top: -7px;
+  margin-left: -6px;
+  border-top-color: #333;
+}
+
+#tiptip_holder.tip_bottom {
+  padding-top: 5px;
+}
+
+#tiptip_holder.tip_bottom #tiptip_arrow_inner {
+  margin-top: -5px;
+  margin-left: -6px;
+  border-bottom-color: #333;
+}
+
+#tiptip_holder.tip_right {
+  padding-left: 5px;
+}
+
+#tiptip_holder.tip_right #tiptip_arrow_inner {
+  margin-top: -6px;
+  margin-left: -5px;
+  border-right-color: #333;
+}
+
+#tiptip_holder.tip_left {
+  padding-right: 5px;
+}
+
+#tiptip_holder.tip_left #tiptip_arrow_inner {
+  margin-top: -6px;
+  margin-left: -7px;
+  border-left-color: #333;
+}
+
+#tiptip_content, .chart-tooltip, .wc_error_tip {
+  color: #fff;
+  font-size: 0.8em;
+  max-width: 150px;
+  background: #333;
+  text-align: center;
+  border-radius: 3px;
+  padding: 0.618em 1em;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+#tiptip_content code, .chart-tooltip code, .wc_error_tip code {
+  padding: 1px;
+  background: #888;
+}
+
+#tiptip_arrow, #tiptip_arrow_inner {
+  position: absolute;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 6px;
+  height: 0;
+  width: 0;
 }
 
 /*# sourceMappingURL=edd-ezpay-admin.css.map */

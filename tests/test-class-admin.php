@@ -73,7 +73,6 @@ class Test_EDD_EZPay_Admin extends WP_UnitTestCase
         $this->assertFalse( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_settings]'] ) );
         $this->assertFalse( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_api_url]'] ) );
         $this->assertFalse( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_api_key]'] ) );
-        $this->assertFalse( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_qrcode_page]'] ) );
 
         $this->object->init();
         edd_register_settings();
@@ -81,7 +80,6 @@ class Test_EDD_EZPay_Admin extends WP_UnitTestCase
         $this->assertTrue( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_settings]'] ) );
         $this->assertTrue( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_api_url]'] ) );
         $this->assertTrue( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_api_key]'] ) );
-        $this->assertTrue( isset( $wp_settings_fields['edd_settings_gateways_ezpay']['edd_settings_gateways_ezpay']['edd_settings[ezpay_qrcode_page]'] ) );
     }
 
     public function test_add_currency_settings()
@@ -103,8 +101,10 @@ class Test_EDD_EZPay_Admin extends WP_UnitTestCase
 
         $this->object->init();
 
+        $this->assertFalse( wp_script_is( 'edd_ezpay_jquery_tiptip', 'registered' ) );
         $this->assertFalse( wp_style_is( 'edd_ezpay_select2', 'registered' ) );
         $this->assertFalse( wp_script_is( 'edd_ezpay_select2', 'registered' ) );
+        $this->assertFalse( wp_script_is( 'edd_ezpay_jquery_validation', 'registered' ) );
         $this->assertFalse( wp_style_is( 'edd_ezpay_currency_table', 'registered' ) );
         $this->assertFalse( wp_script_is( 'edd_ezpay_currency_table', 'registered' ) );
 
@@ -113,13 +113,17 @@ class Test_EDD_EZPay_Admin extends WP_UnitTestCase
 
         $this->object->enqueue_scripts();
 
+        $this->assertFalse( wp_script_is( 'edd_ezpay_jquery_tiptip', 'enqueued' ) );
         $this->assertFalse( wp_style_is( 'edd_ezpay_select2', 'enqueued' ) );
         $this->assertFalse( wp_script_is( 'edd_ezpay_select2', 'enqueued' ) );
+        $this->assertFalse( wp_script_is( 'edd_ezpay_jquery_validation', 'enqueued' ) );
         $this->assertFalse( wp_style_is( 'edd_ezpay_admin', 'enqueued' ) );
         $this->assertFalse( wp_script_is( 'edd_ezpay_admin', 'enqueued' ) );
 
+        $this->assertTrue( wp_script_is( 'edd_ezpay_jquery_tiptip', 'registered' ) );
         $this->assertTrue( wp_style_is( 'edd_ezpay_select2', 'registered' ) );
         $this->assertTrue( wp_script_is( 'edd_ezpay_select2', 'registered' ) );
+        $this->assertTrue( wp_script_is( 'edd_ezpay_jquery_validation', 'registered' ) );
         $this->assertTrue( wp_style_is( 'edd_ezpay_admin', 'registered' ) );
         $this->assertTrue( wp_script_is( 'edd_ezpay_admin', 'registered' ) );
 

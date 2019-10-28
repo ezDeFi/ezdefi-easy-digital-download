@@ -25,14 +25,4 @@ class Test_Function extends WP_UnitTestCase
         $this->assertContains( ['id' => 'nusd'], $currency );
         $this->assertContains( ['id' => 'nusd2'], $currency );
     }
-
-    public function test_get_qrcode_page_permalink()
-    {
-        $post_id = $this->factory()->post->create();
-
-        global $edd_options;
-        $edd_options['ezpay_qrcode_page'] = $post_id;
-
-        $this->assertEquals( get_permalink( $post_id ), edd_ezpay_get_qrcode_page_uri() );
-    }
 }

@@ -8,18 +8,21 @@ class Test_Class_Shortcode extends WP_UnitTestCase
     {
         parent::setUp();
 
-        require_once 'includes/class-edd-ezpay.php';
         require_once 'includes/class-shortcode.php';
-
-        EDD_EZPay_Class::instance()->init();
 
         $this->object = EDD_EZPay_Shortcode::instance();
     }
 
-    public function test_shortcode_are_registered()
+    public function test_init()
     {
-        global $shortcode_tags;
+        $this->assertFalse( has_filter( 'do_shortcode_tag', array(
+            $this->object, 'prepend_content_to_shortcode'
+        ) ) );
 
-        $this->assertArrayHasKey( 'ezpay_qrcode', $shortcode_tags );
+        $this->object->init();
+
+        $this->assertNotFalse( has_filter( 'do_shortcode_tag', array(
+            $this->object, 'prepend_content_to_shortcode'
+        ) ) );
     }
 }

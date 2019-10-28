@@ -46,9 +46,6 @@ final class EDD_EZPay_Class
         include_once $this->plugin_path() . '/includes/class-ajax.php';
         EDD_EZPay_Ajax::instance()->init();
 
-        include_once $this->plugin_path() . '/includes/class-install.php';
-        EDD_EZPay_Install::instance()->init();
-
         include_once $this->plugin_path() . '/includes/class-shortcode.php';
         EDD_EZPay_Shortcode::instance()->init();
 

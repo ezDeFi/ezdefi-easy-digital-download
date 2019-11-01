@@ -47,6 +47,11 @@ jQuery(function($) {
         $selected.find('.logo').attr('src', $item.find('.logo').attr('src'));
         $selected.find('.symbol').text($item.find('.symbol').text());
         $selected.find('.name').text($item.find('.name').text());
+        var desc = $item.find('.desc');
+
+        if(desc) {
+            $selected.find('.desc').text($item.find('.desc').text());
+        }
         // this.$container.find(selectors.select).hide();
     };
 

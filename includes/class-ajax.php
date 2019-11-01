@@ -32,7 +32,7 @@ class EDD_EZPay_Ajax
     /** Ajax get currency */
     public function get_ezpay_currency()
     {
-        $url = rtrim( $_POST['apiUrl'], '/' ) . '/token/list';
+        $url = rtrim( $_POST['api_url'], '/' ) . '/token/list';
         $keyword = $_POST['keyword'];
 
         $data = array(
@@ -55,8 +55,8 @@ class EDD_EZPay_Ajax
     /** Ajax check wallet handle */
     public function check_ezpay_wallet()
     {
-        $apiUrl = $_POST['apiUrl'];
-        $apiKey = $_POST['apiKey'];
+        $apiUrl = $_POST['api_url'];
+        $apiKey = $_POST['api_key'];
         $address = $_POST['address'];
         $url = rtrim( $apiUrl, '/' ) . '/user/list_wallet';
 
@@ -94,8 +94,6 @@ class EDD_EZPay_Ajax
     /** AJAX callback to create ezPay payment */
     public function create_ezpay_payment()
     {
-        global $wp;
-
         $edd_payment_id = $_POST['uoid'];
         $symbol = $_POST['symbol'];
 
@@ -112,9 +110,10 @@ class EDD_EZPay_Ajax
             'value' => $value,
             'currency' => $edd_payment->currency . '/' . $currency_data['symbol'],
             'safedist' => (isset($currency_data['distance'])) ? $currency_data['distance'] : '',
-            'ucid' => $edd_payment->user_id,
+//            'ucid' => $edd_payment->user_id,
+            'ucid' => rand(1, 100),
             'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
-//            'callback' => home_url( $wp->request ) . '/edd-ezpay/nextypay'
+//            'callback' => home_url() . '/edd-ezpay/nextypay'
             'callback' => 'http://877be640.ngrok.io/edd-ezpay/nextypay'
         ];
 

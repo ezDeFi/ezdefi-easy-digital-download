@@ -86,10 +86,11 @@ class EDD_EZPay_Payment
             'value' => $value,
             'currency' => $edd_payment->currency . '/' . $currency_data['symbol'],
             'safedist' => (isset($currency_data['distance'])) ? $currency_data['distance'] : '',
-            'ucid' => $edd_payment->user_id,
+//            'ucid' => $edd_payment->user_id,
+            'ucid' => rand(1, 100),
             'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
-//            'callback' => home_url( $wp->request ) . '/edd-ezpay/nextypay'
-            'callback' => 'http://877be640.ngrok.io/edd-ezpay/nextypay'
+//            'callback' => home_url() . '/edd-ezpay/nextypay'
+            'callback' => 'http://1f60309d.ngrok.io/edd-ezpay/nextypay'
         ];
 
         $response = $this->get_api()->callApi('payment/create', 'post', $data);

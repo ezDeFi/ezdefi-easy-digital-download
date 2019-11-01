@@ -1,13 +1,14 @@
 jQuery(function($) {
-    const selectors = {
-        idInput: '.currency-id',
+    'use strict';
+
+    var selectors = {
         symbolInput: '.currency-symbol',
         nameInput: '.currency-name',
         logoInput: '.currency-logo',
         descInput: '.currency-desc',
         walletInput: '.currency-wallet',
         currencyTable: '#ezpay-currency-table',
-        currencySelect: '.currency-select',
+        currencySelect: '.select-select2',
         addBtn: '.addBtn',
         deleteBtn: '.deleteBtn',
         editBtn: '.editBtn',
@@ -18,25 +19,16 @@ jQuery(function($) {
     };
 
     var EDD_EZPay_Admin = function() {
-        this.$form = $('form');
-        this.$currencyTable = $(selectors.currencyTable);
+        // this.$form = $('form');
+        this.$table = $(selectors.currencyTable);
+        this.$form = this.$table.closest('form');
 
         var addCurrency = this.addCurrency.bind(this);
         var removeCurrency = this.removeCurrency.bind(this);
         var toggleEdit = this.toggleEdit.bind(this);
         var checkWalletAddress = this.checkWalletAddress.bind(this);
-        var initValidation = this.initValidation.bind(this);
-        var initSort = this.initSort.bind(this);
-        var initTiptip = this.initTiptip.bind(this);
-        var initCurrencySelect = this.initCurrencySelect.bind(this);
 
-        initValidation();
-        initSort();
-        initTiptip();
-
-        this.$currencyTable.find('select').each(function() {
-            initCurrencySelect($(this));
-        });
+        this.init.call(this);
 
         $(document.body)
             .on('click', selectors.editBtn, toggleEdit)
@@ -46,8 +38,21 @@ jQuery(function($) {
             .on('keyup', selectors.walletInput, checkWalletAddress);
     };
 
+    EDD_EZPay_Admin.prototype.init = function() {
+        var self = this;
+
+        self.initValidation.call(this);
+        self.initSort.call(this);
+        self.initTiptip.call(this);
+
+        this.$table.find('select').each(function() {
+            self.initCurrencySelect($(this));
+        });
+    };
+
     EDD_EZPay_Admin.prototype.initValidation = function() {
         var self = this;
+
         this.$form.validate({
             ignore: [],
             errorElement: 'span',
@@ -73,32 +78,30 @@ jQuery(function($) {
                 'edd_settings[ezpay_api_key]': {
                     required: true
                 }
-            },
-            onkeyup: function(element) {
-                setTimeout(function() {
-                    $(element).valid();
-                }, 300);
             }
         });
 
-        this.$currencyTable.find('tbody tr').each(function() {
-            var $row = $(this);
-            self.addValidationRule($row);
+        this.$table.find('tbody tr').each(function() {
+            var row = $(this);
+            self.addValidationRule(row);
         });
     };
 
     EDD_EZPay_Admin.prototype.initSort = function() {
         var self = this;
-        this.$currencyTable.find('tbody').sortable({
+        this.$table.find('tbody').sortable({
             handle: '.sortable-handle span',
             stop: function() {
-                self.updateNameAttr($(this));
+                $(this).find('tr').each(function (rowIndex) {
+                    var row = $(this);
+                    self.updateAttr(row, rowIndex)
+                });
             }
         }).disableSelection();
     };
 
     EDD_EZPay_Admin.prototype.initTiptip = function() {
-        this.$currencyTable.find(selectors.tip).tipTip();
+        this.$table.find(selectors.tip).tipTip();
     };
 
     EDD_EZPay_Admin.prototype.addValidationRule = function($row) {
@@ -143,44 +146,45 @@ jQuery(function($) {
 
     EDD_EZPay_Admin.prototype.checkWalletAddress = function(e) {
         var self = this;
+        var api_url = self.$form.find('.ezpay_api_url input').val();
+        var api_key = self.$form.find('.ezpay_api_key input').val();
         var $input = $(e.target);
+        var $checking = $(
+            "<div class='checking'><span class='text'>Checking wallet address</span>" +
+            "<div class='dots'>" +
+            "<div class='dot'></div>" +
+            "<div class='dot'></div>" +
+            "<div class='dot'></div>" +
+            "</div>" +
+            "</div>"
+        );
         $input.rules('add', {
             remote: {
                 depends: function(element) {
-                    return self.$form.find('.ezpay_api_url input').val() !== '' &&
-                        self.$form.find('.ezpay_api_key input').val() !== '';
+                    return api_url !== '' && api_key !== '';
                 },
                 param: {
                     url: edd_ezpay_data.ajax_url,
                     type: 'POST',
-                    beforeSend: function () {
-                        $checking = $(
-                            "<div class='checking'><span class='text'>Checking wallet address</span>" +
-                            "<div class='dots'>" +
-                            "<div class='dot'></div>" +
-                            "<div class='dot'></div>" +
-                            "<div class='dot'></div>" +
-                            "</div>" +
-                            "</div>"
-                        );
-                        $input.closest('td').find('.error').remove();
-                        $input.closest('.edit').append($checking);
-                    },
                     data: {
                         action: 'edd_ezpay_check_wallet',
                         address: function () {
                             return $input.val();
                         },
-                        apiUrl: function() {
-                            return self.$form.find('.ezpay_api_url input').val();
+                        api_url: function() {
+                            return api_url;
                         },
-                        apiKey: function() {
-                            return self.$form.find('.ezpay_api_key input').val();
+                        api_key: function() {
+                            return api_key;
                         },
+                    },
+                    beforeSend: function() {
+                        $input.closest('td').find('.error').hide();
+                        $input.closest('.edit').append($checking);
                     },
                     complete: function (data) {
                         var response = data.responseText;
-                        var $inputWrapper = $input.closest('.edit');
+                        var $inputWrapper = $input.closest('td');
                         if (response === 'true') {
                             $inputWrapper.find('.checking').empty().append('<span class="correct">Correct</span>');
                             window.setTimeout(function () {
@@ -198,16 +202,6 @@ jQuery(function($) {
         });
     };
 
-    EDD_EZPay_Admin.prototype.toggleEdit = function(e) {
-        var self = this;
-        e.preventDefault();
-        var $row = $(e.target).closest('tr');
-        if($row.find(selectors.symbolInput).val() === '') {
-            self.removeCurrency(e);
-        }
-        $row.toggleClass('editing');
-    };
-
     EDD_EZPay_Admin.prototype.initCurrencySelect = function(element) {
         var self = this;
         element.select2({
@@ -218,7 +212,7 @@ jQuery(function($) {
                 data: function(params) {
                     var query = {
                         action: 'edd_ezpay_get_currency',
-                        apiUrl: self.$form.find('.ezpay_api_url input').val(),
+                        api_url: self.$form.find('.ezpay_api_url input').val(),
                         keyword: params.term
                     };
 
@@ -260,22 +254,39 @@ jQuery(function($) {
         return currency.name || currency.text ;
     };
 
-    EDD_EZPay_Admin.prototype.addCurrency = function() {
-        var $row = this.$currencyTable.find('tr:last');
+    EDD_EZPay_Admin.prototype.toggleEdit = function(e) {
+        e.preventDefault();
+
+        var self = this;
+        var $row = $(e.target).closest('tr');
+
+        if($row.find(selectors.symbolInput).val() === '') {
+            self.removeCurrency(e);
+        }
+
+        $row.toggleClass('editing');
+    };
+
+    EDD_EZPay_Admin.prototype.addCurrency = function(e) {
+        e.preventDefault();
+
+        var $row = this.$table.find('tbody tr:last');
         var $clone = $row.clone();
-        var count = this.$currencyTable.find('tbody tr').length;
-        var selectName = $clone.find('select').attr('name');
+        var count = this.$table.find('tbody tr').length;
+        var selectName = $clone.find('select').attr('name')
+        var $select = $('<select name="'+selectName+'" class="select-select2"></select>');
+
         $clone.find('select, .select2-container').remove();
-        $select = $('<select name="'+selectName+'" class="select-select2"></select>');
         $clone.find('.logo img').attr('src', '');
         $clone.find('.name .view span').remove();
         $clone.find('.name .edit').prepend($select);
         $clone.find('input').val('');
-        $clone.find('input, select').each(function() {
-            var name = $(this).attr('name');
-            name = name.replace( /\[(\d+)\]/, '[' + parseInt( count ) + ']');
-            $(this).attr( 'name', name ).attr( 'id', name );
+        $clone.find('td').each(function() {
+            $(this).removeClass('form-invalid');
+            $(this).find('.error').remove();
         });
+        this.updateAttr($clone, count);
+        this.removeAttr($clone);
         $clone.insertAfter($row);
         this.initCurrencySelect($select);
         this.addValidationRule($clone);
@@ -284,46 +295,52 @@ jQuery(function($) {
     };
 
     EDD_EZPay_Admin.prototype.removeCurrency = function(e) {
-        var self = this;
         e.preventDefault();
+
+        var self = this;
+
         if(confirm('Do you want to delete this row')) {
             $(e.target).closest('tr').remove();
-            self.$currencyTable.find('tr').each(function (rowIndex) {
+            self.$table.find('tr').each(function (rowIndex) {
                 $(this).find('.select2-container').remove();
-                $select = $(this).find('.select-select2');
+                var $select = $(this).find('.select-select2');
                 self.initCurrencySelect($select);
-                $(this).find('input, select').each(function () {
-                    var name = $(this).attr('name');
-                    name = name.replace(/\[(\d+)\]/, '[' + (rowIndex - 1) + ']');
-                    $(this).attr('name', name).attr('id', name);
-                });
+
+                var row = $(this);
+                var number = rowIndex - 1;
+                self.updateAttr(row, number);
             });
         }
         return false;
     };
 
     EDD_EZPay_Admin.prototype.onSelect2Select = function(e) {
-        $(e.target).closest('td').find(selectors.idInput).val(e.params.data._id);
-        $(e.target).closest('td').find(selectors.symbolInput).val(e.params.data.symbol);
-        $(e.target).closest('td').find(selectors.nameInput).val(e.params.data.name);
-        $(e.target).closest('td').find(selectors.logoInput).val(e.params.data.logo);
-        if(e.params.data.description) {
-            $(e.target).closest('td').find(selectors.descInput).val(e.params.data.description);
+        var td = $(e.target).closest('td');
+        var tr = $(e.target).closest('tr');
+        var data = e.params.data;
+        td.find('.currency-symbol').val(data.symbol);
+        td.find('.currency-name').val(data.name);
+        td.find('.currency-logo').val(data.logo);
+        if(data.description) {
+            td.find('.currency-desc').val(data.description);
         } else {
-            $(e.target).closest('td').find(selectors.descInput).val('');
+            td.find('.currency-desc').val('');
         }
-        $(e.target).closest('tr').find('.logo img').attr('src', e.params.data.logo);
-        var $nameView = $(e.target).closest('td').find('.view');
-        $nameView.find('span').text(e.params.data.name)
+        tr.find('.logo img').attr('src', data.logo);
+        td.find('.view span').text(data.name);
     };
 
-    EDD_EZPay_Admin.prototype.updateNameAttr = function($tbody) {
-        $tbody.find('tr').each(function (rowIndex) {
-            $(this).find('input, select').each(function () {
-                var name = $(this).attr('name');
-                name = name.replace(/\[(\d+)\]/, '[' + (rowIndex) + ']');
-                $(this).attr('name', name).attr('id', name);
-            });
+    EDD_EZPay_Admin.prototype.updateAttr = function(row, number) {
+        row.find('input, select').each(function () {
+            var name = $(this).attr('name');
+            name = name.replace(/\[(\d+)\]/, '[' + parseInt(number) + ']');
+            $(this).attr('name', name).attr('id', name);
+        });
+    };
+
+    EDD_EZPay_Admin.prototype.removeAttr = function(row) {
+        row.find('input, select').each(function () {
+            $(this).removeAttr('aria-describedby').removeAttr('aria-invalid');
         });
     };
 

@@ -86,8 +86,8 @@ class Test_EDD_EZPay_Ajax extends WP_Ajax_UnitTestCase
     public function ttest_can_check_wallet()
     {
         $_POST = array(
-            'apiUrl' => 'url',
-            'apiKey' => 'key'
+            'api_url' => 'url',
+            'api_key' => 'key'
         );
         $fake_response = array(
             'body' => '{"code":1,"data":[{"status":"INACTIVE","address":"address_inactive"},{"status":"ACTIVE","address":"address_active"}],"message": "ok"}'
@@ -118,7 +118,7 @@ class Test_EDD_EZPay_Ajax extends WP_Ajax_UnitTestCase
     public function test_can_get_currency()
     {
         $_POST = array(
-            'apiUrl' => 'url',
+            'api_url' => 'url',
             'keyword' => 'n'
         );
         $fake_response = array(

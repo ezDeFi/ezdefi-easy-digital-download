@@ -85,9 +85,14 @@ class EDD_EZPay_Shortcode
                 <script type="application/json" id="ezpay-payment"><?php echo json_encode( $ezpay_payment['data'] ); ?></script>
             <?php endif; ?>
             <div class="selected-currency">
-                <div>
-                    <img class="logo" src="<?php echo $selected_currency['logo']; ?>" alt="">
-                    <span class="symbol"><?php echo $selected_currency['symbol']; ?></span>/<span class="name"><?php echo $selected_currency['name']; ?></span>
+                <div class="left">
+                    <div class="logo">
+                        <img class="logo" src="<?php echo $selected_currency['logo']; ?>" alt="">
+                    </div>
+                    <div class="text">
+                        <span class="symbol"><?php echo $selected_currency['symbol']; ?></span>/<span class="name"><?php echo $selected_currency['name']; ?></span><br/>
+                        <span class="desc"><?php echo $selected_currency['desc']; ?></span>
+                    </div>
                 </div>
                 <div>
                     <a href="" class="changeBtn">Change</a>
@@ -107,7 +112,7 @@ class EDD_EZPay_Shortcode
                                 <span class="discount">Discount: <?php echo ( intval($c['discount']) > 0) ? $c['discount'] : 0; ?>%</span>
                                 <span class="more">
                                     <?php if( isset($c['desc']) && $c['desc'] != '') : ?>
-                                        <span class="tooltip"><?php echo $c['desc']; ?></span>
+                                        <span class="tooltip desc"><?php echo $c['desc']; ?></span>
                                     <?php endif; ?>
                                 </span>
                             </div>

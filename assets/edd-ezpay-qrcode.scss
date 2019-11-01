@@ -1,5 +1,6 @@
 #edd-ezpay-qrcode-section {
   text-align: center;
+  margin-bottom: 20px;
 
   .selected-currency {
     border: 1px solid #eee;
@@ -10,20 +11,31 @@
     margin-bottom: 20px;
     justify-content: space-between;
 
-    img {
-      width: 32px;
-      margin-right: 10px;
-      float: left;
-    }
+    .left {
+      display: flex;
+      align-items: center;
 
-    .symbol {
-      text-transform: uppercase;
-      margin-right: 5px;
-    }
+      .logo {
+        img {
+          width: 36px;
+          margin-right: 15px;
+        }
+      }
 
-    .name {
-      text-transform: capitalize;
-      margin-left: 5px;
+      .text {
+        text-align: left;
+
+        .symbol {
+          text-transform: uppercase;
+          margin-right: 5px;
+          font-weight: bold;
+        }
+
+        .name {
+          text-transform: capitalize;
+          margin-left: 5px;
+        }
+      }
     }
   }
 

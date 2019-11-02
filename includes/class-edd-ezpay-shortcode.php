@@ -1,32 +1,11 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or exit;
 
-class EDD_EZPay_Shortcode
+class EDD_Ezpay_Shortcode
 {
-    protected static $instance = null;
-
-    /** Only one instance of EDD_EZPay_Class can be loaded */
-    public static function instance()
-    {
-        if( is_null( self::$instance ) ) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    public function init()
-    {
-        $this->init_hooks();
-    }
-
-    /** Hook into action and filter */
-    private function init_hooks()
-    {
-        add_filter( 'do_shortcode_tag', array( $this, 'prepend_content_to_shortcode' ), 10, 4 );
+    public function __construct() {
+	    add_filter( 'do_shortcode_tag', array( $this, 'prepend_content_to_shortcode' ), 10, 4 );
     }
 
     public function prepend_content_to_shortcode( $output, $tag )
@@ -37,9 +16,13 @@ class EDD_EZPay_Shortcode
             return $output;
         }
 
-        $payment = get_post( $edd_receipt_args['id'] );
+        $payment = edd_get_payment( $edd_receipt_args['id'] );
 
         if( empty( $payment ) ) {
+            return $output;
+        }
+
+        if( empty( $payment->get_meta( '_edd_ezpay_payment' ) || empty( $payment->get_meta( '_edd_ezpay_currency' ) ) ) ) {
             return $output;
         }
 
@@ -49,41 +32,22 @@ class EDD_EZPay_Shortcode
             return $output;
         }
 
-        $session = edd_get_purchase_session();
-
-        $json = array(
+        $data = array(
             'uoid' => edd_get_payment_number( $payment->ID ),
-            'subtotal' => $session['subtotal'],
-            'currency' => edd_get_payment_currency_code( $payment->ID )
-        );
-
-        $redirect = array(
-            'timeout' => edd_get_checkout_uri()
+            'paymentid' => $payment->get_meta( '_edd_ezpay_payment' )
         );
 
         $ezpay_currency = edd_ezpay_get_currency();
 
-        $ezpay_payment = edd_ezpay_get_payment_session();
-
-        if($ezpay_payment && !empty($ezpay_payment)) {
-            $selected_symbol = $ezpay_payment['data']['_doc']['currency'];
-        } else {
-            $selected_symbol = $session['post_data']['edd_ezpay_currency_symbol'];
-        }
-
-        $selected_currency_key = array_search( $selected_symbol, array_column( $ezpay_currency, 'symbol' ) );
-
-        $selected_currency = $ezpay_currency[$selected_currency_key];
+	    $symbol = $payment->get_meta( '_edd_ezpay_currency' );
+	    $index = array_search( $symbol, array_column( $ezpay_currency, 'symbol' ) );
+	    $selected_currency = $ezpay_currency[$index];
 
         $this->enqueue_scripts();
 
         ob_start(); ?>
         <div id="edd-ezpay-qrcode-section">
-            <script type="application/json" id="payment-data"><?php echo json_encode( $json ); ?></script>
-            <script type="application/json" id="redirect-url"><?php echo json_encode( $redirect ); ?></script>
-            <?php if($ezpay_payment && !empty($ezpay_payment)) : ?>
-                <script type="application/json" id="ezpay-payment"><?php echo json_encode( $ezpay_payment['data'] ); ?></script>
-            <?php endif; ?>
+            <script type="application/json" id="payment-data"><?php echo json_encode( $data ); ?></script>
             <div class="selected-currency">
                 <div class="left">
                     <div class="logo">
@@ -101,7 +65,7 @@ class EDD_EZPay_Shortcode
             <div class="currency-select">
                 <?php foreach ($ezpay_currency as $c) : ?>
                     <div class="currency-item">
-                        <input <?php echo ($c['symbol'] === $selected_symbol) ? 'checked' : ''; ?> type="radio" name="currency" id="<?php echo $c['symbol']; ?>">
+                        <input <?php echo ($c['symbol'] === $selected_currency['symbol']) ? 'checked' : ''; ?> type="radio" name="currency" id="<?php echo $c['symbol']; ?>">
                         <label for="<?php echo $c['symbol']; ?>">
                             <div class="left">
                                 <img class="logo" src="<?php echo $c['logo']; ?>" alt="">
@@ -120,9 +84,8 @@ class EDD_EZPay_Shortcode
                     </div>
                 <?php endforeach; ?>
             </div>
-            <div class="ezpay-payment">
-            </div>
-            <button class="submitBtn" style="<?php echo ($ezpay_payment) ? 'display: none' : ''; ?> ">Confirm</button>
+            <div class="ezpay-payment"></div>
+            <button class="submitBtn" style="display: none">Confirm</button>
         </div>
         <?php
         $prepend = ob_get_contents();
@@ -136,14 +99,18 @@ class EDD_EZPay_Shortcode
     /** Load needed CSS and JS file */
     public function enqueue_scripts()
     {
-        wp_enqueue_style( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.css' );
+	    wp_enqueue_style( 'edd_ezpay_blockui', plugins_url( 'assets/js/jquery.blockUI.js', WC_EZPAY_MAIN_FILE ), array( 'jquery' ), WC_EZPAY_VERSION );
+	    wp_enqueue_style( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.css' );
         wp_enqueue_script( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.js', array('jquery'), '', true );
         wp_localize_script(
             'edd_ezpay_checkout',
             'edd_ezpay_data',
             array(
-                'ajax_url' => admin_url( 'admin-ajax.php' )
+                'ajax_url' => admin_url( 'admin-ajax.php' ),
+                'checkout_url' => wc_get_checkout_url()
             )
         );
     }
 }
+
+new EDD_Ezpay_Shortcode();

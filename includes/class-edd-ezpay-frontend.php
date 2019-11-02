@@ -1,24 +1,11 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) {
-    exit;
-}
+defined( 'ABSPATH' ) or exit;
 
-class EDD_EZPay_Front_End
+class EDD_Ezpay_Frontend
 {
-    protected static $instance = null;
-
-    /** Only one instance of EDD_EZPay_Class can be loaded */
-    public static function instance()
-    {
-        if( is_null( self::$instance ) ) {
-            self::$instance = new self();
-        }
-
-        return self::$instance;
-    }
-
-    public function init()
+	/** EDD_Ezpay_Frontend constructor */
+    public function __construct()
     {
         add_action( 'edd_ezpay_cc_form', '__return_false' );
 
@@ -31,10 +18,11 @@ class EDD_EZPay_Front_End
     public function enqueue_scripts()
     {
         if( edd_is_checkout() ) {
-            wp_enqueue_style('edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-checkout.css');
+            wp_enqueue_style('edd_ezpay_checkout', edd_ezpay()->plugin_url() . '/assets/edd-ezpay-checkout.css');
         }
     }
 
+    /** Add currency select after cc form */
     public function currency_select_after_cc_form()
     {
         ob_start(); ?>
@@ -65,3 +53,5 @@ class EDD_EZPay_Front_End
         <?php echo ob_get_clean();
     }
 }
+
+new EDD_Ezpay_Frontend();

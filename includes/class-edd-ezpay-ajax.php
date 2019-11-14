@@ -101,7 +101,7 @@ class EDD_EZPay_Ajax
 
         $edd_payment = edd_get_payment( $edd_payment_id );
 
-	    $response = $this->api->create_ezpay_payment( $edd_payment, $currency_data );
+	    $response = $this->api->create_ezpay_payment( $edd_payment, $currency_data, true );
 
         if( is_wp_error( $response ) ) {
             wp_send_json_success( __( 'Create Ezpay payment failed', 'edd-ezpay' ) );

@@ -8,9 +8,13 @@ class EDD_Ezpay_Api
 
 	protected $api_key;
 
+	protected $db;
+
 	public function __construct( $api_url = '', $api_key = '' ) {
 		$this->api_url = $api_url;
 		$this->api_key = $api_key;
+
+		$this->db = new EDD_Ezpay_Db();
 	}
 
 	public function set_api_url( $api_url )
@@ -80,11 +84,19 @@ class EDD_Ezpay_Api
 		return wp_remote_get( $url, array( 'headers' => $headers ) );
 	}
 
-    public function create_ezpay_payment( $edd_payment, $currency_data )
+    public function create_ezpay_payment( $edd_payment, $currency_data, $amountId = false )
     {
 	    $subtotal = intval($edd_payment->subtotal);
 	    $discount = intval($currency_data['discount']);
 	    $value = $subtotal - ($subtotal * ($discount / 100));
+
+	    if( $amountId ) {
+		    $value = $this->db->generate_amount_id( $value, $currency_data['symbol'] );
+	    }
+
+	    if( ! $value ) {
+		    return new WP_Error();
+	    }
 
 	    $data = [
 		    'uoid' => $edd_payment->ID,
@@ -96,7 +108,8 @@ class EDD_Ezpay_Api
 		    'ucid' => rand(1, 100),
 		    'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
 //            'callback' => home_url() . '/edd-ezpay/nextypay'
-	        'callback' => 'http://a25d7663.ngrok.io/edd-ezpay/nextypay'
+	        'callback' => 'http://a25d7663.ngrok.io/edd-ezpay/nextypay',
+		    'amountId' => $amountId
 	    ];
 
 	    $response = $this->call( 'payment/create', 'post', $data );

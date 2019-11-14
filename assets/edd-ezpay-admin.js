@@ -2,6 +2,7 @@ jQuery(function($) {
     'use strict';
 
     var selectors = {
+        paymentMethod: 'input[name="edd_settings[ezpay_method]"]',
         symbolInput: '.currency-symbol',
         nameInput: '.currency-name',
         logoInput: '.currency-logo',
@@ -27,6 +28,7 @@ jQuery(function($) {
         var removeCurrency = this.removeCurrency.bind(this);
         var toggleEdit = this.toggleEdit.bind(this);
         var checkWalletAddress = this.checkWalletAddress.bind(this);
+        var toggleAmountSetting = this.toggleAmountSetting.bind(this);
 
         this.init.call(this);
 
@@ -35,7 +37,8 @@ jQuery(function($) {
             .on('click', selectors.cancelBtn, toggleEdit)
             .on('click', selectors.addBtn, addCurrency)
             .on('click', selectors.deleteBtn, removeCurrency)
-            .on('keyup', selectors.walletInput, checkWalletAddress);
+            .on('keyup', selectors.walletInput, checkWalletAddress)
+            .on('change', selectors.paymentMethod, toggleAmountSetting);
     };
 
     EDD_EZPay_Admin.prototype.init = function() {
@@ -44,6 +47,7 @@ jQuery(function($) {
         self.initValidation.call(this);
         self.initSort.call(this);
         self.initTiptip.call(this);
+        self.toggleAmountSetting(this);
 
         this.$table.find('select').each(function() {
             self.initCurrencySelect($(this));
@@ -77,6 +81,20 @@ jQuery(function($) {
                 },
                 'edd_settings[ezpay_api_key]': {
                     required: true
+                },
+                'edd_settings[ezpay_acceptable_variation]': {
+                    required: {
+                        depends: function(element) {
+                            return self.$form.find(selectors.paymentMethod + ':checked').val() != 'ezpay_wallet';
+                        }
+                    }
+                },
+                'edd_settings[ezpay_amount_decimals]': {
+                    required: {
+                        depends: function(element) {
+                            return self.$form.find(selectors.paymentMethod + ':checked').val() != 'ezpay_wallet';
+                        }
+                    }
                 }
             }
         });
@@ -142,6 +160,22 @@ jQuery(function($) {
                 });
             }
         });
+    };
+
+    EDD_EZPay_Admin.prototype.toggleAmountSetting = function() {
+        var method = this.$form.find(selectors.paymentMethod + ':checked').val();
+        var amount_settings = this.$form.find(
+            '.acceptable_variation, .amount_decimals, .next_run, .recurrence'
+        ).closest('tr');
+        if(method === 'amount_id' || method === 'all') {
+            amount_settings.each(function() {
+                $(this).show();
+            });
+        } else {
+            amount_settings.each(function() {
+                $(this).hide();
+            });
+        }
     };
 
     EDD_EZPay_Admin.prototype.checkWalletAddress = function(e) {

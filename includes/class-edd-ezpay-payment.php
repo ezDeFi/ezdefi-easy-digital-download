@@ -30,7 +30,7 @@ class EDD_Ezpay_Payment
 	    $index = array_search( $symbol, array_column( $currency, 'symbol' ) );
 	    $currency_data = $currency[$index];
 
-	    $response = $this->api->create_ezpay_payment( $edd_payment, $currency_data );
+	    $response = $this->api->create_ezpay_payment( $edd_payment, $currency_data, true );
 
 	    if( is_wp_error( $response ) ) {
 		    edd_send_back_to_checkout( '?payment-mode=ezpay' );
@@ -40,7 +40,7 @@ class EDD_Ezpay_Payment
 
 	    $ezpay_payment = $response['data'];
 
-	    $edd_payment->update_meta( '_edd_ezpay_payment', $ezpay_payment['_doc']['_id'] );
+	    $edd_payment->update_meta( '_edd_ezpay_payment', $ezpay_payment['_id'] );
 	    $edd_payment->update_meta( '_edd_ezpay_currency', $symbol );
 	    $edd_payment->save();
 

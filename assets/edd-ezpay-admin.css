@@ -95,9 +95,6 @@ form .ezpay-currency-table .wallet .edit .checking .dots .dot:nth-child(3) {
     transform: translateY(-4px);
   }
 }
-form .ezpay-currency-table tbody tr:hover .actions {
-  position: static;
-}
 form .ezpay-currency-table tbody tr td {
   vertical-align: top;
 }
@@ -121,7 +118,7 @@ form .ezpay-currency-table tbody tr .actions {
   color: #ddd;
   font-size: 13px;
   padding: 2px 0 0;
-  position: relative;
+  position: static;
   left: -9999em;
 }
 form .ezpay-currency-table tbody tr .view {

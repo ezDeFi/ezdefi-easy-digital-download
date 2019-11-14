@@ -7,7 +7,9 @@ jQuery(function($) {
         selected: '.selected-currency',
         paymentData: '#payment-data',
         submitBtn: '.submitBtn',
-        ezpayPayment: '.ezpay-payment'
+        ezpayPayment: '.ezpay-payment',
+        tabs: '.ezpay-payment-tabs',
+        panel: '.ezpay-payment-panel'
     };
 
     var EDD_EZPay_Checkout = function() {
@@ -29,27 +31,44 @@ jQuery(function($) {
     EDD_EZPay_Checkout.prototype.init = function() {
         var data = this.$container.find(selectors.paymentData).text();
         var paymentData = JSON.parse(data);
-        this.getEzpayPayment.call(this, paymentData.paymentid);
+        var tabs = this.$container.find(selectors.tabs);
+        // tabs.find(selectors.panel).each(function() {
+        //     var panel = $(this);
+        //     var method = $(this).attr('data-method');
+        //     var paymentid = paymentData.paymentid[method];
+        //     console.log(paymentid);
+        //     self.getEzpayPayment.call(this, paymentid, panel);
+        // });
+        this.$container.find('.ezpay-payment-tabs').tabs();
     };
 
-    EDD_EZPay_Checkout.prototype.renderOutput = function(payment, token, qr) {
+    EDD_EZPay_Checkout.prototype.renderOutput = function(data, panel) {
+        var deeplink = 'ezpay://mobile?';
+        var deeplink_params = {
+            'to': data.to,
+            'token': data.token.address,
+            'value': data.value,
+            'chain': data.chain,
+            'gas': data.gas
+        };
+        deeplink = deeplink + $.param(deeplink_params);
         var $content = $(
             "<p class='exchange'>" +
-            "<span>" + payment.originCurrency + " " + payment.originValue + "</span>" +
+            "<span>" + data.originCurrency + " " + data.originValue + "</span>" +
             "<img width='16' src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfjChgQMyxZjA7+AAACP0lEQVRo3u2YvWsUQRTAf8nFQs5LCEY0aCGIB1ErRVMoFpYGTGNlo2AnBxHlrLQJKVSwiV//gqCV4gemEGJhiBYXRAtBDIhICiUGL8GP3Fjs7rs5vN0o5M1LsW+a2XkDv9/MvF12t4B2dDDODqbVOan46zgaVKzwN3A4O4VuarGAo8EZC4VeXnoKJruQK+QKa12hI2VyFyUFhY08Ymfcd1S49feU7VSZ5DPL4qrXGpxuhW/iJj8DgJutTrGJ38vHoPCobUnwg9QN8HeTItzGNP2yF7M85D11lTvhLAPSn2CYpah7R5zmOUmnChrgsrf6p6xPhvfRiAe/slsNnoqHcRketsDDbDw8ZYPvlsR5CzwMSGpICT+WhYdBSR4Ov3p9gbGV8Hr3PEAPx6XvPXZC7sBm3qSvPoRApJCB71KB+jHHERbab34YAZjLSuoW4T+EuYBNHJXC32W+A2taYAN9lgJFHjDZfGsNHUWe4XC8VVHwirD9hBLPZcpM+mN0NQTaHUGR+xySq3vpj1Gd8FfvuKjCyDiC5OyjdklpkSeE0N+aCLF6gNGY8IuCBb4zfklxzFjg4ZRQRi3wB/guB1AOjV9HhUXh3Ibo87zEYw7KpFqUWPUoUWaIrXL9gf18iRSeGPyamGdPYlI2wL/zflPQx4+g8CWu0tN6OiNBwL/5xAQjXhWQFCFc4IqMvOYY3xSKcIHlrPQ5z/UVvSr3wQqRK+QKuYIfVU9hSuGt+L924ZoFvqmgji+kZl6wSI2qtsAfm/EoPAbFFD0AAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMTAtMjRUMTY6NTE6NDQrMDA6MDBiAik3AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTEwLTI0VDE2OjUxOjQ0KzAwOjAwE1+RiwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=' />" +
-            "<span>" + (payment.value / Math.pow(10, token.decimal)) + " " + payment.currency + "</span>" +
+            "<span>" + (data.value / Math.pow(10, data.decimal)) + " " + data.currency + "</span>" +
             "</p>" +
             "<p>You have <span class='count-down'></span> to scan this QR Code</p>" +
-            "<p><img class='qrcode' src='" + qr + "' /></p>" +
+            "<p><a href='"+ deeplink + "'><img class='qrcode' src='" + data.qr + "' /></a></p>" +
             "<p><a href=''>Download ezPay for IOS</a><br />" +
             "<a href=''>Download ezPay for Android</a></p>"
         );
-        this.$container.find(selectors.ezpayPayment).empty().append($content).show();
-        this.setTimeRemaining.call(this, payment.expiredTime);
-        this.checkPaymentStatus.call(this, payment.uoid);
+        panel.empty().append($content).show();
+        this.setTimeRemaining.call(this, data.expiredTime);
+        this.checkPaymentStatus.call(this, data.uoid);
     };
 
-    EDD_EZPay_Checkout.prototype.getEzpayPayment = function(paymentid) {
+    EDD_EZPay_Checkout.prototype.getEzpayPayment = function(paymentid, panel) {
         var self = this;
         $.ajax({
             url: edd_ezpay_data.ajax_url,
@@ -66,7 +85,7 @@ jQuery(function($) {
             },
             success:function(response) {
                 var data = response.data;
-                self.renderOutput(data.payment, data.token, data.qr);
+                self.renderOutput(data, panel);
                 $.unblockUI();
             },
             error: function(e) {

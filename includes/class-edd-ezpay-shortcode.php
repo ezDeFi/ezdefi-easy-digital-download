@@ -84,6 +84,23 @@ class EDD_Ezpay_Shortcode
                     </div>
                 <?php endforeach; ?>
             </div>
+            <div class="ezpay-payment-tabs">
+                <ul>
+                    <?php $ezpay_method = edd_get_option( 'ezpay_method' ); ?>
+			        <?php if( $ezpay_method === 'all' || $ezpay_method === 'amount_id' ) : ?>
+                        <li><a href="#amount_id">Order identification method</a></li>
+			        <?php endif; ?>
+			        <?php if( $ezpay_method === 'all' || $ezpay_method === 'ezpay_wallet' ) : ?>
+                        <li><a href="#ezpay_wallet">Used ezPay wallet</a></li>
+			        <?php endif; ?>
+                </ul>
+		        <?php if( $ezpay_method === 'all' || $ezpay_method === 'amount_id' ) : ?>
+                    <div id="amount_id" data-method="amount_id" class="ezpay-payment-panel">abcascsa</div>
+		        <?php endif; ?>
+		        <?php if( $ezpay_method === 'all' || $ezpay_method === 'ezpay_wallet' ) : ?>
+                    <div id="ezpay_wallet" data-method="ezpay_wallet" class="ezpay-payment-panel">fsafsfdsfdsf</div>
+		        <?php endif; ?>
+            </div>
             <div class="ezpay-payment"></div>
             <button class="submitBtn" style="display: none">Confirm</button>
         </div>
@@ -101,7 +118,7 @@ class EDD_Ezpay_Shortcode
     {
 	    wp_enqueue_style( 'edd_ezpay_blockui', plugins_url( 'assets/js/jquery.blockUI.js', WC_EZPAY_MAIN_FILE ), array( 'jquery' ), WC_EZPAY_VERSION );
 	    wp_enqueue_style( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.css' );
-        wp_enqueue_script( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.js', array('jquery'), '', true );
+        wp_enqueue_script( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.js', array( 'jquery', 'jquery-ui-tabs' ), '', true );
         wp_localize_script(
             'edd_ezpay_checkout',
             'edd_ezpay_data',

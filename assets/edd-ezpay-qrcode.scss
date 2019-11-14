@@ -151,6 +151,42 @@
     }
   }
 
+  .ezpay-payment-tabs {
+    margin-bottom: 20px;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      text-align: left;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+
+      li {
+        display: inline-block;
+        margin-bottom: -1px;
+
+        &.ui-tabs-active {
+          a {
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom-color: transparent;
+          }
+        }
+
+        a {
+          background-color: #fff;
+          padding: 10px 20px;
+          display: block;
+          text-decoration: none;
+        }
+      }
+    }
+
+    .ezpay-payment-panel {
+      padding: 10px 20px;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      border-top: none;
+    }
+  }
+
   .ezpay-payment {
     text-align: center;
     font-size: 95%;

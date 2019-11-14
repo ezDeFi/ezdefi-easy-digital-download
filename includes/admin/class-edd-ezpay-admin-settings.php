@@ -4,12 +4,41 @@ defined( 'ABSPATH' ) or exit;
 
 class EDD_Ezpay_Admin_Settings
 {
+    protected $cron;
+
 	/** EDD_Ezpay_Admin_Settings constructor. */
 	public function __construct() {
+		require_once edd_ezpay()->plugin_path() . '/includes/admin/register-settings.php';
+
 		add_filter( 'edd_settings_sections_gateways', array( $this, 'register_settings_section' ) );
 		add_filter( 'edd_settings_gateways', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'edd_ezpay_currency_section' ) );
+
+		$this->cron = new EDD_Ezpay_Cron();
+
+		add_action( 'init', array( $this, 'update_option' ) );
 	}
+
+	public function update_option()
+    {
+        if( ! isset( $_POST['option_page'] ) || $_POST['option_page'] != 'edd_settings' ) {
+            return;
+        }
+
+	    $this->cron->unschedule_clear_amount_event();
+
+	    if( $_POST['edd_settings']['ezpay_method'] === 'ezpay_wallet' ) {
+		    return;
+	    }
+
+	    $next_run_setting = $_POST['edd_settings']['ezpay_amount_clear_next_run'];
+
+	    $next_run = ( $next_run_setting === 'custom' ) ? $_POST['next_run_custom_date'] : $next_run_setting;
+
+	    $schedule = $_POST['edd_settings']['ezpay_amount_clear_recurrence'];
+
+	    return $this->cron->update_clear_amount_event( $next_run, $schedule );
+    }
 
 	/** Ezpay settings section callback */
 	public function register_settings_section($sections)
@@ -43,7 +72,56 @@ class EDD_Ezpay_Admin_Settings
 				'type' => 'text',
 				'size' => 'regular',
 				'class' => 'ezpay_api_key'
-			)
+			),
+			'ezpay_method' => array(
+                'id' => 'ezpay_method',
+				'name' => __( 'Payment Method', 'edd-ezpay' ),
+                'desc' => __( 'Description' ),
+				'type' => 'radio',
+                'options' => array(
+                    'amount_id' => __( 'Order identification method ( Order method for Customer don’t use ezPay wallet )', 'edd-ezpay' ),
+                    'ezpay_wallet' => __( 'Used ezPay wallet fields ( Only Order method for Customer use ezPay wallet )', 'edd-ezpay' ),
+                    'all' => __( 'Use both methods', 'edd-ezpay' )
+                ),
+                'tooltip_title' => __( 'Info', 'edd-ezpay' ),
+                'tooltip_desc'  => __( 'Info', 'edd-ezpay' )
+			),
+			'ezpay_acceptable_variation' => array(
+                'id' => 'ezpay_acceptable_variation',
+				'name' => __( 'Acceptable price variation', 'edd-ezpay' ),
+				'type' => 'number',
+				'step' => '0.000001',
+				'desc' => __( 'Description' ),
+				'default' => 0.01,
+                'class' => 'acceptable_variation'
+			),
+			'ezpay_amount_decimals' => array(
+                'id' => 'ezpay_amount_decimals',
+				'name' => __( 'Decimals', 'edd-ezpay' ),
+				'type' => 'number',
+				'desc' => __( 'Description' ),
+				'default' => 6,
+                'class' => 'amount_decimals'
+			),
+			'ezpay_amount_clear_next_run' => array(
+                'id' => 'ezpay_amount_clear_next_run',
+				'name' => __( 'Amount clear next run', 'edd-ezpay' ),
+				'type' => 'amount_next_run',
+				'desc' => __( 'Description' ),
+                'class' => 'next_run'
+			),
+			'ezpay_amount_clear_recurrence' => array(
+                'id' => 'ezpay_amount_clear_recurrence',
+				'name' => __( 'Amount clear recurrence', 'edd-ezpay' ),
+				'type' => 'select',
+				'desc' => __( 'Description' ),
+				'options' => array(
+					'daily' => 'Daily',
+					'weekly' => 'Weekly',
+					'monthly' => 'Monthly'
+				),
+                'class' => 'recurrence'
+			),
 		);
 
 		$gateway_settings['ezpay'] = $ezpay_settings;

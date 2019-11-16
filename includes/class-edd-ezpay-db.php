@@ -68,7 +68,7 @@ class EDD_Ezpay_Db
 		$table_name = $this->get_amount_table_name();
 
 		$amount_ids = $wpdb->get_results(
-			"SELECT * FROM $table_name WHERE price = $price AND amount_decimal = $amount_decimal AND currency = $currency",
+			"SELECT * FROM $table_name WHERE price = $price AND amount_decimal = $amount_decimal AND currency = '" . $currency . "'",
 			ARRAY_A
 		);
 

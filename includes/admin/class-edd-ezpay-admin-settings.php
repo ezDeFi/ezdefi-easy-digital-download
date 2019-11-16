@@ -77,14 +77,7 @@ class EDD_Ezpay_Admin_Settings
                 'id' => 'ezpay_method',
 				'name' => __( 'Payment Method', 'edd-ezpay' ),
                 'desc' => __( 'Description' ),
-				'type' => 'radio',
-                'options' => array(
-                    'amount_id' => __( 'Order identification method ( Order method for Customer don’t use ezPay wallet )', 'edd-ezpay' ),
-                    'ezpay_wallet' => __( 'Used ezPay wallet fields ( Only Order method for Customer use ezPay wallet )', 'edd-ezpay' ),
-                    'all' => __( 'Use both methods', 'edd-ezpay' )
-                ),
-                'tooltip_title' => __( 'Info', 'edd-ezpay' ),
-                'tooltip_desc'  => __( 'Info', 'edd-ezpay' )
+				'type' => 'ezpay_method'
 			),
 			'ezpay_acceptable_variation' => array(
                 'id' => 'ezpay_acceptable_variation',

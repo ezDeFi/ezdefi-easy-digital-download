@@ -2,7 +2,7 @@ jQuery(function($) {
     'use strict';
 
     var selectors = {
-        paymentMethod: 'input[name="edd_settings[ezpay_method]"]',
+        amountIdCheckbox: 'input[name="edd_settings[ezpay_method][amount_id]"]',
         symbolInput: '.currency-symbol',
         nameInput: '.currency-name',
         logoInput: '.currency-logo',
@@ -163,11 +163,11 @@ jQuery(function($) {
     };
 
     EDD_EZPay_Admin.prototype.toggleAmountSetting = function() {
-        var method = this.$form.find(selectors.paymentMethod + ':checked').val();
+        var checked = this.$form.find(selectors.amountIdCheckbox).is(':checked');
         var amount_settings = this.$form.find(
             '.acceptable_variation, .amount_decimals, .next_run, .recurrence'
         ).closest('tr');
-        if(method === 'amount_id' || method === 'all') {
+        if(checked) {
             amount_settings.each(function() {
                 $(this).show();
             });

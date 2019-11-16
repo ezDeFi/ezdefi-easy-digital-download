@@ -8,9 +8,7 @@ class EDD_EZPay_Ajax
 
     public function __construct()
     {
-	    $api_url = edd_get_option( 'api_url' );
-	    $api_key = edd_get_option( 'api_key' );
-	    $this->api = new EDD_Ezpay_Api( $api_url, $api_key );
+	    $this->api = new EDD_Ezpay_Api();
 
         add_action( 'wp_ajax_edd_ezpay_get_currency', array( $this, 'edd_ezpay_get_currency_ajax_callback' ) );
         add_action( 'wp_ajax_nopriv_edd_ezpay_get_currency', array( $this, 'edd_ezpay_get_currency_ajax_callback' ) );
@@ -23,9 +21,6 @@ class EDD_EZPay_Ajax
 
         add_action( 'wp_ajax_edd_ezpay_create_payment', array( $this, 'edd_ezpay_create_payment_ajax_callback' ) );
         add_action( 'wp_ajax_nopriv_edd_ezpay_create_payment', array( $this, 'edd_ezpay_create_payment_ajax_callback' ) );
-
-	    add_action( 'wp_ajax_edd_ezpay_get_payment', array( $this, 'edd_ezpay_get_payment_ajax_callback' ) );
-	    add_action( 'wp_ajax_nopriv_edd_ezpay_get_payment', array( $this, 'edd_ezpay_get_payment_ajax_callback' ) );
     }
 
 	/** Get currency ajax callback */
@@ -92,47 +87,62 @@ class EDD_EZPay_Ajax
     /** AJAX callback to create ezPay payment */
     public function edd_ezpay_create_payment_ajax_callback()
     {
+	    if( ! isset( $_POST['uoid'] ) || ! isset( $_POST['symbol'] ) ) {
+		    wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
+	    }
+
         $edd_payment_id = $_POST['uoid'];
+
+	    $edd_payment = edd_get_payment( $edd_payment_id );
+
+	    if( ! $edd_payment ) {
+		    wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
+	    }
+
         $symbol = $_POST['symbol'];
 
 	    $currency = edd_get_option( 'ezpay_currency' );
+
 	    $index = array_search( $symbol, array_column( $currency, 'symbol' ) );
+
+	    if( $index === false ) {
+		    wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
+	    }
+
 	    $currency_data = $currency[$index];
 
-        $edd_payment = edd_get_payment( $edd_payment_id );
+	    $method = edd_get_option( 'ezpay_method' );
 
-	    $response = $this->api->create_ezpay_payment( $edd_payment, $currency_data, true );
+	    $ezpay_payment_data = array();
 
-        if( is_wp_error( $response ) ) {
-            wp_send_json_success( __( 'Create Ezpay payment failed', 'edd-ezpay' ) );
-        }
+	    $html = '';
 
-	    $response = json_decode( $response['body'], true );
+	    foreach( $method as $key => $value ) {
+		    $amount_id = ( $key === 'amount_id' ) ? true : false;
+		    $payment = $this->create_ezpay_payment( $edd_payment, $currency_data, $amount_id );
+		    $ezpay_payment_data[$key] = $payment['_id'];
+		    $html .= wc_ezpay_generate_payment_html( $payment );
+	    }
 
-	    $ezpay_payment = $response['data'];
-
-	    $edd_payment->update_meta( '_edd_ezpay_payment', $ezpay_payment['_doc']['_id'] );
+	    $edd_payment->update_meta( '_edd_ezpay_payment', $ezpay_payment_data );
 	    $edd_payment->update_meta( '_edd_ezpay_currency', $symbol );
 	    $edd_payment->save();
 
-	    wp_send_json_success($ezpay_payment);
+	    wp_send_json_success( $html );
     }
 
-    /** AJAX callback to get ezpay payment */
-    public function edd_ezpay_get_payment_ajax_callback()
-    {
-	    $response = $this->api->get_ezpay_payment( $_POST['paymentid'] );
+	private function create_ezpay_payment( $edd_payment, $currency_data, $amount_id )
+	{
+		$response = $this->api->create_ezpay_payment( $edd_payment, $currency_data, $amount_id );
 
-	    if( is_wp_error( $response ) ) {
-		    wp_send_json_error( __( 'Can not get payment', 'woocommerce-gateway-ezpay' ) );
-	    }
+		if( is_wp_error( $response ) ) {
+			wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
+		}
 
-	    $response = json_decode( $response['body'], true );
+		$response = json_decode( $response['body'], true );
 
-	    $ezpay_payment = $response['data'];
-
-	    wp_send_json_success( $ezpay_payment );
-    }
+		return $response['data'];
+	}
 }
 
 new EDD_EZPay_Ajax();

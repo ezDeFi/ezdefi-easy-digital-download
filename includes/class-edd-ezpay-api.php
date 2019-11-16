@@ -98,8 +98,16 @@ class EDD_Ezpay_Api
 		    return new WP_Error();
 	    }
 
+	    $uoid = $edd_payment->ID;
+
+	    if( $amountId ) {
+		    $uoid = $uoid . '-1';
+	    } else {
+		    $uoid = $uoid . '-0';
+	    }
+
 	    $data = [
-		    'uoid' => $edd_payment->ID,
+		    'uoid' => $uoid,
 		    'to' => ( isset( $currency_data['wallet'] ) ? $currency_data['wallet'] : '' ),
 		    'value' => $value,
 		    'currency' => $edd_payment->currency . ':' . $currency_data['symbol'],

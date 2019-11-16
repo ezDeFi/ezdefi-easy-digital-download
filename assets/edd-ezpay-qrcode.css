@@ -157,11 +157,10 @@
   border-top: none;
 }
 #edd-ezpay-qrcode-section .ezpay-payment {
+  padding: 20px 20px 0 20px;
   text-align: center;
-  font-size: 95%;
 }
 #edd-ezpay-qrcode-section .ezpay-payment .exchange {
-  font-size: 85%;
   text-transform: uppercase;
   display: flex;
   align-items: center;

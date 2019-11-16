@@ -28,6 +28,7 @@ class EDD_Ezpay
 	public function includes()
 	{
 		require_once( $this->plugin_path() . '/includes/install.php' );
+		require_once( $this->plugin_path() . '/includes/functions.php' );
 		require_once( $this->plugin_path() . '/includes/class-edd-ezpay-db.php' );
 		require_once( $this->plugin_path() . '/includes/class-edd-ezpay-cron.php' );
 		require_once( $this->plugin_path() . '/includes/class-edd-ezpay-api.php' );

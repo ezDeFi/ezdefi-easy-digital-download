@@ -4,7 +4,11 @@ defined( 'ABSPATH' ) or exit;
 
 class EDD_Ezpay_Shortcode
 {
+    public $api;
+
     public function __construct() {
+        $this->api = new EDD_Ezpay_Api();
+
 	    add_filter( 'do_shortcode_tag', array( $this, 'prepend_content_to_shortcode' ), 10, 4 );
     }
 
@@ -16,32 +20,50 @@ class EDD_Ezpay_Shortcode
             return $output;
         }
 
-        $payment = edd_get_payment( $edd_receipt_args['id'] );
+        $edd_payment = edd_get_payment( $edd_receipt_args['id'] );
 
-        if( empty( $payment ) ) {
+        if( empty( $edd_payment ) ) {
             return $output;
         }
 
-        if( empty( $payment->get_meta( '_edd_ezpay_payment' ) || empty( $payment->get_meta( '_edd_ezpay_currency' ) ) ) ) {
+        if( empty( $edd_payment->get_meta( '_edd_ezpay_payment' ) || empty( $edd_payment->get_meta( '_edd_ezpay_currency' ) ) ) ) {
             return $output;
         }
 
-        $status = edd_get_payment_status( $payment, true );
+        $status = edd_get_payment_status( $edd_payment, true );
 
         if( strtolower( $status ) === 'complete' ) {
             return $output;
         }
 
-        $data = array(
-            'uoid' => edd_get_payment_number( $payment->ID ),
-            'paymentid' => $payment->get_meta( '_edd_ezpay_payment' )
-        );
-
         $ezpay_currency = edd_ezpay_get_currency();
 
-	    $symbol = $payment->get_meta( '_edd_ezpay_currency' );
+	    $symbol = $edd_payment->get_meta( '_edd_ezpay_currency' );
 	    $index = array_search( $symbol, array_column( $ezpay_currency, 'symbol' ) );
 	    $selected_currency = $ezpay_currency[$index];
+
+	    $ezpay_payment = $edd_payment->get_meta( '_edd_ezpay_payment' );
+
+	    $payment = array();
+
+	    foreach( $ezpay_payment as $method => $paymentid ) {
+		    $data = $this->get_ezpay_payment( $paymentid );
+
+		    if( $data === false ) {
+			    return $output;
+		    }
+
+		    if( strtolower( $data['status'] ) === 'done' ) {
+			    return $output;
+		    }
+
+		    $payment[$method] = $data;
+	    }
+
+	    $data = array(
+		    'uoid' => edd_get_payment_number( $edd_payment->ID ),
+		    'paymentid' => $ezpay_payment
+	    );
 
         $this->enqueue_scripts();
 
@@ -87,21 +109,15 @@ class EDD_Ezpay_Shortcode
             <div class="ezpay-payment-tabs">
                 <ul>
                     <?php $ezpay_method = edd_get_option( 'ezpay_method' ); ?>
-			        <?php if( $ezpay_method === 'all' || $ezpay_method === 'amount_id' ) : ?>
-                        <li><a href="#amount_id">Order identification method</a></li>
-			        <?php endif; ?>
-			        <?php if( $ezpay_method === 'all' || $ezpay_method === 'ezpay_wallet' ) : ?>
-                        <li><a href="#ezpay_wallet">Used ezPay wallet</a></li>
-			        <?php endif; ?>
+	                <?php foreach( $ezpay_method as $key => $value ) : ?>
+		                <?php $text = ( $key === 'amount_id' ) ? 'Simple method' : 'Use ezPay wallet'; ?>
+                        <li><a href="#<?php echo $key; ?>"><?php echo $text; ?></a></li>
+	                <?php endforeach; ?>
                 </ul>
-		        <?php if( $ezpay_method === 'all' || $ezpay_method === 'amount_id' ) : ?>
-                    <div id="amount_id" data-method="amount_id" class="ezpay-payment-panel">abcascsa</div>
-		        <?php endif; ?>
-		        <?php if( $ezpay_method === 'all' || $ezpay_method === 'ezpay_wallet' ) : ?>
-                    <div id="ezpay_wallet" data-method="ezpay_wallet" class="ezpay-payment-panel">fsafsfdsfdsf</div>
-		        <?php endif; ?>
+	            <?php foreach( $ezpay_method as $key => $value ) : ?>
+		            <?php echo edd_ezpay_generate_payment_html( $payment[$key] ); ?>
+	            <?php endforeach; ?>
             </div>
-            <div class="ezpay-payment"></div>
             <button class="submitBtn" style="display: none">Confirm</button>
         </div>
         <?php
@@ -128,6 +144,23 @@ class EDD_Ezpay_Shortcode
             )
         );
     }
+
+	private function get_ezpay_payment( $paymentid )
+	{
+		$response = $this->api->get_ezpay_payment( $paymentid );
+
+		if( is_wp_error( $response ) ) {
+			return false;
+		}
+
+		$response = json_decode( $response['body'], true );
+
+		if( intval( $response['code'] ) < 0 && isset( $response['error'] ) ) {
+			return false;
+		}
+
+		return $response['data'];
+	}
 }
 
 new EDD_Ezpay_Shortcode();

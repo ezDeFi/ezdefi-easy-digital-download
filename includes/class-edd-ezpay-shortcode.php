@@ -138,7 +138,7 @@ class EDD_Ezpay_Shortcode
             'edd_ezpay_data',
             array(
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
-                'checkout_url' => wc_get_checkout_url()
+                'checkout_url' => edd_get_checkout_uri()
             )
         );
     }

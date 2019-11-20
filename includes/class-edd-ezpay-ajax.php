@@ -50,9 +50,14 @@ class EDD_EZPay_Ajax
 	/** Check wallet address ajax callback */
 	public function edd_ezpay_check_wallet_ajax_callback()
 	{
+		if( ! isset( $_POST['address'] ) || ! isset( $_POST['api_url'] ) || ! isset( $_POST['api_key'] ) ) {
+			wp_die( 'false' );
+		}
+
 		$address = $_POST['address'];
 		$api_url = $_POST['api_url'];
 		$api_key = $_POST['api_key'];
+		$currency_chain = strtolower( $_POST['currency_chain'] );
 
 		$api = new EDD_EZPay_Api( $api_url, $api_key );
 
@@ -68,13 +73,21 @@ class EDD_EZPay_Ajax
 
 		$key = array_search( $address, array_column( $list_wallet, 'address' ) );
 
-		$status = $list_wallet[$key]['status'];
-
-		if($status === 'ACTIVE') {
-			wp_die('true');
+		if( $key === false ) {
+			wp_die( 'false' );
 		}
 
-		wp_die('false');
+		$wallet = $list_wallet[$key];
+
+		$status = strtolower( $wallet['status'] );
+
+		$wallet_type = strtolower( $wallet['walletType'] );
+
+		if( $status === 'active' && $wallet_type === $currency_chain ) {
+			wp_die('true' );
+		} else {
+			wp_die( 'false' );
+		}
 	}
 
     /** AJAX callback to check edd payment status */

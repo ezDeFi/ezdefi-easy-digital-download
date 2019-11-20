@@ -183,6 +183,8 @@ jQuery(function($) {
         var api_url = self.$form.find('.ezpay_api_url input').val();
         var api_key = self.$form.find('.ezpay_api_key input').val();
         var $input = $(e.target);
+        var $row = $(e.target).closest('tr');
+        var currency_chain = $row.find('.currency-chain').val();
         var $checking = $(
             "<div class='checking'><span class='text'>Checking wallet address</span>" +
             "<div class='dots'>" +
@@ -195,7 +197,7 @@ jQuery(function($) {
         $input.rules('add', {
             remote: {
                 depends: function(element) {
-                    return api_url !== '' && api_key !== '';
+                    return api_url !== '' && api_key !== '' && currency_chain !== '';
                 },
                 param: {
                     url: edd_ezpay_data.ajax_url,
@@ -211,6 +213,9 @@ jQuery(function($) {
                         api_key: function() {
                             return api_key;
                         },
+                        currency_chain: function() {
+                            return currency_chain;
+                        }
                     },
                     beforeSend: function() {
                         $input.closest('td').find('.error').hide();
@@ -296,9 +301,9 @@ jQuery(function($) {
 
         if($row.find(selectors.symbolInput).val() === '') {
             self.removeCurrency(e);
+        } else {
+            $row.toggleClass('editing');
         }
-
-        $row.toggleClass('editing');
     };
 
     EDD_EZPay_Admin.prototype.addCurrency = function(e) {
@@ -361,6 +366,7 @@ jQuery(function($) {
         td.find('.currency-symbol').val(data.symbol);
         td.find('.currency-name').val(data.name);
         td.find('.currency-logo').val(data.logo);
+        td.find('.currency-chain').val(data.chain.network_type);
         if(data.description) {
             td.find('.currency-desc').val(data.description);
         } else {

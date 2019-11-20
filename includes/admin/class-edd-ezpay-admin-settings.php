@@ -155,6 +155,7 @@ class EDD_Ezpay_Admin_Settings
 							<input class="currency-name" type="hidden" value="<?php echo (isset($c['name'])) ? $c['name'] : ''; ?>" name="edd_settings[ezpay_currency][<?php echo $index; ?>][name]">
 							<input class="currency-logo" type="hidden" value="<?php echo (isset($c['logo'])) ? $c['logo'] : ''; ?>" name="edd_settings[ezpay_currency][<?php echo $index; ?>][logo]">
 							<input class="currency-desc" type="hidden" value="<?php echo (isset($c['desc'])) ? $c['desc'] : ''; ?>" name="edd_settings[ezpay_currency][<?php echo $index; ?>][desc]">
+                            <input class="currency-chain" type="hidden" value="<?php echo ( isset( $c['chain'] ) ) ? $c['chain'] : ''; ?>" name="edd_settings[ezpay_currency][<?php echo $index; ?>][chain]">
 							<div class="view">
 								<span><?php echo (isset($c['name'])) ? $c['name'] : ''; ?></span>
 								<div class="actions">

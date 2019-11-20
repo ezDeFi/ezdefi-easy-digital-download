@@ -130,8 +130,7 @@ class EDD_Ezpay_Db
 		return $wpdb->update(
 			$this->get_amount_table_name(),
 			array(
-				'amount_valid' => 0,
-				'date_used' => current_time( 'mysql', true ),
+				'amount_valid' => 0
 			),
 			array(
 				'amount_id' => $amount_id,

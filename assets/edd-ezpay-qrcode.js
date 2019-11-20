@@ -18,6 +18,7 @@ jQuery(function($) {
         this.$currencySelect = this.$container.find(selectors.select);
         this.$submitBtn = this.$container.find(selectors.submitBtn);
         this.paymentData = JSON.parse(this.$container.find(selectors.paymentData).text());
+        this.xhrPool = [];
 
         var init = this.init.bind(this);
         var onChange = this.onChange.bind(this);
@@ -133,9 +134,9 @@ jQuery(function($) {
             },
             beforeSend: function() {
                 window.clearInterval(window.checkPaymentLoop);
-                if(self.checkPaymentRequest) {
-                    self.checkPaymentRequest.abort();
-                }
+                $.each(self.xhrPool, function(index, jqXHR) {
+                    jqXHR.abort();
+                });
                 $.blockUI({message: null});
             },
             success:function(response) {
@@ -157,22 +158,24 @@ jQuery(function($) {
         });
     };
 
-    EDD_EZPay_Checkout.prototype.checkPaymentStatus = function(uoid) {
+    EDD_EZPay_Checkout.prototype.checkPaymentStatus = function() {
         var self = this;
-        window.checkPaymentLoop = setInterval(function() {
-            self.checkPaymentRequest = $.ajax({
+        setInterval(function() {
+            $.ajax({
                 url: edd_ezpay_data.ajax_url,
                 method: 'post',
                 data: {
                     action: 'edd_ezpay_check_payment_status',
                     paymentId: self.paymentData.uoid
                 },
+                beforeSend: function(jqXHR) {
+                    self.xhrPool.push(jqXHR);
+                },
                 success: function( response ) {
                     if(response == 'Complete') {
-                        window.clearInterval(window.checkPaymentLoop);
-                        if(self.checkPaymentRequest) {
-                            self.checkPaymentRequest.abort();
-                        }
+                        $.each(self.xhrPool, function(index, jqXHR) {
+                            jqXHR.abort();
+                        });
                         self.success();
                     }
                 }
@@ -217,7 +220,8 @@ jQuery(function($) {
     };
 
     EDD_EZPay_Checkout.prototype.success = function() {
-        location.reload(true);
+        location.reload();
+        return false;
     };
 
     EDD_EZPay_Checkout.prototype.timeout = function() {

@@ -31,13 +31,9 @@ class EDD_Ezpay_Admin_Settings
 		    return;
 	    }
 
-	    $next_run_setting = $_POST['edd_settings']['ezpay_amount_clear_next_run'];
-
-	    $next_run = ( $next_run_setting === 'custom' ) ? $_POST['next_run_custom_date'] : $next_run_setting;
-
 	    $schedule = $_POST['edd_settings']['ezpay_amount_clear_recurrence'];
 
-	    return $this->cron->update_clear_amount_event( $next_run, $schedule );
+	    return $this->cron->update_clear_amount_event( $schedule );
     }
 
 	/** Ezpay settings section callback */
@@ -95,13 +91,6 @@ class EDD_Ezpay_Admin_Settings
 				'desc' => __( 'Description' ),
 				'default' => 6,
                 'class' => 'amount_decimals'
-			),
-			'ezpay_amount_clear_next_run' => array(
-                'id' => 'ezpay_amount_clear_next_run',
-				'name' => __( 'Amount clear next run', 'edd-ezpay' ),
-				'type' => 'amount_next_run',
-				'desc' => __( 'Description' ),
-                'class' => 'next_run'
 			),
 			'ezpay_amount_clear_recurrence' => array(
                 'id' => 'ezpay_amount_clear_recurrence',

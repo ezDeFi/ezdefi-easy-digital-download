@@ -95,7 +95,7 @@ class EDD_Ezpay_Api
 	    }
 
 	    if( ! $value ) {
-		    return new WP_Error();
+		    return new WP_Error( 'create_ezpay_payment', 'Can not generate amountID.' );
 	    }
 
 	    $uoid = $edd_payment->ID;
@@ -116,7 +116,7 @@ class EDD_Ezpay_Api
 		    'ucid' => rand(1, 100),
 		    'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
 //            'callback' => home_url() . '/edd-ezpay/nextypay'
-	        'callback' => 'http://a25d7663.ngrok.io/edd-ezpay/nextypay',
+	        'callback' => 'http://eae24f85.ngrok.io/edd-ezpay/nextypay',
 		    'amountId' => $amountId
 	    ];
 

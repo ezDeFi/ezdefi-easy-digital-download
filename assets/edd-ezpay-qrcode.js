@@ -35,14 +35,56 @@ jQuery(function($) {
     EDD_EZPay_Checkout.prototype.init = function() {
         var self = this;
 
-        self.$tabs.tabs();
-
-        self.$tabs.find(selectors.panel).each(function() {
-            var endTime = $(this).find('.count-down').attr('data-endtime');
-            self.setTimeRemaining.call(self, endTime);
+        self.$tabs.tabs({
+            activate: function(event, ui) {
+                if(!ui.newPanel || ui.newPanel.is(':empty')) {
+                    var method = ui.newPanel.attr('id');
+                    self.getEzpayPayment.call(self, method, ui.newPanel);
+                }
+            }
         });
 
-        this.checkPaymentStatus.call(this);
+        var index = self.$tabs.tabs('option', 'active');
+        var active = self.$tabs.find(selectors.panel + ':eq('+index+')');
+        var method = active.attr('id');
+
+        self.getEzpayPayment.call(self, method, active);
+    };
+
+    EDD_EZPay_Checkout.prototype.getEzpayPayment = function(method, panel) {
+        var self = this;
+        var symbol = this.$container.find(selectors.selected).find('.symbol').text();
+        if(!symbol) {
+            return false;
+        }
+        $.ajax({
+            url: edd_ezpay_data.ajax_url,
+            method: 'post',
+            data: {
+                action: 'edd_ezpay_get_payment',
+                uoid: self.paymentData.uoid,
+                symbol: symbol,
+                method: method
+            },
+            beforeSend: function() {
+                clearInterval(self.checkOrderLoop);
+                $.blockUI({message: null});
+            },
+            success:function(response) {
+                if(response.success) {
+                    panel.html($(response.data));
+                } else {
+                    panel.html(response.data);
+                }
+                var endTime = panel.find('.count-down').attr('data-endtime');
+                self.setTimeRemaining.call(self, endTime);
+                $.unblockUI();
+                self.checkPaymentStatus.call(self);
+            },
+            error: function(e) {
+                console.log(e);
+            }
+        });
     };
 
     EDD_EZPay_Checkout.prototype.onChange = function(e) {
@@ -73,37 +115,41 @@ jQuery(function($) {
         if(!symbol) {
             return false;
         }
+        var index = self.$tabs.tabs( "option", "active" );
+        var active = self.$tabs.find(selectors.panel + ':eq('+index+')');
+        var method = active.attr('id');
         self.$currencySelect.hide();
         self.$tabs.hide();
         self.$submitBtn.prop('disabled', true).text('Loading...');
+        self.$tabs.find(selectors.panel).empty();
         $.ajax({
             url: edd_ezpay_data.ajax_url,
             method: 'post',
             data: {
                 action: 'edd_ezpay_create_payment',
                 uoid: self.paymentData.uoid,
-                symbol: symbol
+                symbol: symbol,
+                method: method
             },
             beforeSend: function() {
-                clearInterval(self.checkPaymentLoop);
+                window.clearInterval(window.checkPaymentLoop);
+                if(self.checkPaymentRequest) {
+                    self.checkPaymentRequest.abort();
+                }
                 $.blockUI({message: null});
             },
             success:function(response) {
-                self.$tabs.find(selectors.panel).remove();
                 if(response.success) {
-                    self.$tabs.append($(response.data));
+                    active.html($(response.data));
                 } else {
-                    self.$tabs.append(response.data);
+                    active.html(response.data);
                 }
-                self.$tabs.tabs('refresh');
-                self.$tabs.find(selectors.panel).each(function() {
-                    var endTime = $(this).find('.count-down').attr('data-endtime');
-                    self.setTimeRemaining.call(self, endTime);
-                });
+                var endTime = active.find('.count-down').attr('data-endtime');
+                self.setTimeRemaining.call(self, endTime);
                 $.unblockUI();
                 self.$tabs.show();
                 self.$submitBtn.prop('disabled', false).text('Confirm').hide();
-                self.checkOrderStatus.call(self);
+                self.checkPaymentStatus.call(self);
             },
             error: function(e) {
                 console.log(e);
@@ -113,17 +159,20 @@ jQuery(function($) {
 
     EDD_EZPay_Checkout.prototype.checkPaymentStatus = function(uoid) {
         var self = this;
-        self.checkPaymentLoop = setInterval(function() {
-            $.ajax({
+        window.checkPaymentLoop = setInterval(function() {
+            self.checkPaymentRequest = $.ajax({
                 url: edd_ezpay_data.ajax_url,
                 method: 'post',
                 data: {
                     action: 'edd_ezpay_check_payment_status',
-                    paymentId: uoid
+                    paymentId: self.paymentData.uoid
                 },
                 success: function( response ) {
                     if(response == 'Complete') {
-                        clearInterval(self.checkPaymentLoop);
+                        window.clearInterval(window.checkPaymentLoop);
+                        if(self.checkPaymentRequest) {
+                            self.checkPaymentRequest.abort();
+                        }
                         self.success();
                     }
                 }
@@ -168,7 +217,7 @@ jQuery(function($) {
     };
 
     EDD_EZPay_Checkout.prototype.success = function() {
-        location.reload(true)
+        location.reload(true);
     };
 
     EDD_EZPay_Checkout.prototype.timeout = function() {
@@ -185,7 +234,6 @@ jQuery(function($) {
 
         setTimeout(function(){ window.location = edd_ezpay_data.checkout_url; }, 3000);
     };
-
 
     new EDD_EZPay_Checkout();
 });

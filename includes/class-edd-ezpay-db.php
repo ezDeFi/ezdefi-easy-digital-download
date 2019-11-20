@@ -7,11 +7,6 @@ class EDD_Ezpay_Db
 	public function generate_amount_id( $price, $currency )
 	{
 		$amount_decimal = $this->get_amount_decimals();
-		$acceptable_variation = $this->get_acceptable_variation();
-
-		$variation_percent = $acceptable_variation / 100;
-		$min = floatval( $price - ( $price * $variation_percent ) );
-		$max = floatval( $price + ( $price * $variation_percent ) );
 
 		$amount_ids = $this->get_amount_ids( $price, $amount_decimal, $currency );
 
@@ -19,33 +14,46 @@ class EDD_Ezpay_Db
 
 		if( empty( $amount_ids ) ) {
 			$amount_id = $price;
-			$this->save_amount_id( $price, $amount_id, $amount_decimal, $currency );
-			return floatval( $amount_id );
+			return $this->save_amount_id( $price, $amount_id, $amount_decimal, $currency );
 		}
 
 		$valid_index = array_search( '1', array_column( $amount_ids, 'amount_valid' ) );
 
 		if( $valid_index !== false ) {
-			$amount_id = $amount_ids[$valid_index]['amount_id'];
-			return floatval( $amount_id );
+			return floatval( $amount_ids[$valid_index]['amount_id'] );
 		}
 
-		$current_max = max( array_column( $amount_ids, 'amount_id' ) );
-
-		$amount_id = $current_max + $one_unit;
-
-		if( $amount_id <= $max ) {
-			$this->save_amount_id( $price, $amount_id, $amount_decimal, $currency );
-			return floatval( $amount_id );
+		if( count( $amount_ids ) === 1 ) {
+			$amount_id = $price + $one_unit;
+			return $this->save_amount_id( $price, $amount_id, $amount_decimal, $currency );
 		}
 
-		$current_min = min( array_column( $amount_ids, 'amount_id' ) );
+		$counts = array_count_values(array_column($amount_ids, 'amount_abs'));
 
-		$amount_id = $current_min - $one_unit;
+		$abs = null;
 
-		if( $amount_id >= $min ) {
-			$this->save_amount_id( $price, $amount_id, $amount_decimal, $currency );
-			return floatval( $amount_id );
+		foreach( $counts as $amount_abs => $count ) {
+			if( floatval($amount_abs) > 0 && $count < 2 ) {
+				$abs = $amount_abs;
+				break;
+			}
+		}
+
+		if( ! $abs ) {
+			$id = end($amount_ids)['amount_id'] + $one_unit;
+			return $this->save_amount_id( $price, $id, $amount_decimal, $currency );
+		}
+
+		$index = array_search( $abs, array_column( $amount_ids, 'amount_abs' ) );
+
+		$amount_id = $amount_ids[$index];
+
+		if( $amount_id['amount_id'] > $amount_id['price'] ) {
+			$id = $amount_id['price'] - $abs;
+			return $this->save_amount_id( $price, $id, $amount_decimal, $currency );
+		} else {
+			$id = $amount_id['price'] + $abs;
+			return $this->save_amount_id( $price, $id, $amount_decimal, $currency );
 		}
 
 		return false;
@@ -68,7 +76,15 @@ class EDD_Ezpay_Db
 		$table_name = $this->get_amount_table_name();
 
 		$amount_ids = $wpdb->get_results(
-			"SELECT * FROM $table_name WHERE price = $price AND amount_decimal = $amount_decimal AND currency = '" . $currency . "'",
+			$wpdb->prepare( "
+			SELECT price, amount_id, amount_decimal, amount_valid, currency, ABS(amount_id - price) as amount_abs
+			FROM $table_name 
+			WHERE price = %f 
+			AND amount_decimal = %d 
+			AND currency = %s
+			ORDER BY amount_abs
+			", $price, $amount_decimal, $currency
+			),
 			ARRAY_A
 		);
 
@@ -78,6 +94,16 @@ class EDD_Ezpay_Db
 	protected function save_amount_id( $price, $amount_id, $amount_decimal, $currency )
 	{
 		global $wpdb;
+
+		$acceptable_variation = $this->get_acceptable_variation();
+
+		$variation_percent = $acceptable_variation / 100;
+		$min = floatval( $price - ( $price * $variation_percent ) );
+		$max = floatval( $price + ( $price * $variation_percent ) );
+
+		if( ( $amount_id < $min ) || ( $amount_id > $max ) ) {
+			return false;
+		}
 
 		$result = $wpdb->insert(
 			$this->get_amount_table_name(),
@@ -93,6 +119,8 @@ class EDD_Ezpay_Db
 		if( !$result ) {
 			return false;
 		}
+
+		return floatval( $amount_id );
 	}
 
 	public function set_amount_id_invalid( $amount_id, $currency )

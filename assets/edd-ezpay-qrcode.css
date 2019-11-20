@@ -151,6 +151,11 @@
   display: block;
   text-decoration: none;
 }
+#edd-ezpay-qrcode-section .ezpay-payment-tabs ul li a#tab-ezpay_wallet img {
+  float: left;
+  margin-top: 3px;
+  margin-right: 6px;
+}
 #edd-ezpay-qrcode-section .ezpay-payment-tabs .ezpay-payment-panel {
   padding: 10px 20px;
   border: 1px solid rgba(0, 0, 0, 0.05);

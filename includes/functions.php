@@ -2,7 +2,6 @@
 
 function edd_ezpay_generate_payment_html( $payment ) {
 	ob_start(); ?>
-	<div id="<?php echo ( $payment['amountId'] ) ? 'amount_id' : 'ezpay_wallet' ;?>" class="ezpay-payment-panel">
 		<div class="ezpay-payment">
 			<?php if( ! $payment ) : ?>
 				<span><?php echo __( 'Can not get payment', 'woocommerce-gateway-ezpay' ); ?></span>
@@ -14,24 +13,9 @@ function edd_ezpay_generate_payment_html( $payment ) {
 				</p>
 				<p>You have <span class="count-down" data-endtime="<?php echo $payment['expiredTime']; ?>"></span> to scan this QR Code</p>
 				<p>
-					<?php
-					if( $payment['amountId'] === true ) {
-						$deeplink = $payment['deepLink'];
-					} else {
-						$deeplink = 'ezpay://mobile';
-						$params   = array(
-							'to'    => $payment['to'],
-							'token' => $payment['token']['address'],
-							'value' => $payment['value'],
-							'chain' => $payment['chain']['name'],
-							'gas'   => $payment['gas']
-						);
-						$deeplink = sprintf( "%s?%s", $deeplink, http_build_query( $params ) );
-					}
-					?>
-					<a href="<?php echo $deeplink; ?>">
-						<img class="qrcode" src="<?php echo $payment['qr']; ?>" />
-					</a>
+                    <a href="<?php echo $payment['deepLink']; ?>">
+                        <img class="qrcode" src="<?php echo $payment['qr']; ?>" />
+                    </a>
 				</p>
 				<?php if( $payment['amountId'] === true ) : ?>
 					<p>
@@ -47,6 +31,5 @@ function edd_ezpay_generate_payment_html( $payment ) {
 				<?php endif; ?>
 			<?php endif; ?>
 		</div>
-	</div>
 	<?php return ob_get_clean();
 }

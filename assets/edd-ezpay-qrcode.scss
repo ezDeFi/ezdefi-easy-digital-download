@@ -176,6 +176,14 @@
           padding: 10px 20px;
           display: block;
           text-decoration: none;
+
+          &#tab-ezpay_wallet {
+            img {
+              float: left;
+              margin-top: 3px;
+              margin-right: 6px;
+            }
+          }
         }
       }
     }

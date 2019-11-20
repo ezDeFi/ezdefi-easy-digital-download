@@ -26,7 +26,7 @@ class EDD_Ezpay_Shortcode
             return $output;
         }
 
-        if( empty( $edd_payment->get_meta( '_edd_ezpay_payment' ) || empty( $edd_payment->get_meta( '_edd_ezpay_currency' ) ) ) ) {
+        if( empty( $edd_payment->get_meta( '_edd_ezpay_currency' ) ) ) {
             return $output;
         }
 
@@ -40,36 +40,25 @@ class EDD_Ezpay_Shortcode
 
 	    $symbol = $edd_payment->get_meta( '_edd_ezpay_currency' );
 	    $index = array_search( $symbol, array_column( $ezpay_currency, 'symbol' ) );
+
+	    if( $index === false ) {
+	        return;
+        }
+
 	    $selected_currency = $ezpay_currency[$index];
 
-	    $ezpay_payment = $edd_payment->get_meta( '_edd_ezpay_payment' );
-
-	    $payment = array();
-
-	    foreach( $ezpay_payment as $method => $paymentid ) {
-		    $data = $this->get_ezpay_payment( $paymentid );
-
-		    if( $data === false ) {
-			    return $output;
-		    }
-
-		    if( strtolower( $data['status'] ) === 'done' ) {
-			    return $output;
-		    }
-
-		    $payment[$method] = $data;
-	    }
-
-	    $data = array(
+	    $payment_data = array(
 		    'uoid' => edd_get_payment_number( $edd_payment->ID ),
-		    'paymentid' => $ezpay_payment
+		    'ezpay_payment' => ( $edd_payment->get_meta( '_edd_ezpay_payment' ) ) ? $edd_payment->get_meta( '_edd_ezpay_payment' ) : ''
 	    );
+
+	    $payment_method = edd_get_option( 'ezpay_method' );
 
         $this->enqueue_scripts();
 
         ob_start(); ?>
         <div id="edd-ezpay-qrcode-section">
-            <script type="application/json" id="payment-data"><?php echo json_encode( $data ); ?></script>
+            <script type="application/json" id="payment-data"><?php echo json_encode( $payment_data ); ?></script>
             <div class="selected-currency">
                 <div class="left">
                     <div class="logo">
@@ -108,14 +97,23 @@ class EDD_Ezpay_Shortcode
             </div>
             <div class="ezpay-payment-tabs">
                 <ul>
-                    <?php $ezpay_method = edd_get_option( 'ezpay_method' ); ?>
-	                <?php foreach( $ezpay_method as $key => $value ) : ?>
-		                <?php $text = ( $key === 'amount_id' ) ? 'Simple method' : 'Use ezPay wallet'; ?>
-                        <li><a href="#<?php echo $key; ?>"><?php echo $text; ?></a></li>
-	                <?php endforeach; ?>
+		            <?php
+		            foreach( $payment_method as $key => $value ) {
+			            echo '<li><a href="#'.$key.'" id="tab-'.$key.'">';
+			            switch ($key) {
+				            case 'amount_id' :
+					            echo '<span>Simple method</span>';
+					            break;
+				            case 'ezpay_wallet' :
+					            echo '<img width="18" src="'.EDD_EZPay()->plugin_url() . '/assets/ezpay-icon.png' . '"> <span> Pay with ezPay wallet</span></a></li>';
+					            break;
+			            }
+			            echo '</a></li>';
+		            }
+		            ?>
                 </ul>
-	            <?php foreach( $ezpay_method as $key => $value ) : ?>
-		            <?php echo edd_ezpay_generate_payment_html( $payment[$key] ); ?>
+	            <?php foreach( $payment_method as $key => $value ) : ?>
+                    <div id="<?php echo $key;?>" class="ezpay-payment-panel"></div>
 	            <?php endforeach; ?>
             </div>
             <button class="submitBtn" style="display: none">Confirm</button>
@@ -132,7 +130,7 @@ class EDD_Ezpay_Shortcode
     /** Load needed CSS and JS file */
     public function enqueue_scripts()
     {
-	    wp_enqueue_style( 'edd_ezpay_blockui', plugins_url( 'assets/js/jquery.blockUI.js', WC_EZPAY_MAIN_FILE ), array( 'jquery' ), WC_EZPAY_VERSION );
+	    wp_enqueue_style( 'edd_ezpay_blockui', EDD_EZPay()->plugin_url() . '/assets/js/jquery.blockUI.js', array( 'jquery' ), '' );
 	    wp_enqueue_style( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.css' );
         wp_enqueue_script( 'edd_ezpay_checkout', EDD_EZPay()->plugin_url() . '/assets/edd-ezpay-qrcode.js', array( 'jquery', 'jquery-ui-tabs' ), '', true );
         wp_localize_script(
@@ -144,23 +142,6 @@ class EDD_Ezpay_Shortcode
             )
         );
     }
-
-	private function get_ezpay_payment( $paymentid )
-	{
-		$response = $this->api->get_ezpay_payment( $paymentid );
-
-		if( is_wp_error( $response ) ) {
-			return false;
-		}
-
-		$response = json_decode( $response['body'], true );
-
-		if( intval( $response['code'] ) < 0 && isset( $response['error'] ) ) {
-			return false;
-		}
-
-		return $response['data'];
-	}
 }
 
 new EDD_Ezpay_Shortcode();

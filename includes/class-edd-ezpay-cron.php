@@ -47,17 +47,9 @@ class EDD_Ezpay_Cron
 		wp_unschedule_event( $timestamp, 'edd_ezpay_clear_amount_events' );
 	}
 
-	public function update_clear_amount_event( $next_run, $schedule )
+	public function update_clear_amount_event( $schedule )
 	{
-		$next_run = strtotime( $next_run );
-
-		if( $next_run === false ) {
-			$next_run = current_time( 'timestamp', true );
-		} else {
-			$next_run = get_gmt_from_date( date( 'Y-m-d H:i:s', $next_run ), 'U' );
-		}
-
-		return wp_schedule_event( $next_run, $schedule, 'edd_ezpay_clear_amount_events' );
+		return wp_schedule_event( current_time( 'timestamp', true ), $schedule, 'edd_ezpay_clear_amount_events' );
 	}
 }
 

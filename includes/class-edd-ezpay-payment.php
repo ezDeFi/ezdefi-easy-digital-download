@@ -6,10 +6,14 @@ class EDD_Ezpay_Payment
 {
 	protected $api;
 
+	protected $db;
+
 	/** EDD_Ezpay_Payment constructor. */
     public function __construct()
     {
     	$this->api = new EDD_Ezpay_Api();
+
+    	$this->db = new EDD_Ezpay_Db();
 
         add_action( 'edd_gateway_ezpay', array( $this, 'process_payment' ) );
         add_action( 'edd_ezpay_nextypay', array( $this, 'gateway_callback_handle' ) );
@@ -18,6 +22,14 @@ class EDD_Ezpay_Payment
     /** Process payment for EZPay Gateway */
     public function process_payment($purchase_data)
     {
+	    $symbol = $purchase_data['post_data']['edd_ezpay_currency_symbol'];
+
+	    $currency_data = $this->find_currency_data( $symbol );
+
+	    if( $currency_data === false ) {
+		    edd_send_back_to_checkout( '?payment-mode=ezpay' );
+	    }
+
 	    $edd_payment_id = $this->create_edd_payment($purchase_data);
 
 	    if( ! $edd_payment_id ) {
@@ -26,14 +38,8 @@ class EDD_Ezpay_Payment
 
 	    $edd_payment = edd_get_payment( $edd_payment_id );
 
-	    $symbol = $purchase_data['post_data']['edd_ezpay_currency_symbol'];
-
-	    $ezpay_payment = $this->create_ezpay_payment_loop( $edd_payment, $symbol );
-
-	    $this->update_payment_meta_data( $edd_payment, array(
-		    '_edd_ezpay_payment' => $ezpay_payment,
-		    '_edd_ezpay_currency' => $symbol
-	    ) );
+	    $edd_payment->update_meta( '_edd_ezpay_currency', $symbol );
+	    $edd_payment->save();
 
         edd_send_to_success_page();
     }
@@ -48,58 +54,6 @@ class EDD_Ezpay_Payment
 		}
 
 		return $currency[$index];
-	}
-
-	private function update_payment_meta_data( $payment, $data )
-	{
-		foreach( $data as $key => $value ) {
-			$payment->update_meta( $key, $value );
-		}
-
-		$payment->save();
-	}
-
-	private function create_ezpay_payment_loop( $edd_payment, $symbol )
-	{
-		$currency_data = $this->find_currency_data( $symbol );
-
-		if( $currency_data === false ) {
-			return $this->create_ezpay_payment_fail();
-		}
-
-		$data = array();
-
-		$method = edd_get_option( 'ezpay_method' );
-
-		foreach( $method as $key => $value ) {
-			$amount_id = ( $key === 'amount_id' ) ? true : false;
-			$payment = $this->create_ezpay_payment( $edd_payment, $currency_data, $amount_id );
-			$data[$key] = $payment['_id'];
-		}
-
-		return $data;
-	}
-
-	private function create_ezpay_payment( $edd_payment, $currency_data, $amount_id )
-	{
-		$response = $this->api->create_ezpay_payment( $edd_payment, $currency_data, $amount_id );
-
-		if( is_wp_error( $response ) ) {
-			return $this->create_ezpay_payment_fail();
-		}
-
-		$response = json_decode( $response['body'], true );
-
-		if( intval( $response['code'] ) < 0 && isset( $response['error'] ) ) {
-			return $this->create_ezpay_payment_fail();
-		}
-
-		return $response['data'];
-	}
-
-	private function create_ezpay_payment_fail()
-	{
-		return edd_send_back_to_checkout( '?payment-mode=ezpay' );
 	}
 
 	private function set_amount_id_invalid( $amount_id, $currency )
@@ -156,18 +110,22 @@ class EDD_Ezpay_Payment
 
         $ezpay_payment_data = json_decode( $response['body'], true );
 
-        $status = $ezpay_payment_data['data']['payment']['status'];
+	    $ezpay_payment_data = $ezpay_payment_data['data'];
+
+        $status = $ezpay_payment_data['status'];
 
         if( $status === 'DONE' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );
 
-	        $ezpay_amount_id = $edd_payment->get_meta( '_edd_ezpay_payment' );
+	        if( $ezpay_payment_data['amountId'] = true ) {
+		        $ezpay_amount_id = $edd_payment->get_meta( '_edd_ezpay_payment' );
 
-	        if( $ezpay_amount_id && ! empty( $ezpay_amount_id ) ) {
-		        $this->set_amount_id_invalid(
-			        $ezpay_amount_id,
-			        $edd_payment->get_meta( '_edd_ezpay_currency' )
-		        );
+		        if ( $ezpay_amount_id && ! empty( $ezpay_amount_id ) ) {
+			        $this->set_amount_id_invalid(
+				        $ezpay_amount_id,
+				        $edd_payment->get_meta( '_edd_ezpay_currency' )
+			        );
+		        }
 	        }
 
 	        edd_empty_cart();

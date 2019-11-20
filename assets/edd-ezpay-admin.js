@@ -340,6 +340,12 @@ jQuery(function($) {
                 var $select = $(this).find('.select-select2');
                 self.initCurrencySelect($select);
 
+                if($(this).hasClass('editing')) {
+                    var name = $(this).find('.currency-name').val();
+                    $(this).find('.select2-selection__rendered').attr('title', name);
+                    $(this).find('.select2-selection__rendered').text(name);
+                }
+
                 var row = $(this);
                 var number = rowIndex - 1;
                 self.updateAttr(row, number);

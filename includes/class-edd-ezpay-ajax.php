@@ -16,6 +16,9 @@ class EDD_EZPay_Ajax
         add_action( 'wp_ajax_edd_ezpay_check_wallet', array( $this, 'edd_ezpay_check_wallet_ajax_callback' ) );
         add_action( 'wp_ajax_nopriv_edd_ezpay_check_wallet', array( $this, 'edd_ezpay_check_wallet_ajax_callback' ) );
 
+	    add_action( 'wp_ajax_edd_ezpay_get_payment', array( $this, 'edd_ezpay_get_payment_ajax_callback' ) );
+	    add_action( 'wp_ajax_nopriv_edd_ezpay_get_payment', array( $this, 'edd_ezpay_get_payment_ajax_callback' ) );
+
         add_action( 'wp_ajax_edd_ezpay_check_payment_status', array( $this, 'edd_ezpay_check_payment_status_ajax_callback' ) );
         add_action( 'wp_ajax_nopriv_edd_ezpay_check_payment_status', array( $this, 'edd_ezpay_check_payment_status_ajax_callback' ) );
 
@@ -84,64 +87,137 @@ class EDD_EZPay_Ajax
         wp_die($payment_status);
     }
 
+	public function edd_ezpay_get_payment_ajax_callback()
+	{
+		$data = $this->validate_post_data( $_POST, __( 'Can not get payment', 'edd-ezpay' ) );
+
+		$order = $data['order'];
+
+		$ezpay_payment = ( $order->get_meta( '_edd_ezpay_payment' ) ) ? $order->get_meta( '_edd_ezpay_payment' ) : array();
+
+		$method = $data['method'];
+
+		if( array_key_exists( $method, $ezpay_payment ) && $ezpay_payment[$method] !== '' ) {
+			$paymentid = $ezpay_payment[$method];
+			return $this->get_ezpay_payment( $paymentid );
+		}
+
+		$symbol = $_POST['symbol'];
+
+		return $this->create_ezpay_payment( $order, $symbol, $method );
+	}
+
     /** AJAX callback to create ezPay payment */
     public function edd_ezpay_create_payment_ajax_callback()
     {
-	    if( ! isset( $_POST['uoid'] ) || ! isset( $_POST['symbol'] ) ) {
-		    wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
-	    }
+	    $data = $this->validate_post_data( $_POST, __( 'Can not create payment', 'edd-ezpay' ) );
 
-        $edd_payment_id = $_POST['uoid'];
+	    $symbol = $_POST['symbol'];
 
-	    $edd_payment = edd_get_payment( $edd_payment_id );
-
-	    if( ! $edd_payment ) {
-		    wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
-	    }
-
-        $symbol = $_POST['symbol'];
-
-	    $currency = edd_get_option( 'ezpay_currency' );
-
-	    $index = array_search( $symbol, array_column( $currency, 'symbol' ) );
-
-	    if( $index === false ) {
-		    wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
-	    }
-
-	    $currency_data = $currency[$index];
-
-	    $method = edd_get_option( 'ezpay_method' );
-
-	    $ezpay_payment_data = array();
-
-	    $html = '';
-
-	    foreach( $method as $key => $value ) {
-		    $amount_id = ( $key === 'amount_id' ) ? true : false;
-		    $payment = $this->create_ezpay_payment( $edd_payment, $currency_data, $amount_id );
-		    $ezpay_payment_data[$key] = $payment['_id'];
-		    $html .= wc_ezpay_generate_payment_html( $payment );
-	    }
-
-	    $edd_payment->update_meta( '_edd_ezpay_payment', $ezpay_payment_data );
-	    $edd_payment->update_meta( '_edd_ezpay_currency', $symbol );
-	    $edd_payment->save();
-
-	    wp_send_json_success( $html );
+	    return $this->create_ezpay_payment( $data['order'], $symbol, $data['method'], true );
     }
 
-	private function create_ezpay_payment( $edd_payment, $currency_data, $amount_id )
+	private function validate_post_data( $data, $message = '' )
 	{
-		$response = $this->api->create_ezpay_payment( $edd_payment, $currency_data, $amount_id );
+		if( ! isset( $data['uoid'] ) || ! isset( $data['symbol'] ) || ! isset( $data['method'] ) ) {
+			wp_send_json_error( $message );
+		}
+
+		$uoid = $_POST['uoid'];
+
+		$data = array();
+
+		$data['order'] = $this->get_order( $uoid, $message );
+
+		$data['method'] = $this->validate_payment_method( $_POST['method'], $message );
+
+		return $data;
+	}
+
+	private function validate_payment_method( $method, $message )
+	{
+		$accepted_method = edd_get_option( 'ezpay_method' );
+
+		if( ! array_key_exists( $method, $accepted_method ) ){
+			wp_send_json_error( $message );
+		}
+
+		return $method;
+	}
+
+	private function get_order( $uoid, $message )
+	{
+		$order = edd_get_payment( $uoid );
+
+		if( ! $order ) {
+			wp_send_json_error( $message );
+		}
+
+		return $order;
+	}
+
+	private function get_currency_data( $symbol, $message )
+	{
+		$currency = edd_get_option( 'ezpay_currency' );
+
+		$index = array_search( $symbol, array_column( $currency, 'symbol' ) );
+
+		if( $index === false ) {
+			wp_send_json_error( $message );
+		}
+
+		return $currency[$index];
+	}
+
+	private function get_ezpay_payment( $paymentid )
+	{
+		$response = $this->api->get_ezpay_payment( $paymentid );
 
 		if( is_wp_error( $response ) ) {
-			wp_send_json_error( __( 'Can not create payment', 'edd-ezpay' ) );
+			wp_send_json_error( __( 'Can not get payment', 'edd-ezpay' ) );
 		}
 
 		$response = json_decode( $response['body'], true );
 
-		return $response['data'];
+		$ezpay_payment = $response['data'];
+
+		$html = edd_ezpay_generate_payment_html( $ezpay_payment );
+
+		wp_send_json_success( $html );
+	}
+
+	private function create_ezpay_payment( $order, $symbol, $method, $clear_meta_data = false )
+	{
+		$currency_data = $this->get_currency_data( $symbol, __( 'Can not create payment', 'edd-ezpay' ) );
+
+		$amount_id = ( $method === 'amount_id' ) ? true : false;
+
+		$response = $this->api->create_ezpay_payment( $order, $currency_data, $amount_id );
+
+		if( is_wp_error( $response ) ) {
+			$error_message = $response->get_error_message( 'create_ezpay_payment' );
+			wp_send_json_error( $error_message );
+		}
+
+		$response = json_decode( $response['body'], true );
+
+		$payment = $response['data'];
+
+		$html = edd_ezpay_generate_payment_html( $payment );
+
+		if( $clear_meta_data ) {
+			$ezpay_payment = array();
+		} else {
+			$ezpay_payment = ( $order->get_meta( '_edd_ezpay_payment' ) ) ? $order->get_meta( '_edd_ezpay_payment' ) : array();
+		}
+
+		$ezpay_payment[$method] = $payment['_id'];
+
+		$order->update_meta( '_edd_ezpay_payment', $ezpay_payment );
+		$order->update_meta( '_edd_ezpay_currency', $symbol );
+		$order->save();
+
+		wp_send_json_success( $html );
 	}
 }
 

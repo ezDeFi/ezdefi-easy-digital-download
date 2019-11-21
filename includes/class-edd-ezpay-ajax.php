@@ -84,7 +84,7 @@ class EDD_EZPay_Ajax
 		$wallet_type = strtolower( $wallet['walletType'] );
 
 		if( $status === 'active' && $wallet_type === $currency_chain ) {
-			wp_die('true' );
+			wp_die( 'true' );
 		} else {
 			wp_die( 'false' );
 		}

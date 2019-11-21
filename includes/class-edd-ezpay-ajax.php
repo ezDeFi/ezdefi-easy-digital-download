@@ -228,6 +228,7 @@ class EDD_EZPay_Ajax
 
 		$order->update_meta( '_edd_ezpay_payment', $ezpay_payment );
 		$order->update_meta( '_edd_ezpay_currency', $symbol );
+		$order->update_meta( '_edd_ezpay_amount_id', $$payment['originValue'] );
 		$order->save();
 
 		wp_send_json_success( $html );

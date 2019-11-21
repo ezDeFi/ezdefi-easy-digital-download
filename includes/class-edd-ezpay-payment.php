@@ -117,8 +117,8 @@ class EDD_Ezpay_Payment
         if( $status === 'DONE' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );
 
-	        if( $ezpay_payment_data['amountId'] = true ) {
-		        $ezpay_amount_id = $edd_payment->get_meta( '_edd_ezpay_payment' );
+	        if( $ezpay_payment_data['amountId'] == true ) {
+		        $ezpay_amount_id = $edd_payment->get_meta( '_edd_ezpay_amount_id' );
 
 		        if ( $ezpay_amount_id && ! empty( $ezpay_amount_id ) ) {
 			        $this->set_amount_id_invalid(

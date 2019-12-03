@@ -70,7 +70,7 @@ class EDD_Ezdefi_Shortcode
                     </div>
                 </div>
                 <div>
-                    <a href="" class="changeBtn">Change</a>
+                    <a href="" class="changeBtn"><?php _e( 'Change', 'edd-ezdefi' ); ?></a>
                 </div>
             </div>
             <div class="currency-select">
@@ -84,7 +84,7 @@ class EDD_Ezdefi_Shortcode
                             </div>
                             <div class="right">
                                 <span class="name"><?php echo $c['name']; ?></span>
-                                <span class="discount">Discount: <?php echo ( intval($c['discount']) > 0) ? $c['discount'] : 0; ?>%</span>
+                                <span class="discount"><?php _e( 'Discount', 'edd-ezdefi' ); ?>: <?php echo ( intval($c['discount']) > 0) ? $c['discount'] : 0; ?>%</span>
                                 <span class="more">
                                     <?php if( isset($c['desc']) && $c['desc'] != '') : ?>
                                         <span class="tooltip desc"><?php echo $c['desc']; ?></span>
@@ -102,10 +102,10 @@ class EDD_Ezdefi_Shortcode
 			            echo '<li><a href="#'.$key.'" id="tab-'.$key.'">';
 			            switch ($key) {
 				            case 'amount_id' :
-					            echo '<span>Simple method</span>';
+					            echo '<span>' . __( 'Simple method', 'edd-ezdefi' ) . '</span>';
 					            break;
 				            case 'ezdefi_wallet' :
-					            echo '<img width="18" src="'.EDD_Ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . '"> <span> Pay with ezDeFi wallet</span></a></li>';
+					            echo '<img width="18" src="'.EDD_Ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . '"> <span> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span></a></li>';
 					            break;
 			            }
 			            echo '</a></li>';
@@ -116,7 +116,7 @@ class EDD_Ezdefi_Shortcode
                     <div id="<?php echo $key;?>" class="ezdefi-payment-panel"></div>
 	            <?php endforeach; ?>
             </div>
-            <button class="submitBtn" style="display: none">Confirm</button>
+            <button class="submitBtn" style="display: none"<?php _e( 'Confirm', 'edd-ezdefi' ); ?></button>
         </div>
         <?php
         $prepend = ob_get_contents();

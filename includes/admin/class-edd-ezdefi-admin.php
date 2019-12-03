@@ -24,12 +24,12 @@ class EDD_Ezdefi_Admin
 	/** Load needed CSS and JS file */
 	public function load_styles_scripts()
 	{
-		wp_enqueue_script( 'edd_ezdefi_jquery_tiptip', edd_ezdefi()->plugin_url() . '/assets/jquery.tipTip.js', array('jquery') );
-		wp_enqueue_style( 'edd_ezdefi_select2', edd_ezdefi()->plugin_url() . '/assets/select2.min.css' );
-		wp_enqueue_script( 'edd_ezdefi_select2', edd_ezdefi()->plugin_url() . '/assets/select2.min.js', array('jquery') );
-		wp_enqueue_script( 'edd_ezdefi_jquery_validation', edd_ezdefi()->plugin_url() . '/assets/jquery.validate.min.js', array('jquery') );
-		wp_enqueue_style( 'edd_ezdefi_admin', edd_ezdefi()->plugin_url() . '/assets/edd-ezdefi-admin.css' );
-		wp_enqueue_script( 'edd_ezdefi_admin', edd_ezdefi()->plugin_url() . '/assets/edd-ezdefi-admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-tiptip' ) );
+		wp_register_script( 'edd_ezdefi_jquery_tiptip', edd_ezdefi()->plugin_url() . '/assets/jquery.tipTip.js', array('jquery') );
+		wp_register_style( 'edd_ezdefi_select2', edd_ezdefi()->plugin_url() . '/assets/select2.min.css' );
+		wp_register_script( 'edd_ezdefi_select2', edd_ezdefi()->plugin_url() . '/assets/select2.min.js', array('jquery') );
+		wp_register_script( 'edd_ezdefi_jquery_validation', edd_ezdefi()->plugin_url() . '/assets/jquery.validate.min.js', array('jquery') );
+		wp_register_style( 'edd_ezdefi_admin', edd_ezdefi()->plugin_url() . '/assets/edd-ezdefi-admin.css' );
+		wp_register_script( 'edd_ezdefi_admin', edd_ezdefi()->plugin_url() . '/assets/edd-ezdefi-admin.js', array( 'jquery', 'jquery-ui-sortable', 'jquery-tiptip' ) );
 		wp_localize_script( 'edd_ezdefi_admin', 'edd_ezdefi_data',
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' )

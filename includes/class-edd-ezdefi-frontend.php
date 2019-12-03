@@ -27,7 +27,7 @@ class EDD_Ezdefi_Frontend
     {
         ob_start(); ?>
         <fieldset id="ezdefi-currency-select">
-            <legend>Select Currency</legend>
+            <legend><?php _e( 'Select Currency', 'edd-ezdefi' ); ?></legend>
             <?php $currency = edd_ezdefi_get_currency(); ?>
             <?php foreach( $currency as $c ) : ?>
                 <div class="ezdefi-currency">
@@ -39,7 +39,7 @@ class EDD_Ezdefi_Frontend
                         </div>
                         <div class="right">
                             <span class="name"><?php echo $c['name']; ?></span>
-                            <span class="discount">Discount: <?php echo ( intval($c['discount']) > 0) ? $c['discount'] : 0; ?>%</span>
+                            <span class="discount"><?php _e( 'Discount', 'edd-ezdefi' ); ?>: <?php echo ( intval($c['discount']) > 0) ? $c['discount'] : 0; ?>%</span>
                             <span class="more">
                                 <?php if( isset($c['desc']) && $c['desc'] != '') : ?>
                                     <span class="tooltip"><?php echo $c['desc']; ?></span>

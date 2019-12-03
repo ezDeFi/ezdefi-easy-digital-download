@@ -113,7 +113,7 @@ class EDD_Ezdefi_Payment
 
         $status = $ezdefi_payment_data['status'];
 
-        if( $status === 'DONE' ) {
+        if( strtolower( $status ) === 'done' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );
 
 	        if( $ezdefi_payment_data['amountId'] == true ) {

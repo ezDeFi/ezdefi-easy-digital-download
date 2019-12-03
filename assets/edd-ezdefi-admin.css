@@ -7,6 +7,13 @@ form td.form-invalid .select2-selection {
   border-color: #dc3232 !important;
   box-shadow: 0 0 2px rgba(204, 0, 0, 0.8);
 }
+form .form-table {
+  table-layout: fixed;
+}
+form .ezdefi-currency-table {
+  display: block;
+  overflow-x: auto;
+}
 form .ezdefi-currency-table thead th {
   padding: 15px 10px;
   vertical-align: middle;
@@ -33,17 +40,14 @@ form .ezdefi-currency-table .logo img {
   display: block;
   width: 32px;
 }
+form .ezdefi-currency-table .name {
+  min-width: 120px;
+}
 form .ezdefi-currency-table .name .view span {
   text-transform: capitalize;
 }
 form .ezdefi-currency-table .name .edit .select2-container .select2-selection {
   text-transform: capitalize;
-}
-form .ezdefi-currency-table .discount, form .ezdefi-currency-table .lifetime, form .ezdefi-currency-table .distance {
-  width: 100px;
-}
-form .ezdefi-currency-table .wallet {
-  width: 180px;
 }
 form .ezdefi-currency-table .wallet .edit input {
   width: 100%;

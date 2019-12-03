@@ -12,7 +12,13 @@ form {
     }
   }
 
+  .form-table {
+    table-layout: fixed;
+  }
+
   .ezdefi-currency-table {
+    display: block;
+    overflow-x: auto;
     thead {
       th {
         padding: 15px 10px;
@@ -47,6 +53,7 @@ form {
     }
 
     .name {
+      min-width: 120px;
       .view {
         span {
           text-transform: capitalize;
@@ -63,11 +70,11 @@ form {
     }
 
     .discount, .lifetime, .distance {
-      width: 100px;
+      //width: 100px;
     }
 
     .wallet {
-      width: 180px;
+      //width: 180px;
 
       .edit {
         input {

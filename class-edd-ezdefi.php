@@ -27,10 +27,7 @@ class EDD_Ezdefi
 	/** Includes required files */
 	public function includes()
 	{
-		require_once( $this->plugin_path() . '/includes/install.php' );
-		require_once( $this->plugin_path() . '/includes/functions.php' );
 		require_once( $this->plugin_path() . '/includes/class-edd-ezdefi-db.php' );
-		require_once( $this->plugin_path() . '/includes/class-edd-ezdefi-cron.php' );
 		require_once( $this->plugin_path() . '/includes/class-edd-ezdefi-api.php' );
 		require_once( $this->plugin_path() . '/includes/class-edd-ezdefi-ajax.php' );
 		require_once( $this->plugin_path() . '/includes/class-edd-ezdefi-frontend.php' );

@@ -4,39 +4,20 @@ defined( 'ABSPATH' ) or exit;
 
 class EDD_Ezdefi_Admin_Settings
 {
-    protected $cron;
-
-	/** EDD_Ezdefi_Admin_Settings constructor. */
+	/**
+     * EDD_Ezdefi_Admin_Settings constructor.
+     */
 	public function __construct() {
 		require_once edd_ezdefi()->plugin_path() . '/includes/admin/register-settings.php';
 
 		add_filter( 'edd_settings_sections_gateways', array( $this, 'register_settings_section' ) );
 		add_filter( 'edd_settings_gateways', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', array( $this, 'edd_ezdefi_currency_section' ) );
-
-		$this->cron = new EDD_Ezdefi_Cron();
-
-		add_action( 'init', array( $this, 'update_option' ) );
 	}
 
-	public function update_option()
-    {
-        if( ! isset( $_POST['option_page'] ) || $_POST['option_page'] != 'edd_settings' ) {
-            return;
-        }
-
-	    $this->cron->unschedule_clear_amount_event();
-
-	    if( $_POST['edd_settings']['ezdefi_method'] === 'ezdefi_wallet' ) {
-		    return;
-	    }
-
-	    $schedule = $_POST['edd_settings']['ezdefi_amount_clear_recurrence'];
-
-	    return $this->cron->update_clear_amount_event( $schedule );
-    }
-
-	/** Ezdefi settings section callback */
+	/**
+     * Ezdefi settings section callback
+     */
 	public function register_settings_section($sections)
 	{
 		$sections['ezdefi'] = __( 'EZDefi', 'edd-ezdefi' );
@@ -44,7 +25,9 @@ class EDD_Ezdefi_Admin_Settings
 		return $sections;
 	}
 
-	/** Ezdefi settings callback */
+	/**
+     * Ezdefi settings callback
+     */
 	public function register_settings($gateway_settings)
 	{
 		$ezdefi_settings = array(
@@ -83,27 +66,7 @@ class EDD_Ezdefi_Admin_Settings
 				'desc' => __( 'Description' ),
 				'default' => 0.01,
                 'class' => 'acceptable_variation'
-			),
-			'ezdefi_amount_decimals' => array(
-                'id' => 'ezdefi_amount_decimals',
-				'name' => __( 'Decimals', 'edd-ezdefi' ),
-				'type' => 'number',
-				'desc' => __( 'Description' ),
-				'default' => 6,
-                'class' => 'amount_decimals'
-			),
-			'ezdefi_amount_clear_recurrence' => array(
-                'id' => 'ezdefi_amount_clear_recurrence',
-				'name' => __( 'Amount clear recurrence', 'edd-ezdefi' ),
-				'type' => 'select',
-				'desc' => __( 'Description' ),
-				'options' => array(
-					'daily' => 'Daily',
-					'weekly' => 'Weekly',
-					'monthly' => 'Monthly'
-				),
-                'class' => 'recurrence'
-			),
+			)
 		);
 
 		$gateway_settings['ezdefi'] = $ezdefi_settings;
@@ -111,7 +74,9 @@ class EDD_Ezdefi_Admin_Settings
 		return $gateway_settings;
 	}
 
-	/** EZDefi currency settings section callback */
+	/**
+     * EZDefi currency settings section callback
+     */
 	public function edd_ezdefi_currency_section() {
 		add_settings_field(
 			'edd_settings[ezdefi_currency]',
@@ -122,9 +87,17 @@ class EDD_Ezdefi_Admin_Settings
 		);
 	}
 
-	/** EZDefi currency settings callback */
+	/**
+     * EZDefi currency settings callback
+     */
 	public function edd_ezdefi_currency_table()
 	{
+		wp_enqueue_script( 'edd_ezdefi_jquery_tiptip' );
+		wp_enqueue_style( 'edd_ezdefi_select2' );
+		wp_enqueue_script( 'edd_ezdefi_select2' );
+		wp_enqueue_script( 'edd_ezdefi_jquery_validation' );
+		wp_enqueue_style( 'edd_ezdefi_admin' );
+		wp_enqueue_script( 'edd_ezdefi_admin' );
 		ob_start(); ?>
 		<table id="ezdefi-currency-table" class="ezdefi-currency-table widefat striped">
 			<thead>
@@ -136,6 +109,7 @@ class EDD_Ezdefi_Admin_Settings
 				<th scope="col" class="lifetime"><?php _e( 'Payment Lifetime', 'edd-ezdefi' ); ?></th>
 				<th scope="col" class="wallet"><?php _e( 'Wallet Address', 'edd-ezdefi' ); ?></th>
 				<th scope="col" class="distance"><?php _e( 'Block Confirmation', 'edd-ezdefi' ); ?></th>
+                <th scope="col" class="decimal"><?php _e( 'Decimal', 'edd-ezdefi' ); ?></th>
 			</tr>
 			</thead>
 			<tbody>
@@ -159,9 +133,9 @@ class EDD_Ezdefi_Admin_Settings
 							<div class="view">
 								<span><?php echo (isset($c['name'])) ? $c['name'] : ''; ?></span>
 								<div class="actions">
-									<a href="" class="editBtn">Edit</a>
+									<a href="" class="editBtn"><?php _e( 'Edit', 'edd-ezdefi' ); ?></a>
 									|
-									<a href="" class="deleteBtn">Delete</a>
+									<a href="" class="deleteBtn"><?php _e( 'Delete', 'edd-ezdefi' ); ?></a>
 								</div>
 							</div>
 							<div class="edit">
@@ -169,7 +143,7 @@ class EDD_Ezdefi_Admin_Settings
 									<option selected value="<?php echo (isset($c['name'])) ? $c['name'] : ''; ?>"><?php echo (isset($c['name'])) ? $c['name'] : ''; ?></option>
 								</select>
 								<div class="actions">
-									<a href="" class="cancelBtn">Cancel</a>
+									<a href="" class="cancelBtn"><?php _e( 'Cancel', 'edd-ezdefi' ); ?></a>
 								</div>
 							</div>
 						</td>
@@ -205,6 +179,14 @@ class EDD_Ezdefi_Admin_Settings
 								<input type="number" class="small-text" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][distance]" value="<?php echo (isset($c['distance'])) ? $c['distance'] : ''; ?>">
 							</div>
 						</td>
+                        <td class="decimal">
+                            <div class="view">
+								<?php echo isset( $c['decimal'] ) ? $c['decimal'] : '' ;?>
+                            </div>
+                            <div class="edit">
+                                <input type="number" class="small-text" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][decimal]" value="<?php echo isset( $c['decimal'] ) ? $c['decimal'] : '' ;?>">
+                            </div>
+                        </td>
 					</tr>
 				<?php endforeach; ?>
 			<?php else : ?>
@@ -223,9 +205,9 @@ class EDD_Ezdefi_Admin_Settings
 						<div class="view">
 							<span>ntf</span>
 							<div class="actions">
-								<a href="" class="editBtn" data-edit-btn>Edit</a>
+								<a href="" class="editBtn" data-edit-btn><?php _e( 'Edit', 'edd-ezdefi' ); ?></a>
 								|
-								<a href="" class="deleteBtn" data-delete-btn>Delete</a>
+								<a href="" class="deleteBtn" data-delete-btn><?php _e( 'Delete', 'edd-ezdefi' ); ?></a>
 							</div>
 						</div>
 						<div class="edit">
@@ -233,7 +215,7 @@ class EDD_Ezdefi_Admin_Settings
 								<option value="nusd">nusd</option>
 							</select>
 							<div class="actions">
-								<a href="" class="cancelBtn" data-cancel-btn>Cancel</a>
+								<a href="" class="cancelBtn" data-cancel-btn><?php _e( 'Cancel', 'edd-ezdefi' ); ?></a>
 							</div>
 						</div>
 					</td>
@@ -265,6 +247,13 @@ class EDD_Ezdefi_Admin_Settings
 							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][distance]" value="">
 						</div>
 					</td>
+                    <td class="decimal">
+                        <div class="view">
+                        </div>
+                        <div class="edit">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][decimal]" value="">
+                        </div>
+                    </td>
 				</tr>
                 <tr class="editing">
                     <td class="sortable-handle"><span class="dashicons dashicons-menu"></span></td>
@@ -281,9 +270,9 @@ class EDD_Ezdefi_Admin_Settings
                         <div class="view">
                             <span>ntf</span>
                             <div class="actions">
-                                <a href="" class="editBtn" data-edit-btn>Edit</a>
+                                <a href="" class="editBtn" data-edit-btn><?php _e( 'Edit', 'edd-ezdefi' ); ?></a>
                                 |
-                                <a href="" class="deleteBtn" data-delete-btn>Delete</a>
+                                <a href="" class="deleteBtn" data-delete-btn><?php _e( 'Delete', 'edd-ezdefi' ); ?></a>
                             </div>
                         </div>
                         <div class="edit">
@@ -291,7 +280,7 @@ class EDD_Ezdefi_Admin_Settings
                                 <option value="ntf">ntf</option>
                             </select>
                             <div class="actions">
-                                <a href="" class="cancelBtn" data-cancel-btn>Cancel</a>
+                                <a href="" class="cancelBtn" data-cancel-btn><?php _e( 'Cancel', 'edd-ezdefi' ); ?></a>
                             </div>
                         </div>
                     </td>
@@ -323,13 +312,26 @@ class EDD_Ezdefi_Admin_Settings
                             <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][distance]" value="">
                         </div>
                     </td>
+                    <td class="decimal">
+                        <div class="view">
+                        </div>
+                        <div class="edit">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][decimal]" value="">
+                        </div>
+                    </td>
                 </tr>
 			<?php endif; ?>
 			</tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="8">
+                        <a href="" class="addBtn button button-secondary">
+                            <?php echo __( 'Add Currency', 'woocommerce-gateway-ezdefi' ); ?>
+                        </a>
+                    </td>
+                </tr>
+            </tfoot>
 		</table>
-		<p>
-			<span class="button-secondary addBtn">Add Currency</span>
-		</p>
 		<?php echo ob_get_clean();
 	}
 }

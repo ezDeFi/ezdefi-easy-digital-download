@@ -86,25 +86,25 @@ class EDD_Ezdefi_Api
 
     public function create_ezdefi_payment( $edd_payment, $currency_data, $amountId = false )
     {
-	    $subtotal = intval($edd_payment->subtotal);
-	    $discount = intval($currency_data['discount']);
-	    $value = $subtotal - ($subtotal * ($discount / 100));
+    	$value = $this->calculate_discounted_price(
+		    intval($edd_payment->subtotal),
+		    intval($currency_data['discount'])
+	    );
 
 	    if( $amountId ) {
-		    $value = $this->db->generate_amount_id( $value, $currency_data['symbol'] );
+		    $value = $this->generate_amount_id(
+			    $edd_payment->currency,
+			    $currency_data['symbol'],
+			    $value,
+			    $currency_data
+		    );
 	    }
 
 	    if( ! $value ) {
 		    return new WP_Error( 'create_ezdefi_payment', 'Can not generate amountID.' );
 	    }
 
-	    $uoid = $edd_payment->ID;
-
-	    if( $amountId ) {
-		    $uoid = $uoid . '-1';
-	    } else {
-		    $uoid = $uoid . '-0';
-	    }
+	    $uoid = $this->generate_uoid( $edd_payment->ID, $amountId );
 
 	    $data = [
 		    'uoid' => $uoid,
@@ -116,9 +116,12 @@ class EDD_Ezdefi_Api
 		    'ucid' => rand(1, 100),
 		    'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
 //            'callback' => home_url() . '/edd-ezdefi/nextypay'
-	        'callback' => 'http://149b372d.ngrok.io/edd-ezdefi/nextypay',
-		    'amountId' => $amountId
+	        'callback' => 'http://149b372d.ngrok.io/edd-ezdefi/nextypay'
 	    ];
+
+	    if( $amountId ) {
+	    	$data['amountId'] = true;
+	    }
 
 	    $response = $this->call( 'payment/create', 'post', $data );
 
@@ -133,6 +136,52 @@ class EDD_Ezdefi_Api
 
 	    return $response;
     }
+
+    public function calculate_discounted_price( $price, $discount )
+    {
+    	return $price - ( $price * ( $discount / 100 ) );
+    }
+
+	public function generate_amount_id( $fiat, $token, $value, $currency_data )
+	{
+		$rate = $this->get_token_exchange( $fiat, $token );
+
+		if( ! $rate ) {
+			return null;
+		}
+
+		$value = $value * $rate;
+
+		$value = $this->db->generate_amount_id( $value, $currency_data );
+
+		return $value;
+	}
+
+	public function get_token_exchange( $fiat, $token )
+	{
+		$response = $this->call( 'token/exchange/' . $fiat . ':' . $token, 'get' );
+
+		if( is_wp_error( $response ) ) {
+			return null;
+		}
+
+		$response = json_decode( $response['body'], true );
+
+		if( $response['code'] < 0 ) {
+			return null;
+		}
+
+		return $response['data'];
+	}
+
+	public function generate_uoid( $uoid, $amountId )
+	{
+		if( $amountId ) {
+			return $uoid . '-1';
+		}
+
+		return $uoid = $uoid . '-0';
+	}
 
     public function get_list_wallet()
     {

@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-12-03T04:50:18+01:00\n"
+"POT-Creation-Date: 2019-12-04T04:31:29+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.3.0\n"
 "X-Domain: edd-ezdefi\n"
@@ -124,12 +124,28 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin.php:44
+#: includes/admin/class-edd-ezdefi-admin.php:57
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin.php:45
+#: includes/admin/class-edd-ezdefi-admin.php:58
 msgid "Support"
+msgstr ""
+
+#: includes/admin/class-edd-ezdefi-admin.php:66
+msgid "ezDeFi Exception"
+msgstr ""
+
+#: includes/admin/class-edd-ezdefi-admin.php:112
+msgid "Received Amount"
+msgstr ""
+
+#: includes/admin/class-edd-ezdefi-admin.php:113
+msgid "Received At"
+msgstr ""
+
+#: includes/admin/class-edd-ezdefi-admin.php:114
+msgid "Assign To"
 msgstr ""
 
 #: includes/admin/register-settings.php:10
@@ -149,45 +165,45 @@ msgstr ""
 msgid "Allow client to pay using ezDeFi wallet"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:40
+#: includes/class-edd-ezdefi-ajax.php:46
 msgid "Can not get currency"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:105
-#: includes/class-edd-ezdefi-ajax.php:189
+#: includes/class-edd-ezdefi-ajax.php:111
+#: includes/class-edd-ezdefi-ajax.php:195
 msgid "Can not get payment"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:125
-#: includes/class-edd-ezdefi-ajax.php:203
+#: includes/class-edd-ezdefi-ajax.php:131
+#: includes/class-edd-ezdefi-ajax.php:209
 msgid "Can not create payment"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:247
+#: includes/class-edd-ezdefi-ajax.php:253
 msgid "You have"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:247
+#: includes/class-edd-ezdefi-ajax.php:253
 msgid "to scan this QR Code"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:255
+#: includes/class-edd-ezdefi-ajax.php:261
 msgid "Address"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:256
+#: includes/class-edd-ezdefi-ajax.php:262
 msgid "Amount"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:258
+#: includes/class-edd-ezdefi-ajax.php:264
 msgid "You have to pay an exact amount so that you payment can be recognized."
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:261
+#: includes/class-edd-ezdefi-ajax.php:267
 msgid "Download ezDefi for IOS"
 msgstr ""
 
-#: includes/class-edd-ezdefi-ajax.php:262
+#: includes/class-edd-ezdefi-ajax.php:268
 msgid "Download ezDefi for Android"
 msgstr ""
 

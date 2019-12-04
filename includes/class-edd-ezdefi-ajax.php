@@ -24,6 +24,12 @@ class EDD_Ezdefi_Ajax
 
         add_action( 'wp_ajax_edd_ezdefi_create_payment', array( $this, 'edd_ezdefi_create_payment_ajax_callback' ) );
         add_action( 'wp_ajax_nopriv_edd_ezdefi_create_payment', array( $this, 'edd_ezdefi_create_payment_ajax_callback' ) );
+
+	    add_action( 'wp_ajax_edd_ezdefi_assign_amount_id', array( $this, 'edd_ezdefi_assign_amount_id_ajax_callback' ) );
+	    add_action( 'wp_ajax_nopriv_wc_ezdefi_assign_amount_id', array( $this, 'edd_ezdefi_assign_amount_id_ajax_callback' ) );
+
+	    add_action( 'wp_ajax_edd_ezdefi_delete_amount_id', array( $this, 'edd_ezdefi_delete_amount_id_ajax_callback' ) );
+	    add_action( 'wp_ajax_nopriv_edd_ezdefi_delete_amount_id', array( $this, 'edd_ezdefi_delete_amount_id_ajax_callback' ) );
     }
 
 	/** Get currency ajax callback */
@@ -227,7 +233,7 @@ class EDD_Ezdefi_Ajax
 
 		$order->update_meta( '_edd_ezdefi_payment', $ezdefi_payment );
 		$order->update_meta( '_edd_ezdefi_currency', $symbol );
-		$order->update_meta( '_edd_ezdefi_amount_id', $$payment['originValue'] );
+		$order->update_meta( '_edd_ezdefi_amount_id', $payment['originValue'] );
 		$order->save();
 
 		wp_send_json_success( $html );
@@ -265,6 +271,45 @@ class EDD_Ezdefi_Ajax
 			<?php endif; ?>
 		</div>
 		<?php return ob_get_clean();
+	}
+
+	public function edd_ezdefi_assign_amount_id_ajax_callback()
+	{
+		if( ! isset( $_POST['amount_id'] ) || ! isset( $_POST['order_id'] ) ) {
+			wp_send_json_error();
+		}
+
+		$amount_id = $_POST['amount_id'];
+
+		$order_id = $_POST['order_id'];
+
+		$edd_payment = edd_get_payment( $order_id );
+
+		if( ! $edd_payment ) {
+			wp_send_json_error();
+		}
+
+		$this->delete_amount_id_exception( $amount_id );
+
+		edd_update_payment_status( $order_id, 'publish' );
+
+		wp_send_json_success();
+	}
+
+	public function edd_ezdefi_delete_amount_id_ajax_callback()
+	{
+		$amount_id = $_POST['amount_id'];
+
+		$this->delete_amount_id_exception( $amount_id );
+	}
+
+	protected function delete_amount_id_exception($amount_id)
+	{
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'edd_ezdefi_exception';
+
+		$wpdb->delete( $table_name, array( 'amount_id' => $amount_id ) );
 	}
 }
 

@@ -38,8 +38,8 @@ class EDD_Ezdefi_Admin_Settings
 			),
 			'ezdefi_api_url' => array(
 				'id' => 'ezdefi_api_url',
-				'name' => __( 'Gateway API Url', 'edd-ezdefi' ),
-				'desc' => __( 'Gateway API Url Description', 'edd-ezdefi' ),
+				'name' => __( 'API Url', 'edd-ezdefi' ),
+				'desc' => __( 'API Url Description', 'edd-ezdefi' ),
 				'type' => 'text',
 				'size' => 'regular',
 				'class' => 'ezdefi_api_url'

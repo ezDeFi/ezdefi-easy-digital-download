@@ -109,6 +109,7 @@ class EDD_Ezdefi_Admin
 		<h2>Manage ezDeFi Exception</h2>
 		<table class="widefat" id="edd-ezdefi-order-assign">
 			<thead>
+                <th>#</th>
 				<th><?php _e( 'Received Amount', 'edd-ezdefi' ); ?></th>
 				<th><?php _e( 'Received At', 'edd-ezdefi' ); ?></th>
 				<th><?php _e( 'Assign To', 'edd-ezdefi' ); ?></th>
@@ -116,8 +117,9 @@ class EDD_Ezdefi_Admin
 			</thead>
 			<tbody>
                 <?php if( ! empty( $exception ) ) : ?>
-                    <?php foreach($exception as $e) : ?>
+                    <?php foreach($exception as $i => $e) : ?>
                         <tr>
+                            <td><?php echo $i + 1; ?></td>
                             <td>
                                 <?php echo $e['amount_id']; ?>
                                 <input type="hidden" value="<?php echo $e['amount_id']; ?>" id="amount-id">

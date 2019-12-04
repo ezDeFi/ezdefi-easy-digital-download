@@ -6,9 +6,13 @@ class EDD_Ezdefi_Ajax
 {
 	protected $api;
 
+	protected $db;
+
     public function __construct()
     {
 	    $this->api = new EDD_Ezdefi_Api();
+
+	    $this->db = new EDD_Ezdefi_Db();
 
         add_action( 'wp_ajax_edd_ezdefi_get_currency', array( $this, 'edd_ezdefi_get_currency_ajax_callback' ) );
         add_action( 'wp_ajax_nopriv_edd_ezdefi_get_currency', array( $this, 'edd_ezdefi_get_currency_ajax_callback' ) );
@@ -199,14 +203,26 @@ class EDD_Ezdefi_Ajax
 
 		$ezdefi_payment = $response['data'];
 
-		$html = $this->generate_payment_html( $ezdefi_payment );
+		$uoid = $ezdefi_payment['uoid'];
+
+		$order = edd_get_payment( $uoid );
+
+		if( ! $order ) {
+			wp_send_json_error( __( 'Can not get payment', 'edd-ezdefi' ) );
+        }
+
+		$html = $this->generate_payment_html( $ezdefi_payment, $order );
 
 		wp_send_json_success( $html );
 	}
 
 	private function create_ezdefi_payment( $order, $symbol, $method, $clear_meta_data = false )
 	{
-		$currency_data = $this->get_currency_data( $symbol, __( 'Can not create payment', 'edd-ezdefi' ) );
+	    $currency_data = $this->db->get_currency_option( $symbol );
+
+	    if( ! $currency_data ) {
+	        wp_send_json_error( __( 'Can not create payment', 'edd-ezdefi' ) );
+        }
 
 		$amount_id = ( $method === 'amount_id' ) ? true : false;
 
@@ -221,7 +237,7 @@ class EDD_Ezdefi_Ajax
 
 		$payment = $response['data'];
 
-		$html = $this->generate_payment_html( $payment );
+		$html = $this->generate_payment_html( $payment, $order );
 
 		if( $clear_meta_data ) {
 			$ezdefi_payment = array();
@@ -239,14 +255,17 @@ class EDD_Ezdefi_Ajax
 		wp_send_json_success( $html );
 	}
 
-	public function generate_payment_html( $payment ) {
+	public function generate_payment_html( $payment, $order ) {
+        $total = $order->total;
+        $discount = $this->db->get_currency_option( $payment['currency'] )['discount'];
+        $total = $total - ( $total * ( $discount / 100 ) );
 		ob_start(); ?>
 		<div class="ezdefi-payment">
 			<?php if( ! $payment ) : ?>
 				<span><?php echo __( 'Can not get payment', 'woocommerce-gateway-ezdefi' ); ?></span>
 			<?php else : ?>
 				<p class="exchange">
-					<span><?php echo $payment['originCurrency']; ?> <?php echo $payment['originValue']; ?></span>
+					<span><?php echo $order->currency; ?> <?php echo $total; ?></span>
 					<img width="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfjChgQMyxZjA7+AAACP0lEQVRo3u2YvWsUQRTAf8nFQs5LCEY0aCGIB1ErRVMoFpYGTGNlo2AnBxHlrLQJKVSwiV//gqCV4gemEGJhiBYXRAtBDIhICiUGL8GP3Fjs7rs5vN0o5M1LsW+a2XkDv9/MvF12t4B2dDDODqbVOan46zgaVKzwN3A4O4VuarGAo8EZC4VeXnoKJruQK+QKa12hI2VyFyUFhY08Ymfcd1S49feU7VSZ5DPL4qrXGpxuhW/iJj8DgJutTrGJ38vHoPCobUnwg9QN8HeTItzGNP2yF7M85D11lTvhLAPSn2CYpah7R5zmOUmnChrgsrf6p6xPhvfRiAe/slsNnoqHcRketsDDbDw8ZYPvlsR5CzwMSGpICT+WhYdBSR4Ov3p9gbGV8Hr3PEAPx6XvPXZC7sBm3qSvPoRApJCB71KB+jHHERbab34YAZjLSuoW4T+EuYBNHJXC32W+A2taYAN9lgJFHjDZfGsNHUWe4XC8VVHwirD9hBLPZcpM+mN0NQTaHUGR+xySq3vpj1Gd8FfvuKjCyDiC5OyjdklpkSeE0N+aCLF6gNGY8IuCBb4zfklxzFjg4ZRQRi3wB/guB1AOjV9HhUXh3Ibo87zEYw7KpFqUWPUoUWaIrXL9gf18iRSeGPyamGdPYlI2wL/zflPQx4+g8CWu0tN6OiNBwL/5xAQjXhWQFCFc4IqMvOYY3xSKcIHlrPQ5z/UVvSr3wQqRK+QKuYIfVU9hSuGt+L924ZoFvqmgji+kZl6wSI2qtsAfm/EoPAbFFD0AAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMTAtMjRUMTY6NTE6NDQrMDA6MDBiAik3AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTEwLTI0VDE2OjUxOjQ0KzAwOjAwE1+RiwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=" />
 					<span><?php echo ( $payment['value'] / pow( 10, $payment['decimal'] ) ); ?> <?php echo $payment['currency']; ?></span>
 				</p>
@@ -264,7 +283,7 @@ class EDD_Ezdefi_Ajax
 					</p>
 					<p>
                         <?php _e( 'You have to pay exact amount so that your order can be handle property.', 'edd-ezdefi' ); ?><br/>
-                        <?php _e( 'If you have difficulty for sending exact amount, try to use', 'edd-ezdefi' ); ?> <a href="">ezDeFi Wallet</a>
+                        <?php _e( 'If you have difficulty for sending exact amount, try to use', 'edd-ezdefi' ); ?> <a href="" class="ezdefiEnableBtn">ezDeFi Wallet</a>
                     </p>
 				<?php else : ?>
 					<p>

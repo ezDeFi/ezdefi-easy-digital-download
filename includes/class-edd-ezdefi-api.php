@@ -120,7 +120,10 @@ class EDD_Ezdefi_Api
 	    ];
 
 	    if( $amountId ) {
-	    	$data['amountId'] = true;
+		    $data['amountId'] = true;
+		    $data['currency'] = $currency_data['symbol'] . ':' . $currency_data['symbol'];
+	    } else {
+		    $data['currency'] = $edd_payment->currency . ':' . $currency_data['symbol'];
 	    }
 
 	    $response = $this->call( 'payment/create', 'post', $data );

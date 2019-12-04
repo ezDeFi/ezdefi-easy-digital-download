@@ -90,7 +90,7 @@ class EDD_Ezdefi_Loader
 		$wpdb->query("DROP PROCEDURE IF EXISTS `edd_ezdefi_generate_amount_id`" );
 		$wpdb->query("
 	        CREATE PROCEDURE `edd_ezdefi_generate_amount_id`(
-	            IN value DECIMAl(12,10),
+	            IN value DECIMAl(18,10),
 			    IN token VARCHAR(10),
 			    IN decimal_number INT(2),
 			    IN life_time INT(11),

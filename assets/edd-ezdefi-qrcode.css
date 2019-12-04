@@ -176,6 +176,10 @@
 #edd-ezdefi-qrcode-section .ezdefi-payment .exchange span {
   padding: 0 10px;
 }
+#edd-ezdefi-qrcode-section .ezdefi-payment .count-down {
+  color: #f73f2e;
+  font-weight: bold;
+}
 #edd-ezdefi-qrcode-section .ezdefi-payment img.qrcode {
   display: block;
   margin: 0 auto;

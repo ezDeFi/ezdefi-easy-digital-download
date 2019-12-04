@@ -42,6 +42,19 @@ class EDD_Ezdefi_Db
 		return $amount_id;
 	}
 
+	public function get_currency_option( $symbol )
+	{
+		$currency_data = edd_get_option( 'ezdefi_currency' );
+
+		$index = array_search( $symbol, array_column( $currency_data, 'symbol' ) );
+
+		if( $index === false ) {
+			return null;
+		}
+
+		return $currency_data[$index];
+	}
+
 	public function get_acceptable_variation()
 	{
 		return edd_get_option( 'ezdefi_acceptable_variation' );

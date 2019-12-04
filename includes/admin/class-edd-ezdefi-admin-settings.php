@@ -184,7 +184,7 @@ class EDD_Ezdefi_Admin_Settings
 								<?php echo isset( $c['decimal'] ) ? $c['decimal'] : '' ;?>
                             </div>
                             <div class="edit">
-                                <input type="number" class="small-text" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][decimal]" value="<?php echo isset( $c['decimal'] ) ? $c['decimal'] : '' ;?>">
+                                <input type="number" class="small-text currency-decimal" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][decimal]" value="<?php echo isset( $c['decimal'] ) ? $c['decimal'] : '' ;?>">
                             </div>
                         </td>
 					</tr>

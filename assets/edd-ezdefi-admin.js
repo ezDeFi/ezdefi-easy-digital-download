@@ -8,6 +8,7 @@ jQuery(function($) {
         logoInput: '.currency-logo',
         descInput: '.currency-desc',
         walletInput: '.currency-wallet',
+        decimalInput: '.currency-decimal',
         currencyTable: '#ezdefi-currency-table',
         currencySelect: '.select-select2',
         addBtn: '.addBtn',
@@ -29,6 +30,8 @@ jQuery(function($) {
         var toggleEdit = this.toggleEdit.bind(this);
         var checkWalletAddress = this.checkWalletAddress.bind(this);
         var toggleAmountSetting = this.toggleAmountSetting.bind(this);
+        var onChangeDecimal = this.onChangeDecimal.bind(this);
+        var onBlurDecimal = this.onBlurDecimal.bind(this);
 
         this.init.call(this);
 
@@ -38,7 +41,9 @@ jQuery(function($) {
             .on('click', selectors.addBtn, addCurrency)
             .on('click', selectors.deleteBtn, removeCurrency)
             .on('keyup', selectors.walletInput, checkWalletAddress)
-            .on('change', selectors.paymentMethod, toggleAmountSetting);
+            .on('change', selectors.paymentMethod, toggleAmountSetting)
+            .on('focus', selectors.decimalInput, onChangeDecimal)
+            .on('blur', selectors.decimalInput, onBlurDecimal);;
     };
 
     EDD_EZDefi_Admin.prototype.init = function() {
@@ -159,14 +164,24 @@ jQuery(function($) {
                     }
                 });
             }
+
+            if(name.indexOf('decimal') > 0) {
+                var $input = $('input[name="'+name+'"]');
+                $input.rules('add', {
+                    required: true,
+                    min: 2,
+                    messages: {
+                        required: 'Please enter number of decimal',
+                        min: 'Please enter number greater than 0'
+                    }
+                });
+            }
         });
     };
 
     EDD_EZDefi_Admin.prototype.toggleAmountSetting = function() {
         var checked = this.$form.find(selectors.amountIdCheckbox).is(':checked');
-        var amount_settings = this.$form.find(
-            '.acceptable_variation, .amount_decimals, .next_run, .recurrence'
-        ).closest('tr');
+        var amount_settings = this.$form.find('.acceptable_variation').closest('tr');
         if(checked) {
             amount_settings.each(function() {
                 $(this).show();
@@ -388,6 +403,19 @@ jQuery(function($) {
         row.find('input, select').each(function () {
             $(this).removeAttr('aria-describedby').removeAttr('aria-invalid');
         });
+    };
+
+    EDD_EZDefi_Admin.prototype.onChangeDecimal = function(e) {
+        var input = $(e.target);
+        if(input.val().length > 0) {
+            var td = $(e.target).closest('td');
+            td.find('.edit').append('<span class="error">Changing decimal can cause to payment interruption</span>');
+        }
+    };
+
+    EDD_EZDefi_Admin.prototype.onBlurDecimal = function(e) {
+        var td = $(e.target).closest('td');
+        td.find('.edit').find('.error').remove();
     };
 
     new EDD_EZDefi_Admin();

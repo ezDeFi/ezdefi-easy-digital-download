@@ -180,7 +180,7 @@
   display: block;
   margin: 0 auto;
 }
-#edd-ezdefi-qrcode-section .ezdefi-payment a {
+#edd-ezdefi-qrcode-section .ezdefi-payment a.download-link {
   display: block;
 }
 #edd-ezdefi-qrcode-section .submitBtn {

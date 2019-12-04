@@ -258,14 +258,18 @@ class EDD_Ezdefi_Ajax
 				</p>
 				<?php if( $payment['amountId'] === true ) : ?>
 					<p>
+                        <strong><?php _e( 'Pay Manually', 'edd-ezdefi' ); ?>:</strong> <?php echo $payment['chain']['name'] . ' ' . $payment['chain']['symbol']; ?><br/>
 						<strong><?php _e( 'Address', 'edd-ezdefi' ); ?>:</strong> <?php echo $payment['to']; ?><br/>
 						<strong><?php _e( 'Amount', 'edd-ezdefi' ); ?>:</strong> <?php echo $payment['originValue']; ?><br/>
 					</p>
-					<p><?php _e( 'You have to pay an exact amount so that you payment can be recognized.', 'edd-ezdefi' ); ?></p>
+					<p>
+                        <?php _e( 'You have to pay exact amount so that your order can be handle property.', 'edd-ezdefi' ); ?><br/>
+                        <?php _e( 'If you have difficulty for sending exact amount, try to use', 'edd-ezdefi' ); ?> <a href="">ezDeFi Wallet</a>
+                    </p>
 				<?php else : ?>
 					<p>
-						<a href=""><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
-						<a href=""><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
+						<a href="" class="download-link"><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
+						<a href="" class="download-link"><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
 					</p>
 				<?php endif; ?>
 			<?php endif; ?>

@@ -115,18 +115,6 @@ class EDD_Ezdefi_Payment
 
         if( strtolower( $status ) === 'done' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );
-
-	        if( $ezdefi_payment_data['amountId'] == true ) {
-		        $ezdefi_amount_id = $edd_payment->get_meta( '_edd_ezdefi_amount_id' );
-
-		        if ( $ezdefi_amount_id && ! empty( $ezdefi_amount_id ) ) {
-			        $this->set_amount_id_invalid(
-				        $ezdefi_amount_id,
-				        $edd_payment->get_meta( '_edd_ezdefi_currency' )
-			        );
-		        }
-	        }
-
 	        edd_empty_cart();
         }
 

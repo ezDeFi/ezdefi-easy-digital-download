@@ -111,6 +111,7 @@ class EDD_Ezdefi_Admin
 			<thead>
                 <th>#</th>
 				<th><?php _e( 'Received Amount', 'edd-ezdefi' ); ?></th>
+				<th><?php _e( 'Currency', 'woocommerce-gateway-ezdefi' ); ?></th>
 				<th><?php _e( 'Received At', 'edd-ezdefi' ); ?></th>
 				<th><?php _e( 'Assign To', 'edd-ezdefi' ); ?></th>
 				<th></th>
@@ -124,9 +125,18 @@ class EDD_Ezdefi_Admin
                                 <?php echo $e['amount_id']; ?>
                                 <input type="hidden" value="<?php echo $e['amount_id']; ?>" id="amount-id">
                             </td>
+                            <td>
+                                <?php echo $e['currency']; ?>
+                                <input type="hidden" value="<?php echo $e['currency']; ?>" id="currency">
+                            </td>
                             <td><?php echo $e['created_at']; ?></td>
                             <td class="order-select-column">
-                                <select name="" class="order-select"></select>
+                                <select name="" class="order-select">
+                                	<?php if( $e['order_id'] ) : ?>
+                                        <option value="<?php echo $e['order_id']; ?>" selected></option>
+                                    <?php endif; ?>
+									<?php echo $e['order_id']; ?>
+                                </select>
                             </td>
                             <td>
                                 <button class="button button-primary assignBtn">Assign</button>

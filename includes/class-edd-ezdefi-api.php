@@ -110,7 +110,6 @@ class EDD_Ezdefi_Api
 		    'uoid' => $uoid,
 		    'to' => ( isset( $currency_data['wallet'] ) ? $currency_data['wallet'] : '' ),
 		    'value' => $value,
-		    'currency' => $edd_payment->currency . ':' . $currency_data['symbol'],
 		    'safedist' => (isset($currency_data['distance'])) ? $currency_data['distance'] : '',
 //            'ucid' => $edd_payment->user_id,
 		    'ucid' => rand(1, 100),

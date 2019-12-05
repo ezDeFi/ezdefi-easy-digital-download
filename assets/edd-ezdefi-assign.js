@@ -5,6 +5,7 @@ jQuery(function($) {
         table: '#edd-ezdefi-order-assign',
         select: '.order-select',
         amountIdInput: '#amount-id',
+        currencyInput: '#currency',
         assignBtn: '.assignBtn',
         removeBtn: '.removeBtn'
     };
@@ -78,10 +79,12 @@ jQuery(function($) {
         var row = $(e.target).closest('tr');
         var order_id = this.$select.val();
         var amount_id = this.$amountIdInput.val();
+        var currency = this.$currencyInput.val();
         var data = {
-            action: 'edd_ezdefi_assign_amount_id',
+            action: 'wc_ezdefi_assign_amount_id',
             order_id: order_id,
-            amount_id: amount_id
+            amount_id: amount_id,
+            currency: currency
         };
         this.callAjax.call(this, data, row);
     };
@@ -93,9 +96,11 @@ jQuery(function($) {
         }
         var row = $(e.target).closest('tr');
         var amount_id = this.$amountIdInput.val();
+        var currency = this.$currencyInput.val();
         var data = {
-            action: 'edd_ezdefi_delete_amount_id',
-            amount_id: amount_id
+            action: 'wc_ezdefi_delete_amount_id',
+            amount_id: amount_id,
+            currency: currency
         };
         this.callAjax.call(this, data, row);
     };

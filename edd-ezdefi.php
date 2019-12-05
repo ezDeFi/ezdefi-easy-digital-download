@@ -67,12 +67,14 @@ class EDD_Ezdefi_Loader
 	{
 		global $wpdb;
 
+		$sql = array();
+
 		$table_name = $wpdb->prefix . 'edd_ezdefi_amount';
 
 		$charset_collate = $wpdb->get_charset_collate();
 
 		// Create new table
-		$sql = "CREATE TABLE $table_name (
+		$sql[] = "CREATE TABLE $table_name (
 			id int(11) NOT NULL AUTO_INCREMENT,
 			amount_key int(11) NOT NULL,
 			price decimal(18,10) NOT NULL,
@@ -81,6 +83,17 @@ class EDD_Ezdefi_Loader
 			expired_time timestamp default current_timestamp,
 			PRIMARY KEY (id),
 			UNIQUE (amount_id, currency)
+		) $charset_collate;";
+
+		$exception_table_name = $wpdb->prefix . 'edd_ezdefi_exception';
+
+		$sql = "CREATE TABLE $exception_table_name (
+			id int(11) NOT NULL AUTO_INCREMENT,
+			amount_id decimal(18,10) NOT NULL,
+			currency varchar(10) NOT NULL,
+			order_id int(11) NULL,
+			created_at timestamp default current_timestamp,
+			PRIMARY KEY (id)
 		) $charset_collate;";
 
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -111,6 +124,7 @@ class EDD_Ezdefi_Loader
 			    INSERT INTO $table_name (amount_key, price, amount_id, currency, expired_time) 
 			        VALUES (unique_id, value, amount_id, token, NOW() + INTERVAL life_time SECOND)
                     ON DUPLICATE KEY UPDATE `expired_time` = NOW() + INTERVAL life_time SECOND;
+                INSERT INTO $exception_table_name (amount_id, currency) VALUES (amount_id, token);
 			END
 		" );
 
@@ -123,18 +137,6 @@ class EDD_Ezdefi_Loader
 				DELETE FROM $table_name;
 			END
 		" );
-
-		$table_name = $wpdb->prefix . 'edd_ezdefi_exception';
-
-		$sql = "CREATE TABLE $table_name (
-			id int(11) NOT NULL AUTO_INCREMENT,
-			amount_id decimal(18,10) NOT NULL,
-			created_at timestamp default current_timestamp,
-			PRIMARY KEY (id),
-		) $charset_collate;";
-
-		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-		dbDelta( $sql );
 	}
 
 	/**

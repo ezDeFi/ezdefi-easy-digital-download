@@ -113,9 +113,16 @@ class EDD_Ezdefi_Payment
 
         $status = $ezdefi_payment_data['status'];
 
+        $amount_id = $payment['value'] / pow( 10, $payment['decimal'] );
+
+        $currency = $payment['currency'];
+
         if( strtolower( $status ) === 'done' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );
 	        edd_empty_cart();
+            $this->db->delete_amount_id_exception( $amount_id, $currency );
+        } elseif( strtolower( $status ) === strtolower( 'EXPIRED_DONE' ) ) {
+            $this->db->add_uoid_to_exception( $amount_id, $currency, $edd_payment_id );
         }
 
 	    wp_die();

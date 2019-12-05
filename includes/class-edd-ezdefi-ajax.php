@@ -203,7 +203,7 @@ class EDD_Ezdefi_Ajax
 
 		$ezdefi_payment = $response['data'];
 
-		$uoid = $ezdefi_payment['uoid'];
+		$uoid = substr( $ezdefi_payment['uoid'], 0, strpos( $ezdefi_payment['uoid'],'-' ) );
 
 		$order = edd_get_payment( $uoid );
 
@@ -298,11 +298,13 @@ class EDD_Ezdefi_Ajax
 
 	public function edd_ezdefi_assign_amount_id_ajax_callback()
 	{
-		if( ! isset( $_POST['amount_id'] ) || ! isset( $_POST['order_id'] ) ) {
-			wp_send_json_error();
-		}
+		if( ! isset( $_POST['amount_id'] ) || ! isset( $_POST['order_id'] ) || ! isset( $_POST['currency'] ) ) {
+            wp_send_json_error();
+        }
 
 		$amount_id = $_POST['amount_id'];
+
+		$currency = $_POST['currency'];
 
 		$order_id = $_POST['order_id'];
 
@@ -312,7 +314,7 @@ class EDD_Ezdefi_Ajax
 			wp_send_json_error();
 		}
 
-		$this->delete_amount_id_exception( $amount_id );
+		$this->db->delete_amount_id_exception( $amount_id, $currency );
 
 		edd_update_payment_status( $order_id, 'publish' );
 
@@ -323,16 +325,9 @@ class EDD_Ezdefi_Ajax
 	{
 		$amount_id = $_POST['amount_id'];
 
-		$this->delete_amount_id_exception( $amount_id );
-	}
+		$currency = $_POST['currency'];
 
-	protected function delete_amount_id_exception($amount_id)
-	{
-		global $wpdb;
-
-		$table_name = $wpdb->prefix . 'edd_ezdefi_exception';
-
-		$wpdb->delete( $table_name, array( 'amount_id' => $amount_id ) );
+	    $this->db->delete_amount_id_exception( $amount_id, $currency );
 	}
 }
 

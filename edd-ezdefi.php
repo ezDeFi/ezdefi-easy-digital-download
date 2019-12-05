@@ -87,7 +87,7 @@ class EDD_Ezdefi_Loader
 
 		$exception_table_name = $wpdb->prefix . 'edd_ezdefi_exception';
 
-		$sql = "CREATE TABLE $exception_table_name (
+		$sql[] = "CREATE TABLE $exception_table_name (
 			id int(11) NOT NULL AUTO_INCREMENT,
 			amount_id decimal(18,10) NOT NULL,
 			currency varchar(10) NOT NULL,

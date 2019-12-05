@@ -137,6 +137,15 @@ class EDD_Ezdefi_Loader
 				DELETE FROM $table_name;
 			END
 		" );
+
+		$wpdb->query( "
+			CREATE EVENT IF NOT EXISTS `edd_ezdefi_clear_exception_table`
+			ON SCHEDULE EVERY 7 DAY
+			DO
+			BEGIN
+				DELETE FROM $exception_table_name;
+			END
+		" );
 	}
 
 	/**

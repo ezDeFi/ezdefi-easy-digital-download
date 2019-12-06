@@ -73,6 +73,9 @@ jQuery(function($) {
             },
             beforeSend: function() {
                 clearInterval(self.checkPaymentLoop);
+                $.each(self.xhrPool, function(index, jqXHR) {
+                    jqXHR.abort();
+                });
                 $.blockUI({message: null});
             },
             success:function(response) {

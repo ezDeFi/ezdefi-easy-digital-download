@@ -113,9 +113,9 @@ class EDD_Ezdefi_Payment
 
         $status = $ezdefi_payment_data['status'];
 
-        $amount_id = $payment['value'] / pow( 10, $payment['decimal'] );
+        $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
 
-        $currency = $payment['currency'];
+        $currency = $ezdefi_payment_data['currency'];
 
         if( strtolower( $status ) === 'done' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );

@@ -98,14 +98,14 @@ class EDD_Ezdefi_Shortcode
             <div class="ezdefi-payment-tabs">
                 <ul>
 		            <?php
-		            foreach( $payment_method as $key => $value ) {
-			            echo '<li><a href="#'.$key.'" id="tab-'.$key.'">';
+		            foreach( $this->payment_method as $key => $value ) {
+			            echo '<li>';
 			            switch ($key) {
 				            case 'amount_id' :
-					            echo '<span>' . __( 'Simple method', 'edd-ezdefi' ) . '</span>';
+					            echo '<a href="#'.$key.'" id="tab-'.$key.'"><span>' . __( 'Simple method', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
 					            break;
 				            case 'ezdefi_wallet' :
-					            echo '<img width="18" src="'.EDD_Ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . '"> <span> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span></a></li>';
+					            echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url('.plugins_url( 'assets/images/ezdefi-icon.png', WC_EZDEFI_MAIN_FILE ).')"><span> ' . __( 'Pay with ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
 					            break;
 			            }
 			            echo '</a></li>';

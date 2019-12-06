@@ -14,6 +14,7 @@ jQuery(function($) {
         this.$table = $(selectors.table);
         this.$select = this.$table.find(selectors.select);
         this.$amountIdInput = this.$table.find(selectors.amountIdInput);
+        this.$currencyInput = this.$table.find(selectors.currencyInput);
 
         var init = this.init.bind(this);
         var onAssign = this.onAssign.bind(this);
@@ -81,7 +82,7 @@ jQuery(function($) {
         var amount_id = this.$amountIdInput.val();
         var currency = this.$currencyInput.val();
         var data = {
-            action: 'wc_ezdefi_assign_amount_id',
+            action: 'edd_ezdefi_assign_amount_id',
             order_id: order_id,
             amount_id: amount_id,
             currency: currency
@@ -98,7 +99,7 @@ jQuery(function($) {
         var amount_id = this.$amountIdInput.val();
         var currency = this.$currencyInput.val();
         var data = {
-            action: 'wc_ezdefi_delete_amount_id',
+            action: 'edd_ezdefi_delete_amount_id',
             amount_id: amount_id,
             currency: currency
         };

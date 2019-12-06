@@ -20,6 +20,7 @@ jQuery(function($) {
         this.$submitBtn = this.$container.find(selectors.submitBtn);
         this.paymentData = JSON.parse(this.$container.find(selectors.paymentData).text());
         this.xhrPool = [];
+        this.checkPaymentLoop;
 
         var init = this.init.bind(this);
         var onChange = this.onChange.bind(this);
@@ -71,7 +72,7 @@ jQuery(function($) {
                 method: method
             },
             beforeSend: function() {
-                clearInterval(self.checkOrderLoop);
+                clearInterval(self.checkPaymentLoop);
                 $.blockUI({message: null});
             },
             success:function(response) {
@@ -136,7 +137,7 @@ jQuery(function($) {
                 method: method
             },
             beforeSend: function() {
-                window.clearInterval(window.checkPaymentLoop);
+                clearInterval(self.checkPaymentLoop);
                 $.each(self.xhrPool, function(index, jqXHR) {
                     jqXHR.abort();
                 });
@@ -169,7 +170,7 @@ jQuery(function($) {
 
     EDD_EZDefi_Checkout.prototype.checkPaymentStatus = function() {
         var self = this;
-        setInterval(function() {
+        self.checkPaymentLoop = setInterval(function() {
             $.ajax({
                 url: edd_ezdefi_data.ajax_url,
                 method: 'post',

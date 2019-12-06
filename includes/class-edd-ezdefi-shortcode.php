@@ -98,7 +98,7 @@ class EDD_Ezdefi_Shortcode
             <div class="ezdefi-payment-tabs">
                 <ul>
 		            <?php
-		            foreach( $this->payment_method as $key => $value ) {
+		            foreach( $payment_method as $key => $value ) {
 			            echo '<li>';
 			            switch ($key) {
 				            case 'amount_id' :

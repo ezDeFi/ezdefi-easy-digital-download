@@ -117,11 +117,11 @@ class EDD_Ezdefi_Payment
 
         $currency = $ezdefi_payment_data['currency'];
 
-        if( strtolower( $status ) === 'done' ) {
+        if( $status === 'DONE' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );
 	        edd_empty_cart();
             $this->db->delete_amount_id_exception( $amount_id, $currency );
-        } elseif( strtolower( $status ) === strtolower( 'EXPIRED_DONE' ) ) {
+        } elseif( $status === 'EXPIRED_DONE' ) {
             $this->db->add_uoid_to_exception( $amount_id, $currency, $edd_payment_id );
         }
 

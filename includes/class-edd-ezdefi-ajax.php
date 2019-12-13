@@ -271,25 +271,24 @@ class EDD_Ezdefi_Ajax
 				</p>
 				<p><?php _e( 'You have', 'edd-ezdefi' ); ?> <span class="count-down" data-endtime="<?php echo $payment['expiredTime']; ?>"></span> <?php _e( 'to scan this QR Code', 'edd-ezdefi' ); ?></p>
 				<p>
-					<a href="<?php echo $payment['deepLink']; ?>">
-						<img class="qrcode" src="<?php echo $payment['qr']; ?>" />
+					<a class="qrcode <?php echo (time() > strtotime($payment['expiredTime'])) ? 'expired' : ''; ?>" href="<?php echo $payment['deepLink']; ?>">
+						<img src="<?php echo $payment['qr']; ?>" />
 					</a>
 				</p>
-				<?php if( $payment['amountId'] === true ) : ?>
+				<?php if( isset( $payment['amountId'] ) && $payment['amountId'] === true ) : ?>
 					<p>
-                        <strong><?php _e( 'Pay Manually', 'edd-ezdefi' ); ?>:</strong> <?php echo $payment['token']['name'] . ' ' . $payment['token']['symbol']; ?><br/>
 						<strong><?php _e( 'Address', 'edd-ezdefi' ); ?>:</strong> <?php echo $payment['to']; ?><br/>
-						<strong><?php _e( 'Amount', 'edd-ezdefi' ); ?>:</strong> <?php echo $payment['originValue']; ?><br/>
+						<strong><?php _e( 'Amount', 'edd-ezdefi' ); ?>:</strong> <span class="amount"><?php echo $payment['originValue'] . ' ' . $payment['token']['symbol'] ?></span><br/>
 					</p>
-					<p>
+					<p class="note">
                         <?php _e( 'You have to pay exact amount so that your order can be handle property.', 'edd-ezdefi' ); ?><br/>
                         <?php _e( 'If you have difficulty for sending exact amount, try to use', 'edd-ezdefi' ); ?> <a href="" class="ezdefiEnableBtn">ezDeFi Wallet</a>
                     </p>
 				<?php else : ?>
-					<p>
-						<a href="" class="download-link"><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
-						<a href="" class="download-link"><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
-					</p>
+                    <p class="app-link-list">
+                        <a href=""><img src="<?php echo plugins_url( 'assets/android-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
+                        <a href=""><img src="<?php echo plugins_url( 'assets/ios-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
+                    </p>
 				<?php endif; ?>
 			<?php endif; ?>
 		</div>

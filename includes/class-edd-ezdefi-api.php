@@ -200,4 +200,23 @@ class EDD_Ezdefi_Api
 
 		return $response;
 	}
+
+	public function get_token_exchanges( $value, $from, $to )
+	{
+		$url = "token/exchanges?amount=$value&from=$from&to=$to";
+
+		$response = $this->call( $url, 'get' );
+
+		if( is_wp_error( $response ) ) {
+			return null;
+		}
+
+		$response = json_decode( $response['body'], true );
+
+		if( $response['code'] < 0 ) {
+			return null;
+		}
+
+		return $response['data'];
+	}
 }

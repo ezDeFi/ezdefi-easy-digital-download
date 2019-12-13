@@ -53,8 +53,8 @@ class EDD_Ezdefi
 	public function register_gateway( $gateways )
 	{
 		$gateways['ezdefi'] = array(
-			'admin_label' => __( 'EZDefi', 'edd-ezdefi' ),
-			'checkout_label' => __( 'EZDefi', 'edd-ezdefi' )
+			'admin_label' => __( 'ezDeFi', 'edd-ezdefi' ),
+			'checkout_label' => __( 'Pay with Cryptocurrency', 'edd-ezdefi' )
 		);
 
 		return $gateways;

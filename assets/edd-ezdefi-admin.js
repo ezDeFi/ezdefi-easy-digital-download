@@ -3,6 +3,7 @@ jQuery(function($) {
 
     var selectors = {
         amountIdCheckbox: 'input[name="edd_settings[ezdefi_method][amount_id]"]',
+        ezdefiWalletCheckbox: 'input[name="edd_settings[ezdefi_method][ezdefi_wallet]"]',
         symbolInput: '.currency-symbol',
         nameInput: '.currency-name',
         logoInput: '.currency-logo',
@@ -28,7 +29,6 @@ jQuery(function($) {
         var addCurrency = this.addCurrency.bind(this);
         var removeCurrency = this.removeCurrency.bind(this);
         var toggleEdit = this.toggleEdit.bind(this);
-        var checkWalletAddress = this.checkWalletAddress.bind(this);
         var toggleAmountSetting = this.toggleAmountSetting.bind(this);
         var onChangeDecimal = this.onChangeDecimal.bind(this);
         var onBlurDecimal = this.onBlurDecimal.bind(this);
@@ -40,10 +40,9 @@ jQuery(function($) {
             .on('click', selectors.cancelBtn, toggleEdit)
             .on('click', selectors.addBtn, addCurrency)
             .on('click', selectors.deleteBtn, removeCurrency)
-            .on('keyup', selectors.walletInput, checkWalletAddress)
             .on('change', selectors.paymentMethod, toggleAmountSetting)
             .on('focus', selectors.decimalInput, onChangeDecimal)
-            .on('blur', selectors.decimalInput, onBlurDecimal);;
+            .on('blur', selectors.decimalInput, onBlurDecimal);
     };
 
     EDD_EZDefi_Admin.prototype.init = function() {
@@ -92,14 +91,30 @@ jQuery(function($) {
                         depends: function(element) {
                             return self.$form.find(selectors.paymentMethod + ':checked').val() != 'ezdefi_wallet';
                         }
-                    }
+                    },
+                    min: 0
                 },
-                'edd_settings[ezdefi_amount_decimals]': {
+                'edd_settings[ezdefi_method][amount_id]': {
                     required: {
                         depends: function(element) {
-                            return self.$form.find(selectors.paymentMethod + ':checked').val() != 'ezdefi_wallet';
+                            return ! self.$form.find(selectors.ezdefiWalletCheckbox).is(':checked');
                         }
                     }
+                },
+                'edd_settings[ezdefi_method][ezdefi_wallet]': {
+                    required: {
+                        depends: function(element) {
+                            return ! self.$form.find(selectors.amountIdCheckbox).is(':checked');
+                        }
+                    }
+                },
+                'edd_ezdefi_has_currency': {
+                    min: 1
+                }
+            },
+            messages: {
+                'edd_ezdefi_has_currency': {
+                    min: 'Please select accepted currency'
                 }
             }
         });
@@ -134,6 +149,7 @@ jQuery(function($) {
 
             if(name.indexOf('discount') > 0) {
                 $('input[name="'+name+'"]').rules('add', {
+                    min: 0,
                     max: 100
                 });
             }
@@ -165,14 +181,29 @@ jQuery(function($) {
                 });
             }
 
+            if(name.indexOf('lifetime') > 0) {
+                var $input = $('input[name="'+name+'"]');
+                $input.rules('add', {
+                    min: 0
+                });
+            }
+
+            if(name.indexOf('distance') > 0) {
+                var $input = $('input[name="'+name+'"]');
+                $input.rules('add', {
+                    min: 0
+                });
+            }
+
             if(name.indexOf('decimal') > 0) {
                 var $input = $('input[name="'+name+'"]');
                 $input.rules('add', {
                     required: true,
                     min: 2,
+                    max: 12,
                     messages: {
                         required: 'Please enter number of decimal',
-                        min: 'Please enter number greater than 0'
+                        min: 'Please enter number equal or greater than 2',
                     }
                 });
             }
@@ -191,69 +222,6 @@ jQuery(function($) {
                 $(this).hide();
             });
         }
-    };
-
-    EDD_EZDefi_Admin.prototype.checkWalletAddress = function(e) {
-        var self = this;
-        var api_url = self.$form.find('.ezdefi_api_url input').val();
-        var api_key = self.$form.find('.ezdefi_api_key input').val();
-        var $input = $(e.target);
-        var $row = $(e.target).closest('tr');
-        var currency_chain = $row.find('.currency-chain').val();
-        var $checking = $(
-            "<div class='checking'><span class='text'>Checking wallet address</span>" +
-            "<div class='dots'>" +
-            "<div class='dot'></div>" +
-            "<div class='dot'></div>" +
-            "<div class='dot'></div>" +
-            "</div>" +
-            "</div>"
-        );
-        $input.rules('add', {
-            remote: {
-                depends: function(element) {
-                    return api_url !== '' && api_key !== '' && currency_chain !== '';
-                },
-                param: {
-                    url: edd_ezdefi_data.ajax_url,
-                    type: 'POST',
-                    data: {
-                        action: 'edd_ezdefi_check_wallet',
-                        address: function () {
-                            return $input.val();
-                        },
-                        api_url: function() {
-                            return api_url;
-                        },
-                        api_key: function() {
-                            return api_key;
-                        },
-                        currency_chain: function() {
-                            return currency_chain;
-                        }
-                    },
-                    beforeSend: function() {
-                        $input.closest('td').find('.error').hide();
-                        $input.closest('.edit').append($checking);
-                    },
-                    complete: function (data) {
-                        var response = data.responseText;
-                        var $inputWrapper = $input.closest('td');
-                        if (response === 'true') {
-                            $inputWrapper.find('.checking').empty().append('<span class="correct">Correct</span>');
-                            window.setTimeout(function () {
-                                $inputWrapper.find('.checking').remove();
-                            }, 1000);
-                        } else {
-                            $inputWrapper.find('.checking').remove();
-                        }
-                    }
-                }
-            },
-            messages: {
-                remote: "This address is not active. Please check again in <a href='http://163.172.170.35/profile/info'>your profile</a>."
-            }
-        });
     };
 
     EDD_EZDefi_Admin.prototype.initCurrencySelect = function(element) {
@@ -294,6 +262,19 @@ jQuery(function($) {
             return currency.text;
         }
 
+        var excludes = [];
+
+        $(selectors.currencyTable).find('tbody tr').each(function() {
+            var symbol = $(this).find(selectors.symbolInput).val();
+            if(symbol && symbol.length > 0) {
+                excludes.push(symbol);
+            }
+        });
+
+        if(excludes.includes(currency.symbol)) {
+            return;
+        }
+
         var $container = $(
             "<div class='select2-currency'>" +
             "<div class='select2-currency__icon'><img src='" + currency.logo + "' /></div>" +
@@ -332,9 +313,15 @@ jQuery(function($) {
 
         $clone.find('select, .select2-container').remove();
         $clone.find('.logo img').attr('src', '');
-        $clone.find('.name .view span').remove();
+        $clone.find('.name .view span').empty();
         $clone.find('.name .edit').prepend($select);
-        $clone.find('input').val('');
+        $clone.find('input').each(function() {
+            $(this).val('');
+            var td = $(this).closest('td');
+            if(!td.hasClass('name')) {
+                td.find('.view').empty();
+            }
+        });
         $clone.find('td').each(function() {
             $(this).removeClass('form-invalid');
             $(this).find('.error').remove();
@@ -370,6 +357,9 @@ jQuery(function($) {
                 var number = rowIndex - 1;
                 self.updateAttr(row, number);
             });
+            if( $(e.target).closest('tbody').find('tr').length === 0 ) {
+                $('input#edd_ezdefi_has_currency').val(0);
+            }
         }
         return false;
     };

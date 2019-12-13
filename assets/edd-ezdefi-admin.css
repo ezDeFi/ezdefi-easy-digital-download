@@ -10,6 +10,9 @@ form td.form-invalid .select2-selection {
 form .form-table {
   table-layout: fixed;
 }
+form input#edd_settings[ezdefi_acceptable_variation] {
+  width: 80px;
+}
 form .ezdefi-currency-table {
   display: block;
   overflow-x: auto;
@@ -41,7 +44,7 @@ form .ezdefi-currency-table .logo img {
   width: 32px;
 }
 form .ezdefi-currency-table .name {
-  min-width: 120px;
+  min-width: 200px;
 }
 form .ezdefi-currency-table .name .view span {
   text-transform: capitalize;

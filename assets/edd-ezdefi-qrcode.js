@@ -51,8 +51,7 @@ jQuery(function($) {
             }
         });
 
-        var index = self.$tabs.tabs('option', 'active');
-        var active = self.$tabs.find(selectors.panel + ':eq('+index+')');
+        var active = self.$tabs.find('div.ui-tabs-panel[aria-hidden="false"]');
         var method = active.attr('id');
 
         self.getEzdefiPayment.call(self, method, active);
@@ -158,27 +157,27 @@ jQuery(function($) {
 
     EDD_EZDefi_Checkout.prototype.checkPaymentStatus = function() {
         var self = this;
-        // self.checkPaymentLoop = setInterval(function() {
-        //     $.ajax({
-        //         url: edd_ezdefi_data.ajax_url,
-        //         method: 'post',
-        //         data: {
-        //             action: 'edd_ezdefi_check_payment_status',
-        //             paymentId: self.paymentData.uoid
-        //         },
-        //         beforeSend: function(jqXHR) {
-        //             self.xhrPool.push(jqXHR);
-        //         },
-        //         success: function( response ) {
-        //             if(response == 'Complete') {
-        //                 $.each(self.xhrPool, function(index, jqXHR) {
-        //                     jqXHR.abort();
-        //                 });
-        //                 self.success();
-        //             }
-        //         }
-        //     });
-        // }, 600);
+        self.checkPaymentLoop = setInterval(function() {
+            $.ajax({
+                url: edd_ezdefi_data.ajax_url,
+                method: 'post',
+                data: {
+                    action: 'edd_ezdefi_check_payment_status',
+                    paymentId: self.paymentData.uoid
+                },
+                beforeSend: function(jqXHR) {
+                    self.xhrPool.push(jqXHR);
+                },
+                success: function( response ) {
+                    if(response == 'Complete') {
+                        $.each(self.xhrPool, function(index, jqXHR) {
+                            jqXHR.abort();
+                        });
+                        self.success();
+                    }
+                }
+            });
+        }, 600);
     };
 
     EDD_EZDefi_Checkout.prototype.setTimeRemaining = function(panel) {

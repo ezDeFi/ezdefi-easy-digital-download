@@ -78,10 +78,10 @@ class EDD_Ezdefi_Shortcode
 			            echo '<li>';
 			            switch ($key) {
 				            case 'amount_id' :
-					            echo '<a href="#'.$key.'" id="tab-'.$key.'"><span>' . __( 'Simple method', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
+					            echo '<a href="#'.$key.'" id="tab-'.$key.'"><span>' . __( 'Pay with any crypto wallet', 'edd-ezdefi' ) . '</span></a>';
 					            break;
 				            case 'ezdefi_wallet' :
-					            echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url('.plugins_url( 'assets/ezdefi-icon.png', EDD_EZDEFI_MAIN_FILE ).')"><span> ' . __( 'Pay with ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
+					            echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url('.plugins_url( 'assets/ezdefi-icon.png', EDD_EZDEFI_MAIN_FILE ).')"><span> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span></a>';
 					            break;
 			            }
 			            echo '</a></li>';

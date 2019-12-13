@@ -16,6 +16,10 @@ form {
     table-layout: fixed;
   }
 
+  input#edd_settings[ezdefi_acceptable_variation] {
+    width: 80px;
+  }
+
   .ezdefi-currency-table {
     display: block;
     overflow-x: auto;
@@ -53,7 +57,8 @@ form {
     }
 
     .name {
-      min-width: 120px;
+      min-width: 200px;
+
       .view {
         span {
           text-transform: capitalize;

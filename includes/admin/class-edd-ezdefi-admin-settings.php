@@ -63,9 +63,10 @@ class EDD_Ezdefi_Admin_Settings
 				'name' => __( 'Acceptable price variation', 'edd-ezdefi' ),
 				'type' => 'number',
 				'step' => '0.000001',
-				'desc' => __( 'Description' ),
+				'desc' => __( 'Allowable amount variation (%)' ),
 				'default' => 0.01,
-                'class' => 'acceptable_variation'
+                'class' => 'acceptable_variation',
+                'placeholder' => '0.01%'
 			)
 		);
 
@@ -99,14 +100,15 @@ class EDD_Ezdefi_Admin_Settings
 		wp_enqueue_style( 'edd_ezdefi_admin' );
 		wp_enqueue_script( 'edd_ezdefi_admin' );
 		ob_start(); ?>
+        <input type="hidden" id="edd_ezdefi_has_currency" name="edd_ezdefi_has_currency" value="1">
 		<table id="ezdefi-currency-table" class="ezdefi-currency-table widefat striped">
 			<thead>
 			<tr>
 				<th scope="col" class="sortable-zone"><span class="dashicons dashicons-editor-help help-tip" title="Drag and drop to re-order currency"></span></th>
 				<th scope="col" class="logo"></th>
-				<th scope="col" class="name"><?php _e( 'Currency', 'edd-ezdefi' ); ?></th>
+				<th scope="col" class="name"><?php _e( 'Name', 'edd-ezdefi' ); ?></th>
 				<th scope="col" class="discount"><?php _e( 'Discount', 'edd-ezdefi' ); ?></th>
-				<th scope="col" class="lifetime"><?php _e( 'Payment Lifetime', 'edd-ezdefi' ); ?></th>
+				<th scope="col" class="lifetime"><?php _e( 'Expiration (seconds)', 'edd-ezdefi' ); ?></th>
 				<th scope="col" class="wallet"><?php _e( 'Wallet Address', 'edd-ezdefi' ); ?></th>
 				<th scope="col" class="distance"><?php _e( 'Block Confirmation', 'edd-ezdefi' ); ?></th>
                 <th scope="col" class="decimal"><?php _e( 'Decimal', 'edd-ezdefi' ); ?></th>
@@ -149,7 +151,7 @@ class EDD_Ezdefi_Admin_Settings
 						</td>
 						<td class="discount">
 							<div class="view">
-								<?php echo (isset($c['discount'])) ? $c['discount'] : ''; ?><span> %</span>
+								<?php echo (isset($c['discount'])) ? $c['discount'] : 0; ?><span> %</span>
 							</div>
 							<div class="edit">
 								<input type="number" class="small-text" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][discount]" value="<?php echo (isset($c['discount'])) ? $c['discount'] : ''; ?>"><span> %</span>
@@ -157,10 +159,10 @@ class EDD_Ezdefi_Admin_Settings
 						</td>
 						<td class="lifetime">
 							<div class="view">
-								<?php echo (isset($c['lifetime'])) ? $c['lifetime'] : ''; ?>
+								<?php echo isset( $c['lifetime'] ) ? $c['lifetime'] . 's' : '' ;?>
 							</div>
 							<div class="edit">
-								<input type="number" class="small-text" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][lifetime]" value="<?php echo (isset($c['lifetime'])) ? $c['lifetime'] : ''; ?>">
+								<input type="number" class="small-text" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][lifetime]" value="<?php echo (isset($c['lifetime'])) ? $c['lifetime'] : ''; ?>"><span> seconds</span>
 							</div>
 						</td>
 						<td class="wallet">
@@ -230,7 +232,7 @@ class EDD_Ezdefi_Admin_Settings
 						<div class="view">
 						</div>
 						<div class="edit">
-							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][lifetime]" value="">
+							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][lifetime]" value=""><span> seconds</span>
 						</div>
 					</td>
 					<td class="wallet">

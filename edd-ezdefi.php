@@ -91,10 +91,11 @@ class EDD_Ezdefi_Loader
 
 		$sql[] = "CREATE TABLE $exception_table_name (
 			id int(11) NOT NULL AUTO_INCREMENT,
-			amount_id decimal(18,10) NOT NULL,
+			amount_id decimal(20,12) NOT NULL,
 			currency varchar(10) NOT NULL,
-			order_id int(11) NULL,
-			created_at timestamp default current_timestamp,
+			order_id int(11) NOT NULL,
+			status varchar(20) DEFAULT 'not_paid',
+			payment_method varchar(100)	 NOT NULL,
 			PRIMARY KEY (id)
 		) $charset_collate;";
 
@@ -154,6 +155,7 @@ class EDD_Ezdefi_Loader
 	 */
 	public function define_constants()
 	{
+		define( 'EDD_EZDEFI_VERSION', '1.0.0' );
 		define( 'EDD_EZDEFI_MAIN_FILE', __FILE__ );
 	}
 

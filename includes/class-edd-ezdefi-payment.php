@@ -93,6 +93,8 @@ class EDD_Ezdefi_Payment
 
         $edd_payment_id = $_GET['uoid'];
 
+	    $edd_payment_id = substr( $edd_payment_id, 0, strpos( $edd_payment_id,'-' ) );
+
 	    $edd_payment = edd_get_payment( $edd_payment_id );
 
 	    if( ! $edd_payment ) {
@@ -109,6 +111,10 @@ class EDD_Ezdefi_Payment
 
         $ezdefi_payment_data = json_decode( $response['body'], true );
 
+	    if( $ezdefi_payment_data['code'] < 0 ) {
+		    wp_die();
+	    }
+
 	    $ezdefi_payment_data = $ezdefi_payment_data['data'];
 
         $status = $ezdefi_payment_data['status'];
@@ -117,12 +123,16 @@ class EDD_Ezdefi_Payment
 
         $currency = $ezdefi_payment_data['currency'];
 
+	    if( ! isset ( $payment['amount_id'] ) ) {
+		    $amount_id = round( $amount_id, 10 );
+	    }
+
         if( $status === 'DONE' ) {
 	        edd_update_payment_status( $edd_payment_id, 'publish' );
 	        edd_empty_cart();
-            $this->db->delete_amount_id_exception( $amount_id, $currency );
+	        $this->db->update_exception_status( $amount_id, $currency, $edd_payment_id, strtolower($status) );
         } elseif( $status === 'EXPIRED_DONE' ) {
-            $this->db->add_uoid_to_exception( $amount_id, $currency, $edd_payment_id );
+	        $this->db->update_exception_status( $amount_id, $currency, $edd_payment_id, strtolower($status) );
         }
 
 	    wp_die();

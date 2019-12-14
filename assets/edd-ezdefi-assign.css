@@ -7,6 +7,9 @@
 #edd-ezdefi-order-assign tbody tr td span.symbol {
   text-transform: uppercase;
 }
+#edd-ezdefi-order-assign tbody tr td.amount-id-column .explorer-url {
+  display: block;
+}
 #edd-ezdefi-order-assign tbody tr td.order-column .saved-order, #edd-ezdefi-order-assign tbody tr td.order-column .select-order {
   margin-bottom: 8px;
 }

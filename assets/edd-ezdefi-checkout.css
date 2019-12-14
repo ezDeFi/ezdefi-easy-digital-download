@@ -17,6 +17,7 @@
   padding: 10px;
   transition: all 0.3s;
   cursor: pointer;
+  color: #212529;
 }
 #ezdefi-currency-select .currency-select .currency-item__wrap .currency-item:hover, #ezdefi-currency-select .currency-select .currency-item__wrap .currency-item.selected {
   border-color: #46b450;

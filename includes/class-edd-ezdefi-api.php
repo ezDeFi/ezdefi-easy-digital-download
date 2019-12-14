@@ -219,4 +219,12 @@ class EDD_Ezdefi_Api
 
 		return $response['data'];
 	}
+
+	public function get_transaction( $id )
+	{
+		$response = $this->call( 'transaction/get', 'get', array(
+			'id' => $id
+		) );
+		return $response;
+	}
 }

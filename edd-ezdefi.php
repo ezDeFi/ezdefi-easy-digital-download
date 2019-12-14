@@ -93,9 +93,10 @@ class EDD_Ezdefi_Loader
 			id int(11) NOT NULL AUTO_INCREMENT,
 			amount_id decimal(20,12) NOT NULL,
 			currency varchar(10) NOT NULL,
-			order_id int(11) NOT NULL,
-			status varchar(20) DEFAULT 'not_paid',
-			payment_method varchar(100)	 NOT NULL,
+			order_id int(11),
+			status varchar(20),
+			payment_method varchar(100),
+			explorer_url varchar(200),
 			PRIMARY KEY (id)
 		) $charset_collate;";
 

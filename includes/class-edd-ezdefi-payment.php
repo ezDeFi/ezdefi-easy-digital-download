@@ -4,6 +4,8 @@ defined( 'ABSPATH' ) or exit;
 
 class EDD_Ezdefi_Payment
 {
+	const EXPLORER_URL = 'https://explorer.nexty.io/tx/';
+
 	protected $api;
 
 	protected $db;
@@ -87,29 +89,48 @@ class EDD_Ezdefi_Payment
     /** Gateway callback handle */
     public function gateway_callback_handle()
     {
-	    if( ! isset( $_GET['uoid'] ) || ! isset( $_GET['paymentid'] ) ) {
-		    wp_die();
+	    if( isset( $_GET['uoid'] ) && isset( $_GET['paymentid'] ) ) {
+		    $order_id = $_GET['uoid'];
+		    $paymentid = $_GET['paymentid'];
+
+		    return $this->process_payment_callback( $order_id, $paymentid );
 	    }
 
-        $edd_payment_id = $_GET['uoid'];
+	    if(
+		    isset( $_GET['value'] ) && isset( $_GET['explorerUrl'] ) &&
+		    isset( $_GET['currency'] ) && isset( $_GET['id'] ) &&
+		    isset( $_GET['decimal'] )
+	    ) {
+		    $value = $_GET['value'];
+		    $decimal = $_GET['decimal'];
+		    $value = $value / pow( 10, $decimal );
+		    $explorerUrl = $_GET['explorerUrl'];
+		    $currency = $_GET['currency'];
+		    $id = $_GET['id'];
 
+		    return $this->process_transaction_callback( $value, $explorerUrl, $currency, $id);
+	    }
+
+	    wp_die();
+    }
+
+    public function process_payment_callback( $edd_payment_id, $ezdefi_payment_id )
+    {
 	    $edd_payment_id = substr( $edd_payment_id, 0, strpos( $edd_payment_id,'-' ) );
 
 	    $edd_payment = edd_get_payment( $edd_payment_id );
 
 	    if( ! $edd_payment ) {
-	    	wp_die();
+		    wp_die();
 	    }
 
-        $ezdefi_payment_id = $_GET['paymentid'];
+	    $response = $this->api->get_ezdefi_payment( $ezdefi_payment_id );
 
-        $response = $this->api->get_ezdefi_payment( $ezdefi_payment_id );
+	    if( is_wp_error( $response ) ) {
+		    wp_die();
+	    }
 
-        if( is_wp_error( $response ) ) {
-            wp_die();
-        }
-
-        $ezdefi_payment_data = json_decode( $response['body'], true );
+	    $ezdefi_payment_data = json_decode( $response['body'], true );
 
 	    if( $ezdefi_payment_data['code'] < 0 ) {
 		    wp_die();
@@ -117,25 +138,75 @@ class EDD_Ezdefi_Payment
 
 	    $ezdefi_payment_data = $ezdefi_payment_data['data'];
 
-        $status = $ezdefi_payment_data['status'];
+	    $status = $ezdefi_payment_data['status'];
 
-        $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
-
-        $currency = $ezdefi_payment_data['currency'];
-
-	    if( ! isset ( $payment['amount_id'] ) ) {
-		    $amount_id = round( $amount_id, 10 );
+	    if( $status === 'PENDING' || $status === 'EXPIRED' ) {
+	    	wp_die();
 	    }
 
-        if( $status === 'DONE' ) {
-	        edd_update_payment_status( $edd_payment_id, 'publish' );
-	        edd_empty_cart();
-	        $this->db->update_exception_status( $amount_id, $currency, $edd_payment_id, strtolower($status) );
-        } elseif( $status === 'EXPIRED_DONE' ) {
-	        $this->db->update_exception_status( $amount_id, $currency, $edd_payment_id, strtolower($status) );
-        }
+	    $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
+
+	    $currency = $ezdefi_payment_data['currency'];
+
+	    if( ! isset ( $payment['amount_id'] ) ) {
+		    $amount_id = round( $amount_id, 12 );
+	    }
+
+	    $exception_data = array(
+		    'status' => strtolower($status),
+		    'explorer_url' => (string) self::EXPLORER_URL . $ezdefi_payment_data['transactionHash']
+	    );
+
+	    $wheres = array(
+		    'amount_id' => (float) $amount_id,
+		    'currency' => (string) $currency,
+		    'order_id' => (int) $edd_payment_id
+	    );
+
+	    if( isset( $payment['amountId'] ) && $payment['amountId'] = true ) {
+		    $wheres['payment_method'] = 'amount_id';
+	    } else {
+		    $wheres['payment_method'] = 'ezdefi_wallet';
+	    }
+
+	    if( $status === 'DONE' ) {
+		    edd_update_payment_status( $edd_payment_id, 'publish' );
+		    edd_empty_cart();
+		    $this->db->update_exception( $wheres, $exception_data );
+	    } elseif( $status === 'EXPIRED_DONE' ) {
+		    $this->db->update_exception( $wheres, $exception_data );
+	    }
 
 	    wp_die();
+    }
+
+    public function process_transaction_callback( $value, $explorerUrl, $currency, $id  )
+    {
+	    $response = $this->api->get_transaction( $id );
+
+	    if( is_wp_error( $response ) ) {
+		    wp_die();
+	    }
+
+	    $response = json_decode( $response['body'], true );
+
+	    if( $response['code'] != 1 ) {
+		    wp_die();
+	    }
+
+	    $transaction = $response['data'];
+
+	    if( $transaction['status'] != 'ACCEPTED' ) {
+		    wp_die();
+	    }
+
+	    $data = array(
+		    'amount_id' => number_format( $value, 12 ),
+		    'currency' => $currency,
+		    'explorer_url' => $explorerUrl,
+	    );
+
+	    $this->db->add_exception( $data );
     }
 }
 

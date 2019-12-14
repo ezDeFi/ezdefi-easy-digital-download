@@ -56,7 +56,6 @@ jQuery(function($) {
 
     EDD_Ezdefi_Assign.prototype.onShowOrderSelect = function(e) {
         e.preventDefault();
-        var self = this;
         var column = $(e.target).closest('td');
 
         column.find(selectors.showSelectBtn).hide();
@@ -64,7 +63,12 @@ jQuery(function($) {
         column.find(selectors.savedOrder).hide();
         column.find(selectors.selectOrder).show();
 
-        column.find('select').select2({
+        this.initSelect2.call(this, column.find('select'));
+    };
+
+    EDD_Ezdefi_Assign.prototype.initSelect2 = function(select) {
+        var self = this;
+        select.find('select').select2({
             width: '100%',
             ajax: {
                 url: edd_ezdefi_data.ajax_url,
@@ -89,7 +93,7 @@ jQuery(function($) {
             templateSelection: self.formatOrderSelection,
             minimumResultsForSearch: Infinity
         });
-        column.find('select').on('select2:select', this.onSelect2Select);
+        select.find('select').on('select2:select', this.onSelect2Select);
     };
 
     EDD_Ezdefi_Assign.prototype.onSelect2Select = function(e) {
@@ -211,7 +215,10 @@ jQuery(function($) {
             }
             var html = $(
                 "<tr>" +
-                "<td>" + row['amount_id'] + "<input type='hidden' class='amount-id-input' value='" + row['amount_id'] + "' >" + "</td>" +
+                "<td class='amount-id-column'>" +
+                "<span>" + row['amount_id'] + "</span>" +
+                "<input type='hidden' class='amount-id-input' value='" + row['amount_id'] + "' >" +
+                "</td>" +
                 "<td>" +
                 "<span class='symbol'>" + row['currency'] + "</span>" +
                 "<input type='hidden' class='currency-input' value='" + row['currency'] + "' >" +
@@ -234,7 +241,20 @@ jQuery(function($) {
                 "</td>" +
                 "</tr>"
             );
+
+            if(row['explorer_url'] && row['explorer_url'].length > 0) {
+                var explore = $("<a class='explorer-url' href='" + row['explorer_url'] + "'>View Transaction Detail</a>");
+                html.find('td.amount-id-column').append(explore);
+            }
+
+            if(row['order_id'] == null) {
+                html.find('td.order-column .saved-order, td.order-column .actions').remove();
+                html.find('td.order-column .select-order').show();
+                self.initSelect2.call(self, html.find('td.order-column select'));
+            }
+
             var last_td;
+
             if(row['status'] === 'done') {
                 last_td = $(
                     "<td>" +

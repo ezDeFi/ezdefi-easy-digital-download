@@ -20,7 +20,7 @@ class EDD_Ezdefi_Admin_Settings
      */
 	public function register_settings_section($sections)
 	{
-		$sections['ezdefi'] = __( 'EZDefi', 'edd-ezdefi' );
+		$sections['ezdefi'] = __( 'ezDeFi', 'edd-ezdefi' );
 
 		return $sections;
 	}
@@ -33,7 +33,7 @@ class EDD_Ezdefi_Admin_Settings
 		$ezdefi_settings = array(
 			'ezdefi_settings' => array(
 				'id'   => 'ezdefi_settings',
-				'name' => '<strong>' . __( 'EZDefi Settings', 'edd-ezdefi' ) . '</strong>',
+				'name' => '<strong>' . __( 'ezDeFi Settings', 'edd-ezdefi' ) . '</strong>',
 				'type' => 'header',
 			),
 			'ezdefi_api_url' => array(
@@ -65,7 +65,7 @@ class EDD_Ezdefi_Admin_Settings
 				'step' => '0.000001',
 				'desc' => __( 'Allowable amount variation (%)' ),
 				'default' => 0.01,
-                'class' => 'acceptable_variation',
+                'size' => 'small',
                 'placeholder' => '0.01%'
 			)
 		);

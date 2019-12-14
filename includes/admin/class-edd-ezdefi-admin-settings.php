@@ -100,7 +100,6 @@ class EDD_Ezdefi_Admin_Settings
 		wp_enqueue_style( 'edd_ezdefi_admin' );
 		wp_enqueue_script( 'edd_ezdefi_admin' );
 		ob_start(); ?>
-        <input type="hidden" id="edd_ezdefi_has_currency" name="edd_ezdefi_has_currency" value="1">
 		<table id="ezdefi-currency-table" class="ezdefi-currency-table widefat striped">
 			<thead>
 			<tr>

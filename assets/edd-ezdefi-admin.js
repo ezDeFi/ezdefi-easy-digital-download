@@ -107,14 +107,6 @@ jQuery(function($) {
                             return ! self.$form.find(selectors.amountIdCheckbox).is(':checked');
                         }
                     }
-                },
-                'edd_ezdefi_has_currency': {
-                    min: 1
-                }
-            },
-            messages: {
-                'edd_ezdefi_has_currency': {
-                    min: 'Please select accepted currency'
                 }
             }
         });
@@ -338,7 +330,12 @@ jQuery(function($) {
     EDD_EZDefi_Admin.prototype.removeCurrency = function(e) {
         e.preventDefault();
 
-        var self = this;
+        var self = this
+
+        if(self.$table.find('tbody tr').length === 1) {
+            alert('You must select at least 1 accepted currency');
+            return false;
+        }
 
         if(confirm('Do you want to delete this row')) {
             $(e.target).closest('tr').remove();
@@ -357,9 +354,6 @@ jQuery(function($) {
                 var number = rowIndex - 1;
                 self.updateAttr(row, number);
             });
-            if( $(e.target).closest('tbody').find('tr').length === 0 ) {
-                $('input#edd_ezdefi_has_currency').val(0);
-            }
         }
         return false;
     };

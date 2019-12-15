@@ -68,7 +68,7 @@ jQuery(function($) {
 
     EDD_Ezdefi_Assign.prototype.initSelect2 = function(select) {
         var self = this;
-        select.find('select').select2({
+        select.select2({
             width: '100%',
             ajax: {
                 url: edd_ezdefi_data.ajax_url,
@@ -88,12 +88,12 @@ jQuery(function($) {
                 cache: true,
                 dataType: 'json',
             },
-            placeholder: 'Select Order',
+            placeholder: 'Select Payment',
             templateResult: self.formatOrderOption,
             templateSelection: self.formatOrderSelection,
             minimumResultsForSearch: Infinity
         });
-        select.find('select').on('select2:select', this.onSelect2Select);
+        select.on('select2:select', this.onSelect2Select);
     };
 
     EDD_Ezdefi_Assign.prototype.onSelect2Select = function(e) {
@@ -226,7 +226,7 @@ jQuery(function($) {
                 "<td class='order-column'>" +
                 "<input type='hidden' class='order-id-input' value='" + row['order_id'] + "' >" +
                 "<div class='saved-order'>" +
-                "<div>Order ID: <span id='saved-order-id'>" + row['order_id'] + "</span></div>" +
+                "<div>Payment ID: <span id='saved-order-id'>" + row['order_id'] + "</span></div>" +
                 "<div>Email: " + row['billing_email'] + "</div>" +
                 "<div>Status: " + status + "</div>" +
                 "<div>Payment method: " + payment_method + "</div>" +

@@ -9,6 +9,11 @@ defined( 'ABSPATH' ) or exit;
 		<div class="currency-item <?php echo ( ! empty( $selected_currency['symbol'] ) && $c['symbol'] === $selected_currency['symbol'] ) ? 'selected' : ''; ?>" data-symbol="<?php echo $c['symbol']; ?>" >
 			<div class="item__logo">
 				<img src="<?php echo $c['logo']; ?>" alt="">
+				<?php if( ! empty( $c['desc'] ) ) : ?>
+                    <div class="item__desc">
+						<?php echo $c['desc']; ?>
+                    </div>
+				<?php endif; ?>
 			</div>
 			<div class="item__text">
 				<div class="item__price">

@@ -377,6 +377,8 @@ class EDD_Ezdefi_Ajax
 
 		$currency = $_POST['currency'];
 
+		$old_order_id = ( $_POST['old_order_id'] && ! empty( $_POST['old_order_id'] ) ) ? $_POST['old_order_id'] : null;
+
 		$order_id = $_POST['order_id'];
 
 		$edd_payment = edd_get_payment( $order_id );
@@ -385,11 +387,7 @@ class EDD_Ezdefi_Ajax
 			wp_send_json_error();
 		}
 
-		if( isset( $_POST['type'] ) && $_POST['type'] === 'unknown_transaction' ) {
-			$order_id = null;
-		}
-
-		$this->db->delete_amount_id_exception( $amount_id, $currency, $order_id );
+		$this->db->delete_amount_id_exception( $amount_id, $currency, $old_order_id );
 
 		edd_update_payment_status( $order_id, 'publish' );
 

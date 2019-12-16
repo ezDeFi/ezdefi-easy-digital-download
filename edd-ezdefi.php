@@ -110,7 +110,6 @@ class EDD_Ezdefi_Loader
 	            IN value DECIMAl(20,12),
 			    IN token VARCHAR(10),
 			    IN decimal_number INT(2),
-			    IN life_time INT(11),
 			    OUT amount_id DECIMAL(20,12)
 			)
 			BEGIN
@@ -130,8 +129,8 @@ class EDD_Ezdefi_Loader
 			        SET amount_id = value;
 			    END IF;
 			    INSERT INTO $table_name (amount_key, price, amount_id, currency, expired_time) 
-			        VALUES (unique_id, value, amount_id, token, NOW() + INTERVAL life_time SECOND)
-                    ON DUPLICATE KEY UPDATE `expired_time` = NOW() + INTERVAL life_time SECOND;
+			        VALUES (unique_id, value, amount_id, token, NOW() + INTERVAL 3605 SECOND)
+                    ON DUPLICATE KEY UPDATE `expired_time` = NOW() + INTERVAL 3605 SECOND;
 			END
 		" );
 

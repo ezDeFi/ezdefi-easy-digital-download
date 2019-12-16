@@ -296,8 +296,8 @@ class EDD_Ezdefi_Ajax
 				</p>
 				<?php if( isset( $payment['amountId'] ) && $payment['amountId'] === true ) : ?>
 					<p>
-						<strong><?php _e( 'Address', 'edd-ezdefi' ); ?>:</strong> <?php echo $payment['to']; ?><br/>
-						<strong><?php _e( 'Amount', 'edd-ezdefi' ); ?>:</strong> <span class="amount"><?php echo $payment['originValue'] . ' ' . $payment['token']['symbol'] ?></span><br/>
+                        <strong><?php _e( 'Address', 'edd-ezdefi' ); ?>:</strong> <span class="copy-to-clipboard" title="Copy to clipboard"><span class="copy-content"><?php echo $payment['to']; ?></span> <img src="<?php echo edd_ezdefi()->plugin_url() . '/assets/copy-icon.svg'; ?>" /></span><br/>
+                        <strong><?php _e( 'Amount', 'edd-ezdefi' ); ?>:</strong> <span class="copy-to-clipboard" title="Copy to clipboard"><span class="copy-content"><?php echo $payment['originValue']; ?></span> <span class="amount"><?php echo $payment['token']['symbol'] ?></span> <img src="<?php echo edd_ezdefi()->plugin_url() . '/assets/copy-icon.svg'; ?>" /></span><br/>
 					</p>
 					<p class="note">
                         <?php _e( 'You have to pay exact amount so that your order can be handle property.', 'edd-ezdefi' ); ?><br/>

@@ -12,10 +12,13 @@ jQuery(function($) {
         tabs: '.ezdefi-payment-tabs',
         panel: '.ezdefi-payment-panel',
         ezdefiEnableBtn: '.ezdefiEnableBtn',
-        loader: '.edd-ezdefi-loader'
+        loader: '.edd-ezdefi-loader',
+        copy: '.copy-to-clipboard',
+        copyContent: '.copy-content',
+        qrcode: '.qrcode'
     };
 
-    var EDD_EZDefi_Checkout = function() {
+    var EDD_EZDefi_Qrcode = function() {
         this.$container = $(selectors.container);
         this.$loader = this.$container.find(selectors.loader);
         this.$tabs = this.$container.find(selectors.tabs);
@@ -27,15 +30,20 @@ jQuery(function($) {
         var init = this.init.bind(this);
         var onSelectItem = this.onSelectItem.bind(this);
         var onClickEzdefiLink = this.onClickEzdefiLink.bind(this);
+        var onCopy = this.onCopy.bind(this);
+        var onClickQrcode = this.onClickQrcode.bind(this);
 
         init();
 
         $(document.body)
             .on('click', selectors.item, onSelectItem)
-            .on('click', selectors.ezdefiEnableBtn, onClickEzdefiLink);
+            .on('click', selectors.ezdefiEnableBtn, onClickEzdefiLink)
+            .on('click', selectors.ezdefiEnableBtn, onClickEzdefiLink)
+            .on('click', selectors.qrcode, onClickQrcode)
+            .on('click', selectors.copy, onCopy);
     };
 
-    EDD_EZDefi_Checkout.prototype.init = function() {
+    EDD_EZDefi_Qrcode.prototype.init = function() {
         var self = this;
 
         self.$tabs.tabs({
@@ -57,7 +65,37 @@ jQuery(function($) {
         self.getEzdefiPayment.call(self, method, active);
     };
 
-    EDD_EZDefi_Checkout.prototype.getEzdefiPayment = function(method, panel) {
+    EDD_EZDefi_Qrcode.prototype.onCopy = function(e) {
+        var target = $(e.target);
+        var element;
+        if(target.hasClass(selectors.copy)) {
+            element = target;
+        } else {
+            element = target.closest(selectors.copy);
+        }
+        var $temp = $("<input>");
+        $("body").append($temp);
+        $temp.val(element.find(selectors.copyContent).text()).select();
+        document.execCommand("copy");
+        $temp.remove();
+        element.addClass('copied');
+        setTimeout(function () {
+            element.removeClass('copied');
+        }, 2000);
+    };
+
+    EDD_EZDefi_Qrcode.prototype.onClickQrcode = function(e) {
+        var self = this;
+        var target = $(e.target);
+        if(!target.hasClass('expired')) {
+            return false;
+        } else {
+            e.preventDefault();
+            self.$currencySelect.find('.selected').click();
+        }
+    };
+
+    EDD_EZDefi_Qrcode.prototype.getEzdefiPayment = function(method, panel) {
         var self = this;
         var symbol = this.$currencySelect.find(selectors.item + '.selected').attr('data-symbol');
         if(!symbol) {
@@ -97,7 +135,7 @@ jQuery(function($) {
         });
     };
 
-    EDD_EZDefi_Checkout.prototype.onSelectItem = function(e) {
+    EDD_EZDefi_Qrcode.prototype.onSelectItem = function(e) {
         var self = this;
         this.$currencySelect.find(selectors.item).removeClass('selected');
         var target = $(e.target);
@@ -149,38 +187,38 @@ jQuery(function($) {
         });
     };
 
-    EDD_EZDefi_Checkout.prototype.onClickEzdefiLink = function(e) {
+    EDD_EZDefi_Qrcode.prototype.onClickEzdefiLink = function(e) {
         var self = this;
         e.preventDefault();
         self.$tabs.tabs('option', 'active', 1);
     };
 
-    EDD_EZDefi_Checkout.prototype.checkPaymentStatus = function() {
+    EDD_EZDefi_Qrcode.prototype.checkPaymentStatus = function() {
         var self = this;
-        self.checkPaymentLoop = setInterval(function() {
-            $.ajax({
-                url: edd_ezdefi_data.ajax_url,
-                method: 'post',
-                data: {
-                    action: 'edd_ezdefi_check_payment_status',
-                    paymentId: self.paymentData.uoid
-                },
-                beforeSend: function(jqXHR) {
-                    self.xhrPool.push(jqXHR);
-                },
-                success: function( response ) {
-                    if(response == 'Complete') {
-                        $.each(self.xhrPool, function(index, jqXHR) {
-                            jqXHR.abort();
-                        });
-                        self.success();
-                    }
-                }
-            });
-        }, 600);
+        // self.checkPaymentLoop = setInterval(function() {
+        //     $.ajax({
+        //         url: edd_ezdefi_data.ajax_url,
+        //         method: 'post',
+        //         data: {
+        //             action: 'edd_ezdefi_check_payment_status',
+        //             paymentId: self.paymentData.uoid
+        //         },
+        //         beforeSend: function(jqXHR) {
+        //             self.xhrPool.push(jqXHR);
+        //         },
+        //         success: function( response ) {
+        //             if(response == 'Complete') {
+        //                 $.each(self.xhrPool, function(index, jqXHR) {
+        //                     jqXHR.abort();
+        //                 });
+        //                 self.success();
+        //             }
+        //         }
+        //     });
+        // }, 600);
     };
 
-    EDD_EZDefi_Checkout.prototype.setTimeRemaining = function(panel) {
+    EDD_EZDefi_Qrcode.prototype.setTimeRemaining = function(panel) {
         var self = this;
         var timeLoop = setInterval(function() {
             var endTime = panel.find('.count-down').attr('data-endtime');
@@ -197,7 +235,7 @@ jQuery(function($) {
         }, 1000);
     };
 
-    EDD_EZDefi_Checkout.prototype.getTimeRemaining = function(endTime) {
+    EDD_EZDefi_Qrcode.prototype.getTimeRemaining = function(endTime) {
         var t = new Date(endTime).getTime() - new Date().getTime();
         var minutes = Math.floor((t / 60000));
         var seconds = (t % 60000 / 1000).toFixed(0);
@@ -208,14 +246,14 @@ jQuery(function($) {
         };
     };
 
-    EDD_EZDefi_Checkout.prototype.success = function() {
+    EDD_EZDefi_Qrcode.prototype.success = function() {
         location.reload();
         return false;
     };
 
-    EDD_EZDefi_Checkout.prototype.timeout = function(panel) {
+    EDD_EZDefi_Qrcode.prototype.timeout = function(panel) {
         panel.find('.qrcode').addClass('expired');
     };
 
-    new EDD_EZDefi_Checkout();
+    new EDD_EZDefi_Qrcode();
 });

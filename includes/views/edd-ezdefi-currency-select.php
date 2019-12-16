@@ -21,7 +21,7 @@ defined( 'ABSPATH' ) or exit;
 					$index = array_search( $c['symbol'], array_column( $exchanges, 'token' ) );
 					$amount = $exchanges[$index]['amount'];
 					$amount = $amount - ( $amount * ( $c['discount'] / 100 ) );
-					echo round( $amount, 8 );
+					echo number_format( $amount, 8 );
 					?>
 				</div>
 				<div class="item__info">

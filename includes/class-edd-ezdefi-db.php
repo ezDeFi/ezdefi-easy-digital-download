@@ -10,13 +10,14 @@ class EDD_Ezdefi_Db
 
 		$decimal = $currency_data['decimal'];
 		$symbol = $currency_data['symbol'];
+		$life_time = $currency_data['lifetime'];
 
 		$price = round( $price, $decimal );
 
 		$wpdb->query(
 			$wpdb->prepare("
-				CALL edd_ezdefi_generate_amount_id(%s, %s, %d, @amount_id)
-			", $price, $symbol, $decimal)
+				CALL edd_ezdefi_generate_amount_id(%s, %s, %d, %d, @amount_id)
+			", $price, $symbol, $decimal, $life_time)
 		);
 
 		$result = $wpdb->get_row( "SELECT @amount_id", ARRAY_A );

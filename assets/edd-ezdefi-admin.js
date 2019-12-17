@@ -92,7 +92,8 @@ jQuery(function($) {
                             return self.$form.find(selectors.paymentMethod + ':checked').val() != 'ezdefi_wallet';
                         }
                     },
-                    min: 0
+                    min: 0,
+                    max: 100
                 },
                 'edd_settings[ezdefi_method][amount_id]': {
                     required: {

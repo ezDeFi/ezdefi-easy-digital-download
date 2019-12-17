@@ -248,6 +248,12 @@
 #edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount {
   margin-bottom: 0.5rem;
 }
+#edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount span.copy-content {
+  display: inline-block;
+}
+#edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount span.amount {
+  padding-left: 2px;
+}
 @media screen and (max-width: 575.98px) {
   #edd-ezdefi-qrcode-section .ezdefi-payment .receive-address, #edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount {
     display: flex;
@@ -259,6 +265,9 @@
   #edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount {
     margin-bottom: 1rem;
   }
+  #edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount span.copy-content {
+    max-width: 100px;
+  }
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment .copy-to-clipboard {
   padding: 1px 22px 1px 6px;
@@ -269,15 +278,16 @@
 }
 @media screen and (max-width: 575.98px) {
   #edd-ezdefi-qrcode-section .ezdefi-payment .copy-to-clipboard {
-    width: 160px;
+    max-width: 160px;
     display: inline-block;
   }
   #edd-ezdefi-qrcode-section .ezdefi-payment .copy-to-clipboard span.copy-content {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    width: 100%;
-    display: block;
+    max-width: 100%;
+    display: inline-block;
+    float: left;
   }
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment .copy-to-clipboard:before {
@@ -301,7 +311,7 @@
   z-index: 9999;
   top: calc(100% + 5px);
   left: 50%;
-  width: 100px;
+  width: 130px;
   height: auto;
   color: #fff;
   font-size: 12px;

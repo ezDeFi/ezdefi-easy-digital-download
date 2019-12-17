@@ -14,7 +14,6 @@ jQuery(function($) {
         ezdefiEnableBtn: '.ezdefiEnableBtn',
         loader: '.edd-ezdefi-loader',
         copy: '.copy-to-clipboard',
-        copyContent: '.copy-content',
         qrcode: '.qrcode'
     };
 
@@ -30,7 +29,6 @@ jQuery(function($) {
         var init = this.init.bind(this);
         var onSelectItem = this.onSelectItem.bind(this);
         var onClickEzdefiLink = this.onClickEzdefiLink.bind(this);
-        var onCopy = this.onCopy.bind(this);
         var onClickQrcode = this.onClickQrcode.bind(this);
 
         init();
@@ -38,8 +36,7 @@ jQuery(function($) {
         $(document.body)
             .on('click', selectors.item, onSelectItem)
             .on('click', selectors.ezdefiEnableBtn, onClickEzdefiLink)
-            .on('click', selectors.qrcode, onClickQrcode)
-            .on('click', selectors.copy, onCopy);
+            .on('click', selectors.qrcode, onClickQrcode);
     };
 
     EDD_EZDefi_Qrcode.prototype.init = function() {
@@ -62,25 +59,15 @@ jQuery(function($) {
         var method = active.attr('id');
 
         self.getEzdefiPayment.call(self, method, active);
-    };
 
-    EDD_EZDefi_Qrcode.prototype.onCopy = function(e) {
-        var target = $(e.target);
-        var element;
-        if(target.hasClass(selectors.copy)) {
-            element = target;
-        } else {
-            element = target.closest(selectors.copy);
-        }
-        var $temp = $("<input>");
-        $("body").append($temp);
-        $temp.val(element.find(selectors.copyContent).text()).select();
-        document.execCommand("copy");
-        $temp.remove();
-        element.addClass('copied');
-        setTimeout(function () {
-            element.removeClass('copied');
-        }, 2000);
+        var clipboard = new ClipboardJS(selectors.copy);
+        clipboard.on('success', function(e) {
+            var trigger = $(e.trigger)[0];
+            trigger.classList.add('copied');
+            setTimeout(function () {
+                trigger.classList.remove('copied');
+            }, 2000);
+        });
     };
 
     EDD_EZDefi_Qrcode.prototype.onClickQrcode = function(e) {

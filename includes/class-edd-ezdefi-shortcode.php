@@ -105,6 +105,7 @@ class EDD_Ezdefi_Shortcode
     /** Load needed CSS and JS file */
     public function enqueue_scripts()
     {
+	    wp_enqueue_script( 'edd_ezdefi_clipboard', EDD_Ezdefi()->plugin_url() . '/assets/clipboard.min.js' );
 	    wp_enqueue_style( 'edd_ezdefi_qrcode', EDD_Ezdefi()->plugin_url() . '/assets/edd-ezdefi-qrcode.css' );
         wp_enqueue_script( 'edd_ezdefi_qrcode', EDD_Ezdefi()->plugin_url() . '/assets/edd-ezdefi-qrcode.js', array( 'jquery', 'jquery-ui-tabs' ), '', true );
         wp_localize_script(

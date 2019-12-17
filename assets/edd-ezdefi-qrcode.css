@@ -87,15 +87,25 @@
   margin: 0;
   padding: 0;
   text-align: left;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul {
+    display: flex;
+  }
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li {
   display: inline-block;
   margin-bottom: -1px;
   margin-left: 0 !important;
 }
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li {
+    width: 50%;
+  }
+}
 #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li.ui-tabs-active a {
-  border: 1px solid #eee;
+  border: 1px solid rgba(0, 0, 0, 0.125);
   border-bottom-color: transparent;
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a {
@@ -104,21 +114,59 @@
   display: block;
   text-decoration: none;
 }
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a {
+    padding: 5px 10px;
+    font-size: 15px;
+    text-align: center;
+  }
+}
 #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a#tab-ezdefi_wallet {
   background-size: 18px 18px;
   background-position: 18px center;
   background-repeat: no-repeat;
   padding-left: 44px;
 }
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a#tab-ezdefi_wallet {
+    background-size: 16px 16px;
+    background-position: 8px center;
+    padding-left: 20px;
+  }
+}
+#edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a span.large-screen {
+  display: initial;
+}
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a span.large-screen {
+    display: none;
+  }
+}
+#edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a span.small-screen {
+  display: none;
+}
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a span.small-screen {
+    display: initial;
+  }
+}
 #edd-ezdefi-qrcode-section .ezdefi-payment-tabs .ezdefi-payment-panel {
-  padding: 10px 20px;
-  border: 1px solid #eee;
+  padding: 10px 0;
+  border: 1px solid rgba(0, 0, 0, 0.125);
   border-top: none;
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment {
   padding: 20px 20px 0 20px;
   text-align: center;
   color: #212529;
+}
+#edd-ezdefi-qrcode-section .ezdefi-payment p {
+  margin-bottom: 1rem;
+}
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment {
+    padding: 10px 10px 0 10px;
+  }
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment .exchange {
   text-transform: uppercase;
@@ -183,12 +231,36 @@
 #edd-ezdefi-qrcode-section .ezdefi-payment .amount {
   text-transform: uppercase;
 }
+#edd-ezdefi-qrcode-section .ezdefi-payment .receive-address {
+  margin-bottom: 0;
+}
+#edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount {
+  margin-bottom: 0.5rem;
+}
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment .receive-address, #edd-ezdefi-qrcode-section .ezdefi-payment .payment-amount {
+    display: flex;
+    justify-content: space-between;
+  }
+  #edd-ezdefi-qrcode-section .ezdefi-payment .receive-address {
+    margin-bottom: 0.5rem;
+  }
+}
 #edd-ezdefi-qrcode-section .ezdefi-payment .copy-to-clipboard {
   padding: 1px 22px 1px 6px;
   background-color: rgba(0, 0, 0, 0.03);
   position: relative;
   border-radius: 4px;
   cursor: pointer;
+}
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment .copy-to-clipboard {
+    width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+  }
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment .copy-to-clipboard:before {
   content: "";
@@ -239,6 +311,14 @@
 #edd-ezdefi-qrcode-section .ezdefi-payment .note {
   color: #f73f2e;
   font-weight: bold;
+  margin-bottom: 0;
+}
+@media screen and (max-width: 575.98px) {
+  #edd-ezdefi-qrcode-section .ezdefi-payment .note {
+    text-align: left;
+    font-size: 15px;
+    margin-bottom: 0.5rem;
+  }
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment span.currency {
   text-transform: uppercase;

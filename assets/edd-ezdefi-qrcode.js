@@ -38,7 +38,6 @@ jQuery(function($) {
         $(document.body)
             .on('click', selectors.item, onSelectItem)
             .on('click', selectors.ezdefiEnableBtn, onClickEzdefiLink)
-            .on('click', selectors.ezdefiEnableBtn, onClickEzdefiLink)
             .on('click', selectors.qrcode, onClickQrcode)
             .on('click', selectors.copy, onCopy);
     };

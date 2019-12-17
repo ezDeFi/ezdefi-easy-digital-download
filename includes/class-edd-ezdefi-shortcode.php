@@ -73,20 +73,20 @@ class EDD_Ezdefi_Shortcode
             <div class="edd-ezdefi-loader"></div>
             <div class="ezdefi-payment-tabs" style="display: none">
                 <ul>
-		            <?php
-		            foreach( $payment_method as $key => $value ) {
-			            echo '<li>';
-			            switch ($key) {
-				            case 'amount_id' :
-					            echo '<a href="#'.$key.'" id="tab-'.$key.'"><span>' . __( 'Pay with any crypto wallet', 'edd-ezdefi' ) . '</span></a>';
-					            break;
-				            case 'ezdefi_wallet' :
-					            echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url('.plugins_url( 'assets/ezdefi-icon.png', EDD_EZDEFI_MAIN_FILE ).')"><span> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span></a>';
-					            break;
-			            }
-			            echo '</a></li>';
-		            }
-		            ?>
+	                <?php
+	                foreach( $payment_method as $key => $value ) {
+		                echo '<li>';
+		                switch ($key) {
+			                case 'amount_id' :
+				                echo '<a href="#'.$key.'" id="tab-'.$key.'"><span class="large-screen">' . __( 'Pay with any crypto wallet', 'edd-ezdefi' ) . '</span><span class="small-screen">' . __( 'Any crypto wallet', 'edd-ezdefi' ) . '</span></a>';
+				                break;
+			                case 'ezdefi_wallet' :
+				                echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url(' . edd_ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . ')"><span class="large-screen"> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span><span class="small-screen"> ' . __( 'ezDeFi wallet', 'edd-ezdefi' ) . '</span></a>';
+				                break;
+		                }
+		                echo '</li>';
+	                }
+	                ?>
                 </ul>
 	            <?php foreach( $payment_method as $key => $value ) : ?>
                     <div id="<?php echo $key;?>" class="ezdefi-payment-panel"></div>

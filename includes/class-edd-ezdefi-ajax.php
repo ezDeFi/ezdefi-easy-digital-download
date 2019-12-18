@@ -439,9 +439,9 @@ class EDD_Ezdefi_Ajax
 
 		$currency = $_POST['currency'];
 
-		$order_id = $_POST['order_id'];
+		$order_id = ( ! empty( $_POST['order_id'] ) ) ? $_POST['order_id'] : null;
 
-	    $this->db->delete_amount_id_exception( $amount_id, $currency, $order_id );
+	    wp_die($this->db->delete_amount_id_exception( $amount_id, $currency, $order_id ));
 	}
 }
 

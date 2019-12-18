@@ -48,10 +48,7 @@ jQuery(function($) {
                     var method = ui.newPanel.attr('id');
                     self.getEzdefiPayment.call(self, method, ui.newPanel);
                 }
-                var url = ui.newTab.find('a').prop('href');
-                if(url) {
-                    location.href = url;
-                }
+                window.history.replaceState(null, null, ui.newPanel.selector);
             }
         });
 

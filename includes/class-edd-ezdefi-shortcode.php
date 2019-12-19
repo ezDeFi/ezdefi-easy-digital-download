@@ -81,7 +81,7 @@ class EDD_Ezdefi_Shortcode
 				                echo '<a href="#'.$key.'" id="tab-'.$key.'"><span class="large-screen">' . __( 'Pay with any crypto wallet', 'edd-ezdefi' ) . '</span><span class="small-screen">' . __( 'Any crypto wallet', 'edd-ezdefi' ) . '</span></a>';
 				                break;
 			                case 'ezdefi_wallet' :
-				                echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url(' . edd_ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . ')"><span class="large-screen"> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span><span class="small-screen"> ' . __( 'ezDeFi wallet', 'edd-ezdefi' ) . '</span></a>';
+				                echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url(' . edd_ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . ')"><span class="large-screen"> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span><span class="small-screen" style="background-image: url(' . edd_ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . ')"> ' . __( 'ezDeFi wallet', 'edd-ezdefi' ) . '</span></a>';
 				                break;
 		                }
 		                echo '</li>';

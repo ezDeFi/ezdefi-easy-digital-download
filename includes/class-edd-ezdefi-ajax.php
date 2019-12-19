@@ -261,7 +261,7 @@ class EDD_Ezdefi_Ajax
 			'payment_method' => ( $amount_id ) ? 'amount_id' : 'ezdefi_wallet'
 		);
 
-		$this->db->add_exception( $data );
+		$this->db->add_or_update_exception( $data );
 
 		$html = $this->generate_payment_html( $payment, $order );
 

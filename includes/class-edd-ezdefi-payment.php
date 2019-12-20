@@ -149,7 +149,7 @@ class EDD_Ezdefi_Payment
 	    $currency = $ezdefi_payment_data['currency'];
 
 	    if( ! isset ( $payment['amount_id'] ) ) {
-		    $amount_id = round( $amount_id, 12 );
+		    $amount_id = number_format( $amount_id, 12 );
 	    }
 
 	    $exception_data = array(
@@ -173,6 +173,10 @@ class EDD_Ezdefi_Payment
 		    edd_update_payment_status( $edd_payment_id, 'publish' );
 		    edd_empty_cart();
 		    $this->db->update_exception( $wheres, $exception_data );
+
+		    if( ! isset( $payment['amountId'] ) || ( isset( $payment['amountId'] ) && $payment['amountId'] != true ) ) {
+			    $this->db->delete_exception_by_order_id( $wheres['order_id'] );
+		    }
 	    } elseif( $status === 'EXPIRED_DONE' ) {
 		    $this->db->update_exception( $wheres, $exception_data );
 	    }

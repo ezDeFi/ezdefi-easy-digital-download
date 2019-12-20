@@ -56,17 +56,18 @@ class EDD_Ezdefi_Admin_Settings
                 'id' => 'ezdefi_method',
 				'name' => __( 'Payment Method', 'edd-ezdefi' ),
                 'desc' => __( 'Description' ),
-				'type' => 'ezdefi_method'
+				'type' => 'ezdefi_method',
+                'class' => 'ezdefi_method'
 			),
 			'ezdefi_acceptable_variation' => array(
                 'id' => 'ezdefi_acceptable_variation',
 				'name' => __( 'Acceptable price variation', 'edd-ezdefi' ),
 				'type' => 'number',
 				'step' => '0.000001',
-				'desc' => __( 'Allowable amount variation (%)' ),
+				'desc' => __( 'Allowable amount variation (%). Example: 0.01%' ),
 				'default' => 0.01,
                 'size' => 'small',
-                'placeholder' => '0.01%'
+                'class' => 'ezdefi_acceptable_variation'
 			)
 		);
 

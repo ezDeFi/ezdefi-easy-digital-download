@@ -3,6 +3,9 @@ form .error {
   color: #dc3232;
   display: block;
 }
+form tr.ezdefi_method label {
+  font-style: normal !important;
+}
 form td.form-invalid .select2-selection {
   border-color: #dc3232 !important;
   box-shadow: 0 0 2px rgba(204, 0, 0, 0.8);

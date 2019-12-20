@@ -2,8 +2,8 @@ jQuery(function($) {
     'use strict';
 
     var selectors = {
-        amountIdCheckbox: 'input[name="edd_settings[ezdefi_method][amount_id]"]',
-        ezdefiWalletCheckbox: 'input[name="edd_settings[ezdefi_method][ezdefi_wallet]"]',
+        amountIdCheckbox: 'input.ezdefi_amount_id_input',
+        ezdefiWalletCheckbox: 'input.ezdefi_exdefi_wallet_input',
         symbolInput: '.currency-symbol',
         nameInput: '.currency-name',
         logoInput: '.currency-logo',
@@ -40,7 +40,7 @@ jQuery(function($) {
             .on('click', selectors.cancelBtn, toggleEdit)
             .on('click', selectors.addBtn, addCurrency)
             .on('click', selectors.deleteBtn, removeCurrency)
-            .on('change', selectors.paymentMethod, toggleAmountSetting)
+            .on('change', selectors.amountIdCheckbox, toggleAmountSetting)
             .on('focus', selectors.decimalInput, onChangeDecimal)
             .on('blur', selectors.decimalInput, onBlurDecimal);
     };
@@ -69,7 +69,9 @@ jQuery(function($) {
                 if(element.hasClass('select-select2')) {
                     error.insertAfter(element.closest('.edit').find('.select2-container'));
                 } else {
-                    error.appendTo(element.closest('td'));
+                    if(element.closest('td').find('span.error').length === 0) {
+                        error.appendTo(element.closest('td'));
+                    }
                 }
             },
             highlight: function(element) {
@@ -205,15 +207,11 @@ jQuery(function($) {
 
     EDD_EZDefi_Admin.prototype.toggleAmountSetting = function() {
         var checked = this.$form.find(selectors.amountIdCheckbox).is(':checked');
-        var amount_settings = this.$form.find('.acceptable_variation').closest('tr');
+        var variation_setting = this.$form.find('.ezdefi_acceptable_variation');
         if(checked) {
-            amount_settings.each(function() {
-                $(this).show();
-            });
+            variation_setting.show();
         } else {
-            amount_settings.each(function() {
-                $(this).hide();
-            });
+            variation_setting.hide();
         }
     };
 

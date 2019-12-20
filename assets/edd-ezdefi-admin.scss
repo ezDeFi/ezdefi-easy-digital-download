@@ -5,6 +5,12 @@ form {
     display: block;
   }
 
+  tr.ezdefi_method {
+    label {
+      font-style: normal !important;
+    }
+  }
+
   td.form-invalid {
     .select2-selection {
       border-color: #dc3232!important;

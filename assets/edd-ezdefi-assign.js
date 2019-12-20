@@ -77,6 +77,8 @@ jQuery(function($) {
                 data: function(params) {
                     var query = {
                         action: 'edd_ezdefi_get_edd_payment',
+                        keyword: params.term,
+                        scope: $('.select2-search__scope').find('input[name="select2-search__scope"]:checked').val()
                     };
 
                     return query;
@@ -92,9 +94,21 @@ jQuery(function($) {
             placeholder: 'Select Payment',
             templateResult: self.formatOrderOption,
             templateSelection: self.formatOrderSelection,
-            minimumResultsForSearch: Infinity
         });
         select.on('select2:select', this.onSelect2Select);
+        select.on('select2:opening', function(e) {
+            $(this).data('select2').$dropdown.find('.select2-search .select2-search__scope').remove();
+            var $fields = $(
+                "<span class='select2-search__scope'>" +
+                "<label for='parent'><input type='radio' name='select2-search__scope' id='parent' value='p' checked>Payment ID</label>" +
+                "<label for='customer'><input type='radio' name='select2-search__scope' id='customer' value='s'>Billing Email</label>" +
+                "</span>"
+            );
+            $(this).data('select2').$dropdown.find('.select2-search').append($fields);
+        });
+        select.on('select2:close', function(e) {
+            $(this).data('select2').$dropdown.find('.select2-search .select2-search__scope').remove();
+        });
     };
 
     EDD_Ezdefi_Assign.prototype.onSelect2Select = function(e) {
@@ -215,7 +229,7 @@ jQuery(function($) {
                     payment_method = 'Pay with any crypto wallet';
                     break;
                 case 'ezdefi_wallet':
-                    payment_method = 'Pay with ezDeFi wallet';
+                    payment_method = '<strong>Pay with ezDeFi wallet</strong>';
                     break;
             }
             var html = $(

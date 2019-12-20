@@ -372,10 +372,19 @@ class EDD_Ezdefi_Ajax
 
 	public function edd_ezdefi_get_edd_payment_ajax_callback()
 	{
+		$allow_scopes = array( 'p', 's' );
+
 		$args = array(
 			'status' => 'pending',
 			'output' => 'payments'
 		);
+
+		if(
+			isset( $_POST['scope'] ) && in_array( $_POST['scope'], $allow_scopes ) &&
+			isset( $_POST['keyword'] ) && ! empty( $_POST['keyword'] )
+		) {
+			$args[$_POST['scope']] = ( $_POST['scope'] === 'p' ) ? (int) $_POST['keyword'] : $_POST['keyword'];
+		}
 
 		$payments = edd_get_payments( $args );
 

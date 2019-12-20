@@ -64,24 +64,9 @@ class EDD_Ezdefi
 	/** Listener callback */
 	public function listen_for_action()
 	{
-		$base_url = '/edd-ezdefi/';
 		$url = $_SERVER['REQUEST_URI'];
 
-		if( strpos( $url, $base_url ) !== 0 ) {
-			return '';
-		}
-
-		$url = substr( $url, strlen( $base_url ) );
-		$url = parse_url( $url, PHP_URL_PATH );
-		$pieces = explode( '/', $url );
-
-		if( !$pieces['0'] ) {
-			return '';
-		}
-
-		$action = $pieces['0'];
-
-		if( $action === 'nextypay' ) {
+		if( strpos( $url, 'edd-ezdefi-callback' ) != false ) {
 			do_action( 'edd_ezdefi_nextypay' );
 		}
 	}

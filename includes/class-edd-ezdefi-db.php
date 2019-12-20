@@ -70,8 +70,20 @@ class EDD_Ezdefi_Db
 			return $wpdb->query( "DELETE FROM $table_name WHERE amount_id = $amount_id AND currency = '$currency' AND order_id IS NULL LIMIT 1" );
 		}
 
-		return $wpdb->query( "DELETE FROM $table_name WHERE amount_id = $amount_id AND currency = '$currency' AND order_id = $order_id" );
+		return $wpdb->query( "DELETE FROM $table_name WHERE amount_id = $amount_id AND currency = '$currency' AND order_id = $order_id LIMIT 1" );
 	}
+
+	public function delete_exception_by_order_id($order_id)
+	{
+		global $wpdb;
+
+		$table_name = $wpdb->prefix . 'edd_ezdefi_exception';
+
+		$query = "DELETE FROM $table_name WHERE order_id = $order_id";
+
+		return $wpdb->query( $query );
+	}
+
 
 	public function add_exception( $data )
 	{
@@ -160,7 +172,11 @@ class EDD_Ezdefi_Db
 		$query = "UPDATE $exception_table SET";
 		$comma = " ";
 		foreach ( $data as $column => $value ) {
-			$query .= $comma . $column . " = '" . $value . "'";
+			if( is_null( $value ) ) {
+				$query .= $comma . $column . " = NULL";
+			} else {
+				$query .= $comma . $column . " = '" . $value . "'";
+			}
 			$comma = ", ";
 		}
 		$conditions = array();

@@ -416,9 +416,13 @@ class EDD_Ezdefi_Ajax
 			wp_send_json_error();
 		}
 
-		$this->db->delete_amount_id_exception( $amount_id, $currency, $old_order_id );
-
 		edd_update_payment_status( $order_id, 'publish' );
+
+		if( is_null( $old_order_id ) ) {
+			$this->db->delete_amount_id_exception( $amount_id, $currency, $old_order_id );
+		} else {
+			$this->db->delete_exception_by_order_id( $old_order_id );
+		}
 
 		wp_send_json_success();
 	}
@@ -441,9 +445,22 @@ class EDD_Ezdefi_Ajax
 			wp_send_json_error();
 		}
 
-		$this->db->delete_amount_id_exception( $amount_id, $currency, $order_id );
-
 		edd_update_payment_status( $order_id, 'pending' );
+
+		$wheres = array(
+			'amount_id' => $amount_id,
+			'currency' => $currency,
+			'order_id' => $order_id,
+			'status' => 'done'
+		);
+
+		$data = array(
+			'order_id' => null,
+			'status' => null,
+			'payment_method' => null
+		);
+
+		$this->db->update_exception( $wheres, $data );
 
 		wp_send_json_success();
 	}

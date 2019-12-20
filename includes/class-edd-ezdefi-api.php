@@ -114,8 +114,7 @@ class EDD_Ezdefi_Api
 //            'ucid' => $edd_payment->user_id,
 		    'ucid' => rand(1, 100),
 		    'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
-//            'callback' => home_url() . '/edd-ezdefi/nextypay'
-	        'callback' => 'http://c0be4ee5.ngrok.io/edd-ezdefi/nextypay'
+            'callback' => home_url() . '/edd-ezdefi/nextypay'
 	    ];
 
 	    if( $amountId ) {

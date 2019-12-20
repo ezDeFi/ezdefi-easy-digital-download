@@ -78,7 +78,6 @@ jQuery(function($) {
                     var query = {
                         action: 'edd_ezdefi_get_edd_payment',
                         keyword: params.term,
-                        scope: $('.select2-search__scope').find('input[name="select2-search__scope"]:checked').val()
                     };
 
                     return query;
@@ -96,19 +95,6 @@ jQuery(function($) {
             templateSelection: self.formatOrderSelection,
         });
         select.on('select2:select', this.onSelect2Select);
-        select.on('select2:opening', function(e) {
-            $(this).data('select2').$dropdown.find('.select2-search .select2-search__scope').remove();
-            var $fields = $(
-                "<span class='select2-search__scope'>" +
-                "<label for='parent'><input type='radio' name='select2-search__scope' id='parent' value='p' checked>Payment ID</label>" +
-                "<label for='customer'><input type='radio' name='select2-search__scope' id='customer' value='s'>Billing Email</label>" +
-                "</span>"
-            );
-            $(this).data('select2').$dropdown.find('.select2-search').append($fields);
-        });
-        select.on('select2:close', function(e) {
-            $(this).data('select2').$dropdown.find('.select2-search .select2-search__scope').remove();
-        });
     };
 
     EDD_Ezdefi_Assign.prototype.onSelect2Select = function(e) {
@@ -210,6 +196,7 @@ jQuery(function($) {
             self.$table.append("<tr><td colspan='4'>Not found</td></tr>")
         }
         for(var i=0;i<data.length;i++) {
+            var number = i + 1;
             var row = data[i];
             var status;
             var payment_method;
@@ -234,6 +221,7 @@ jQuery(function($) {
             }
             var html = $(
                 "<tr>" +
+                "<td>" + number + "</td>" +
                 "<td class='amount-id-column'>" +
                 "<span>" + row['amount_id'] + "</span>" +
                 "<input type='hidden' class='amount-id-input' value='" + row['amount_id'] + "' >" +

@@ -48,6 +48,7 @@ jQuery(function($) {
     EDD_EZDefi_Admin.prototype.init = function() {
         var self = this;
 
+        self.customValidationRule();
         self.initValidation.call(this);
         self.initSort.call(this);
         self.initTiptip.call(this);
@@ -56,6 +57,12 @@ jQuery(function($) {
         this.$table.find('select').each(function() {
             self.initCurrencySelect($(this));
         });
+    };
+
+    EDD_EZDefi_Admin.prototype.customValidationRule = function() {
+        jQuery.validator.addMethod('greaterThanZero', function(value, element) {
+            return parseFloat(value) > 0;
+        }, 'Please enter a value greater than 0');
     };
 
     EDD_EZDefi_Admin.prototype.initValidation = function() {
@@ -94,7 +101,7 @@ jQuery(function($) {
                             return self.$form.find(selectors.paymentMethod + ':checked').val() != 'ezdefi_wallet';
                         }
                     },
-                    min: 0,
+                    greaterThanZero: true,
                     max: 100
                 },
                 'edd_settings[ezdefi_method][amount_id]': {

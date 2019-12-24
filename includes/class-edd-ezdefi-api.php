@@ -86,10 +86,7 @@ class EDD_Ezdefi_Api
 
     public function create_ezdefi_payment( $edd_payment, $currency_data, $amountId = false )
     {
-    	$value = $this->calculate_discounted_price(
-		    intval($edd_payment->subtotal),
-		    intval($currency_data['discount'])
-	    );
+    	$value = $this->calculate_discounted_price( $edd_payment->subtotal, $currency_data['discount'] );
 
 	    if( $amountId ) {
 		    $value = $this->generate_amount_id(

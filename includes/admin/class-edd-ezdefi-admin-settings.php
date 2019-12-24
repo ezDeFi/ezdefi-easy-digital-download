@@ -151,7 +151,7 @@ class EDD_Ezdefi_Admin_Settings
 						</td>
 						<td class="discount">
 							<div class="view">
-								<?php echo (isset($c['discount'])) ? $c['discount'] : 0; ?><span> %</span>
+								<?php echo ( isset($c['discount'] ) && ! empty( $c['discount'] ) ) ? $c['discount'] : 0; ?><span> %</span>
 							</div>
 							<div class="edit">
 								<input type="number" class="small-text" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][discount]" value="<?php echo (isset($c['discount'])) ? $c['discount'] : ''; ?>"><span> %</span>
@@ -225,7 +225,7 @@ class EDD_Ezdefi_Admin_Settings
 						<div class="view">
 						</div>
 						<div class="edit">
-							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][discount]" value=""><span> %</span>
+							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][discount]" value=""><span> 0%</span>
 						</div>
 					</td>
 					<td class="lifetime">

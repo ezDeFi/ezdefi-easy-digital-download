@@ -101,7 +101,7 @@ class EDD_Ezdefi_Api
 	    }
 
 	    if( ! $value ) {
-		    return new WP_Error( 'create_ezdefi_payment', 'Can not generate amountID.' );
+		    return new WP_Error( 'create_ezdefi_payment', 'Can not create payment.' );
 	    }
 
 	    $uoid = $this->generate_uoid( $edd_payment->ID, $amountId );

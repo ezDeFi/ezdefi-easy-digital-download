@@ -363,7 +363,8 @@ class EDD_Ezdefi_Ajax
 			'meta_data' => array(
 				'current_page' => ( isset( $_POST['page'] ) ) ? (int) $_POST['page'] : 1 ,
 				'total' => (int) $total,
-				'total_pages' => $total_pages
+				'total_pages' => $total_pages,
+                'offset' => $offset
 			)
 		);
 

@@ -14,7 +14,6 @@ defined( 'ABSPATH' ) or exit;
             <tr>
                 <td>
                     <form action="" id="edd-ezdefi-exception-table-filter-form">
-                        <input type="hidden" value="1">
                         <div class="filter-container">
                             <div class="filter-rows">
                                 <label for="">Amount</label>

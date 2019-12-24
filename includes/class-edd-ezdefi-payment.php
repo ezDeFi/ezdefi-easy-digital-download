@@ -144,13 +144,15 @@ class EDD_Ezdefi_Payment
 	    	wp_die();
 	    }
 
-	    $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
+	    if( ( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] === true ) ) {
+		    $amount_id = $ezdefi_payment_data['originValue'];
+	    } else {
+		    $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
+	    }
+
+	    $amount_id = number_format( $amount_id, 12 );
 
 	    $currency = $ezdefi_payment_data['currency'];
-
-	    if( ! isset ( $payment['amount_id'] ) ) {
-		    $amount_id = number_format( $amount_id, 12 );
-	    }
 
 	    $exception_data = array(
 		    'status' => strtolower($status),
@@ -158,12 +160,12 @@ class EDD_Ezdefi_Payment
 	    );
 
 	    $wheres = array(
-		    'amount_id' => (float) $amount_id,
+		    'amount_id' => $amount_id,
 		    'currency' => (string) $currency,
 		    'order_id' => (int) $edd_payment_id
 	    );
 
-	    if( isset( $payment['amountId'] ) && $payment['amountId'] = true ) {
+	    if( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] = true ) {
 		    $wheres['payment_method'] = 'amount_id';
 	    } else {
 		    $wheres['payment_method'] = 'ezdefi_wallet';
@@ -174,7 +176,7 @@ class EDD_Ezdefi_Payment
 		    edd_empty_cart();
 		    $this->db->update_exception( $wheres, $exception_data );
 
-		    if( ! isset( $payment['amountId'] ) || ( isset( $payment['amountId'] ) && $payment['amountId'] != true ) ) {
+		    if( ! isset( $ezdefi_payment_data['amountId'] ) || ( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] != true ) ) {
 			    $this->db->delete_exception_by_order_id( $wheres['order_id'] );
 		    }
 	    } elseif( $status === 'EXPIRED_DONE' ) {

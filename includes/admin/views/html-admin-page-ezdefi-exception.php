@@ -60,6 +60,7 @@ defined( 'ABSPATH' ) or exit;
     </table>
     <table class="widefat striped" id="edd-ezdefi-order-assign">
 		<thead>
+            <th>#</th>
             <th><strong><?php _e( 'Received Amount', 'edd-ezdefi' ); ?></strong></th>
             <th><strong><?php _e( 'Currency', 'edd-ezdefi' ); ?></strong></th>
             <th><strong><?php _e( 'Order', 'edd-ezdefi' ); ?></strong></th>
@@ -67,7 +68,7 @@ defined( 'ABSPATH' ) or exit;
 		</thead>
         <tbody>
             <tr class="spinner-row">
-                <td colspan="4"><span class="spinner is-active"></span></td>
+                <td colspan="5"><span class="spinner is-active"></span></td>
             </tr>
         </tbody>
 	</table>

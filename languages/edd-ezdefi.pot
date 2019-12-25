@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2019-12-04T04:31:29+01:00\n"
+"POT-Creation-Date: 2019-12-25T02:33:44+01:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.3.0\n"
 "X-Domain: edd-ezdefi\n"
@@ -30,10 +30,13 @@ msgstr ""
 msgid "https://nexty.io"
 msgstr ""
 
-#: class-edd-ezdefi.php:56
 #: class-edd-ezdefi.php:57
 #: includes/admin/class-edd-ezdefi-admin-settings.php:23
-msgid "EZDefi"
+msgid "ezDeFi"
+msgstr ""
+
+#: class-edd-ezdefi.php:58
+msgid "Pay with Cryptocurrency"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-notices.php:38
@@ -49,15 +52,15 @@ msgid "Ezdefi is almost ready. To get started, <a href=\"%s\">set accepted curre
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:36
-msgid "EZDefi Settings"
+msgid "ezDeFi Settings"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:41
-msgid "Gateway API Url"
+msgid "API Url"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:42
-msgid "Gateway API Url Description"
+msgid "API Url Description"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:49
@@ -72,153 +75,145 @@ msgstr ""
 msgid "Payment Method"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin-settings.php:63
+#: includes/admin/class-edd-ezdefi-admin-settings.php:64
 msgid "Acceptable price variation"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin-settings.php:83
+#: includes/admin/class-edd-ezdefi-admin-settings.php:85
 msgid "Select currency"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin-settings.php:107
-msgid "Currency"
-msgstr ""
-
-#: includes/admin/class-edd-ezdefi-admin-settings.php:108
-#: includes/class-edd-ezdefi-frontend.php:42
-#: includes/class-edd-ezdefi-shortcode.php:87
-msgid "Discount"
-msgstr ""
-
 #: includes/admin/class-edd-ezdefi-admin-settings.php:109
-msgid "Payment Lifetime"
+msgid "Name"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:110
-msgid "Wallet Address"
+msgid "Discount"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:111
-msgid "Block Confirmation"
+msgid "Expiration (seconds)"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:112
-msgid "Decimal"
+msgid "Wallet Address"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin-settings.php:136
-#: includes/admin/class-edd-ezdefi-admin-settings.php:208
-#: includes/admin/class-edd-ezdefi-admin-settings.php:273
-msgid "Edit"
+#: includes/admin/class-edd-ezdefi-admin-settings.php:113
+msgid "Block Confirmation"
+msgstr ""
+
+#: includes/admin/class-edd-ezdefi-admin-settings.php:114
+msgid "Decimal"
 msgstr ""
 
 #: includes/admin/class-edd-ezdefi-admin-settings.php:138
 #: includes/admin/class-edd-ezdefi-admin-settings.php:210
 #: includes/admin/class-edd-ezdefi-admin-settings.php:275
+msgid "Edit"
+msgstr ""
+
+#: includes/admin/class-edd-ezdefi-admin-settings.php:140
+#: includes/admin/class-edd-ezdefi-admin-settings.php:212
+#: includes/admin/class-edd-ezdefi-admin-settings.php:277
 msgid "Delete"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin-settings.php:146
-#: includes/admin/class-edd-ezdefi-admin-settings.php:218
-#: includes/admin/class-edd-ezdefi-admin-settings.php:283
+#: includes/admin/class-edd-ezdefi-admin-settings.php:148
+#: includes/admin/class-edd-ezdefi-admin-settings.php:220
+#: includes/admin/class-edd-ezdefi-admin-settings.php:285
 msgid "Cancel"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin.php:57
+#: includes/admin/class-edd-ezdefi-admin.php:52
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin.php:58
+#: includes/admin/class-edd-ezdefi-admin.php:53
 msgid "Support"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin.php:66
+#: includes/admin/class-edd-ezdefi-exception-page.php:23
+msgid "ezDeFi Exception Management"
+msgstr ""
+
+#: includes/admin/class-edd-ezdefi-exception-page.php:23
 msgid "ezDeFi Exception"
 msgstr ""
 
-#: includes/admin/class-edd-ezdefi-admin.php:112
-msgid "Received Amount"
-msgstr ""
-
-#: includes/admin/class-edd-ezdefi-admin.php:113
-msgid "Received At"
-msgstr ""
-
-#: includes/admin/class-edd-ezdefi-admin.php:114
-msgid "Assign To"
-msgstr ""
-
 #: includes/admin/register-settings.php:10
-#: includes/class-edd-ezdefi-shortcode.php:105
-msgid "Simple method"
+#: includes/class-edd-ezdefi-shortcode.php:81
+msgid "Pay with any crypto wallet"
 msgstr ""
 
 #: includes/admin/register-settings.php:11
-msgid "Allow client to pay without using ezDeFi wallet"
+msgid "This method will adjust payment amount of each order by an acceptable number to help payment gateway identifying the uniqueness of that order."
 msgstr ""
 
 #: includes/admin/register-settings.php:14
-msgid "Use ezDeFi wallet"
-msgstr ""
-
-#: includes/admin/register-settings.php:15
-msgid "Allow client to pay using ezDeFi wallet"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:46
-msgid "Can not get currency"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:111
-#: includes/class-edd-ezdefi-ajax.php:195
-msgid "Can not get payment"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:131
-#: includes/class-edd-ezdefi-ajax.php:209
-msgid "Can not create payment"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:253
-msgid "You have"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:253
-msgid "to scan this QR Code"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:261
-msgid "Address"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:262
-msgid "Amount"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:264
-msgid "You have to pay an exact amount so that you payment can be recognized."
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:267
-msgid "Download ezDefi for IOS"
-msgstr ""
-
-#: includes/class-edd-ezdefi-ajax.php:268
-msgid "Download ezDefi for Android"
-msgstr ""
-
-#: includes/class-edd-ezdefi-frontend.php:30
-msgid "Select Currency"
-msgstr ""
-
-#: includes/class-edd-ezdefi-shortcode.php:73
-msgid "Change"
-msgstr ""
-
-#: includes/class-edd-ezdefi-shortcode.php:108
+#: includes/class-edd-ezdefi-shortcode.php:84
 msgid "Pay with ezDeFi wallet"
 msgstr ""
 
-#: includes/class-edd-ezdefi-shortcode.php:119
-msgid "Confirm"
+#: includes/admin/register-settings.php:15
+msgid "This method is more powerful when amount uniqueness above method reaches allowable limit. Users just need to install ezDeFi wallet then import their private key to pay using qrCode."
+msgstr ""
+
+#: includes/admin/views/html-admin-page-ezdefi-exception.php:63
+msgid "Received Amount"
+msgstr ""
+
+#: includes/admin/views/html-admin-page-ezdefi-exception.php:64
+msgid "Currency"
+msgstr ""
+
+#: includes/admin/views/html-admin-page-ezdefi-exception.php:65
+msgid "Order"
+msgstr ""
+
+#: includes/admin/views/html-admin-page-ezdefi-exception.php:66
+msgid "Action"
+msgstr ""
+
+#: includes/class-edd-ezdefi-ajax.php:59
+msgid "Can not get currency"
+msgstr ""
+
+#: includes/class-edd-ezdefi-ajax.php:124
+#: includes/class-edd-ezdefi-ajax.php:208
+#: includes/class-edd-ezdefi-ajax.php:220
+msgid "Can not get payment"
+msgstr ""
+
+#: includes/class-edd-ezdefi-ajax.php:144
+#: includes/class-edd-ezdefi-ajax.php:233
+msgid "Can not create payment"
+msgstr ""
+
+#: includes/class-edd-ezdefi-ajax.php:307
+msgid "You have"
+msgstr ""
+
+#: includes/class-edd-ezdefi-ajax.php:307
+msgid "to scan this QR Code"
+msgstr ""
+
+#: includes/class-edd-ezdefi-ajax.php:337
+msgid "Download ezDefi for IOS"
+msgstr ""
+
+#: includes/class-edd-ezdefi-ajax.php:338
+msgid "Download ezDefi for Android"
+msgstr ""
+
+#: includes/class-edd-ezdefi-frontend.php:47
+msgid "Select Currency"
+msgstr ""
+
+#: includes/class-edd-ezdefi-shortcode.php:81
+msgid "Any crypto wallet"
+msgstr ""
+
+#: includes/class-edd-ezdefi-shortcode.php:84
+msgid "ezDeFi wallet"
 msgstr ""

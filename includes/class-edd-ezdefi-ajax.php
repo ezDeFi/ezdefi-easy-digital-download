@@ -48,8 +48,12 @@ class EDD_Ezdefi_Ajax
 	/** Get currency ajax callback */
     public function edd_ezdefi_get_currency_ajax_callback()
     {
-	    $keyword = $_POST['keyword'];
-	    $api_url = $_POST['api_url'];
+	    if( ! isset( $_POST['keyword'] ) || ! isset( $_POST['api_url'] ) ) {
+		    wp_send_json_error( __( 'Can not get currency', 'woocommerce-gateway-ezdefi' ) );
+	    }
+
+	    $keyword = sanitize_text_field( $_POST['keyword'] );
+	    $api_url = sanitize_text_field( $_POST['api_url'] );
 
 	    $api = new EDD_Ezdefi_Api( $api_url );
 
@@ -66,53 +70,14 @@ class EDD_Ezdefi_Ajax
 	    wp_send_json_success( $currency );
     }
 
-	/** Check wallet address ajax callback */
-	public function edd_ezdefi_check_wallet_ajax_callback()
-	{
-		if( ! isset( $_POST['address'] ) || ! isset( $_POST['api_url'] ) || ! isset( $_POST['api_key'] ) ) {
-			wp_die( 'false' );
-		}
-
-		$address = $_POST['address'];
-		$api_url = $_POST['api_url'];
-		$api_key = $_POST['api_key'];
-		$currency_chain = strtolower( $_POST['currency_chain'] );
-
-		$api = new EDD_Ezdefi_Api( $api_url, $api_key );
-
-		$response = $api->get_list_wallet();
-
-		if( is_wp_error( $response ) ) {
-			wp_die( 'false' );
-		}
-
-		$response = json_decode( $response['body'], true );
-
-		$list_wallet = $response['data'];
-
-		$key = array_search( $address, array_column( $list_wallet, 'address' ) );
-
-		if( $key === false ) {
-			wp_die( 'false' );
-		}
-
-		$wallet = $list_wallet[$key];
-
-		$status = strtolower( $wallet['status'] );
-
-		$wallet_type = strtolower( $wallet['walletType'] );
-
-		if( $status === 'active' && $wallet_type === $currency_chain ) {
-			wp_die( 'true' );
-		} else {
-			wp_die( 'false' );
-		}
-	}
-
     /** AJAX callback to check edd payment status */
     public function edd_ezdefi_check_payment_status_ajax_callback()
     {
-        $payment_id = $_POST['paymentId'];
+	    if( ! isset( $_POST['paymentId'] ) ) {
+		    wp_die();
+	    }
+
+        $payment_id = sanitize_key( $_POST['paymentId'] );
 
         $payment_status = edd_get_payment_status( $payment_id, true );
 
@@ -134,7 +99,7 @@ class EDD_Ezdefi_Ajax
 			return $this->get_ezdefi_payment( $paymentid );
 		}
 
-		$symbol = $_POST['symbol'];
+		$symbol = sanitize_text_field( $_POST['symbol'] );
 
 		return $this->create_ezdefi_payment( $order, $symbol, $method );
 	}
@@ -143,7 +108,7 @@ class EDD_Ezdefi_Ajax
     {
 	    $data = $this->validate_post_data( $_POST, __( 'Can not create payment', 'edd-ezdefi' ) );
 
-	    $symbol = $_POST['symbol'];
+	    $symbol = sanitize_text_field( $_POST['symbol'] );
 
 	    return $this->create_ezdefi_payment( $data['order'], $symbol, $data['method'], true );
     }
@@ -154,13 +119,13 @@ class EDD_Ezdefi_Ajax
 			wp_send_json_error( $message );
 		}
 
-		$uoid = $_POST['uoid'];
+		$uoid = sanitize_key( $_POST['uoid'] );
 
 		$data = array();
 
 		$data['order'] = $this->get_order( $uoid, $message );
 
-		$data['method'] = $this->validate_payment_method( $_POST['method'], $message );
+		$data['method'] = $this->validate_payment_method( sanitize_text_field( $_POST['method'] ), $message );
 
 		return $data;
 	}
@@ -350,10 +315,13 @@ class EDD_Ezdefi_Ajax
 		$per_page = 15;
 
 		if( isset( $_POST['page'] ) && $_POST['page'] > 1 ) {
-			$offset = $per_page * ( $_POST['page'] - 1 );
+			$page = sanitize_key( $_POST['page'] );
+			$offset = $per_page * ( $page - 1 );
 		}
 
-		$data = $this->db->get_exception( $_POST, $offset, $per_page );
+		$post_data = array_map( 'sanitize_text_field', $_POST );
+
+		$data = $this->db->get_exception( $post_data, $offset, $per_page );
 
 		$total = $data['total'];
 
@@ -362,7 +330,7 @@ class EDD_Ezdefi_Ajax
 		$response = array(
 			'data' => $data['data'],
 			'meta_data' => array(
-				'current_page' => ( isset( $_POST['page'] ) ) ? (int) $_POST['page'] : 1 ,
+				'current_page' => ( isset( $_POST['page'] ) ) ? (int) sanitize_key( $_POST['page'] ) : 1 ,
 				'total' => (int) $total,
 				'total_pages' => $total_pages,
                 'offset' => $offset
@@ -380,7 +348,7 @@ class EDD_Ezdefi_Ajax
 		);
 
 		if( isset( $_POST['keyword'] ) && ! empty( $_POST['keyword'] ) ) {
-			$args['p'] = $_POST['keyword'];
+			$args['p'] = sanitize_text_field( $_POST['keyword'] );
 		}
 
 		$payments = edd_get_payments( $args );
@@ -408,13 +376,13 @@ class EDD_Ezdefi_Ajax
             wp_send_json_error();
         }
 
-		$amount_id = $_POST['amount_id'];
+		$amount_id = sanitize_text_field( $_POST['amount_id'] );
 
-		$currency = $_POST['currency'];
+		$currency = sanitize_text_field( $_POST['currency'] );
 
-		$old_order_id = ( $_POST['old_order_id'] && ! empty( $_POST['old_order_id'] ) ) ? $_POST['old_order_id'] : null;
+		$old_order_id = ( $_POST['old_order_id'] && ! empty( $_POST['old_order_id'] ) ) ? sanitize_key( $_POST['old_order_id'] ) : null;
 
-		$order_id = $_POST['order_id'];
+		$order_id = sanitize_key( $_POST['order_id'] );
 
 		$edd_payment = edd_get_payment( $order_id );
 
@@ -440,11 +408,11 @@ class EDD_Ezdefi_Ajax
 			wp_send_json_error();
 		}
 
-		$amount_id = $_POST['amount_id'];
+		$amount_id = sanitize_text_field( $_POST['amount_id'] );
 
-		$currency = $_POST['currency'];
+		$currency = sanitize_text_field( $_POST['currency'] );
 
-		$order_id = $_POST['order_id'];
+		$order_id = sanitize_key( $_POST['order_id'] );
 
 		$edd_payment = edd_get_payment( $order_id );
 
@@ -474,13 +442,13 @@ class EDD_Ezdefi_Ajax
 
 	public function edd_ezdefi_delete_amount_id_ajax_callback()
 	{
-		$amount_id = $_POST['amount_id'];
+		$amount_id = sanitize_text_field( $_POST['amount_id'] );
 
-		$currency = $_POST['currency'];
+		$currency = sanitize_text_field( $_POST['currency'] );
 
-		$order_id = ( ! empty( $_POST['order_id'] ) ) ? $_POST['order_id'] : null;
+		$order_id = ( ! empty( $_POST['order_id'] ) ) ? sanitize_key( $_POST['order_id'] ) : null;
 
-	    wp_die($this->db->delete_amount_id_exception( $amount_id, $currency, $order_id ));
+	    $this->db->delete_amount_id_exception( $amount_id, $currency, $order_id );
 	}
 }
 

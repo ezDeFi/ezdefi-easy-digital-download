@@ -105,7 +105,7 @@ class EDD_Ezdefi_Payment
 		    $decimal = sanitize_key( $_GET['decimal'] );
 		    $value = $value / pow( 10, $decimal );
 		    $explorerUrl = sanitize_text_field( $_GET['explorerUrl'] );
-		    $currency = sanitize_key( $_GET['currency'] );
+		    $currency = sanitize_text_field( $_GET['currency'] );
 		    $id = sanitize_key( $_GET['id'] );
 
 		    return $this->process_transaction_callback( $value, $explorerUrl, $currency, $id);

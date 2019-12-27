@@ -299,8 +299,8 @@ class EDD_Ezdefi_Ajax
                     </p>
 				<?php else : ?>
                     <p class="app-link-list">
-                        <a href=""><img src="<?php echo plugins_url( 'assets/ios-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
-                        <a href=""><img src="<?php echo plugins_url( 'assets/android-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
+                        <a href="https://ezdefi.com/ios"><img src="<?php echo plugins_url( 'assets/ios-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
+                        <a href="https://ezdefi.com/android"><img src="<?php echo plugins_url( 'assets/android-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
                     </p>
 				<?php endif; ?>
 			<?php endif; ?>

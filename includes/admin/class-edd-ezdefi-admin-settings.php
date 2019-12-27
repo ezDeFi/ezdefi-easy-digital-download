@@ -195,17 +195,17 @@ class EDD_Ezdefi_Admin_Settings
 				<tr class="editing">
 					<td class="sortable-handle"><span class="dashicons dashicons-menu"></span></td>
 					<td class="logo">
-						<img src="https://s2.coinmarketcap.com/static/img/coins/64x64/2714.png" class="ezdefi-currency-logo" alt="">
+						<img src="<?php echo edd_ezdefi()->plugin_url() . '/assets/newsd-icon.png'; ?>" class="ezdefi-currency-logo" alt="">
 					</td>
 					<td class="name">
 						<input class="currency-id" type="hidden" value="" name="edd_settings[ezdefi_currency][0][id]">
-						<input class="currency-symbol" type="hidden" value="nusd" name="edd_settings[ezdefi_currency][0][symbol]">
-						<input class="currency-name" type="hidden" value="nusd" name="edd_settings[ezdefi_currency][0][name]">
-						<input class="currency-logo" type="hidden" value="https://s2.coinmarketcap.com/static/img/coins/64x64/2714.png" name="edd_settings[ezdefi_currency][0][logo]">
+						<input class="currency-symbol" type="hidden" value="newsd" name="edd_settings[ezdefi_currency][0][symbol]">
+						<input class="currency-name" type="hidden" value="NewSD" name="edd_settings[ezdefi_currency][0][name]">
+						<input class="currency-logo" type="hidden" value="<?php echo edd_ezdefi()->plugin_url() . '/assets/newsd-icon.png'; ?>" name="edd_settings[ezdefi_currency][0][logo]">
 						<input class="currency-desc" type="hidden" value="NewSD - Stablecoin token for payment" name="edd_settings[ezdefi_currency][0][desc]">
                         <input class="currency-chain" type="hidden" value="eth" name="edd_settings[ezdefi_currency][0][chain]">
 						<div class="view">
-							<span>ntf</span>
+							<span>NewSD</span>
 							<div class="actions">
 								<a href="" class="editBtn" data-edit-btn><?php _e( 'Edit', 'edd-ezdefi' ); ?></a>
 								|
@@ -214,7 +214,7 @@ class EDD_Ezdefi_Admin_Settings
 						</div>
 						<div class="edit">
 							<select name="edd_settings[ezdefi_currency][0][select]" class="select-select2">
-								<option value="nusd">nusd</option>
+								<option value="newsd">NewSD</option>
 							</select>
 							<div class="actions">
 								<a href="" class="cancelBtn" data-cancel-btn><?php _e( 'Cancel', 'edd-ezdefi' ); ?></a>
@@ -225,7 +225,7 @@ class EDD_Ezdefi_Admin_Settings
 						<div class="view">
 						</div>
 						<div class="edit">
-							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][discount]" value=""><span> 0%</span>
+							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][discount]" value=""><span> %</span>
 						</div>
 					</td>
 					<td class="lifetime">
@@ -260,17 +260,17 @@ class EDD_Ezdefi_Admin_Settings
                 <tr class="editing">
                     <td class="sortable-handle"><span class="dashicons dashicons-menu"></span></td>
                     <td class="logo">
-                        <img src="https://s2.coinmarketcap.com/static/img/coins/64x64/2714.png" class="ezdefi-currency-logo" alt="">
+                        <img src="<?php echo edd_ezdefi()->plugin_url() . '/assets/bitcoin-icon.png'; ?>" class="ezdefi-currency-logo" alt="">
                     </td>
                     <td class="name">
                         <input class="currency-id" type="hidden" value="" name="edd_settings[ezdefi_currency][1][id]">
-                        <input class="currency-symbol" type="hidden" value="ntf" name="edd_settings[ezdefi_currency][1][symbol]">
-                        <input class="currency-name" type="hidden" value="ntf" name="edd_settings[ezdefi_currency][1][name]">
-                        <input class="currency-logo" type="hidden" value="https://s2.coinmarketcap.com/static/img/coins/64x64/2714.png" name="edd_settings[ezdefi_currency][1][logo]">
+                        <input class="currency-symbol" type="hidden" value="btc" name="edd_settings[ezdefi_currency][1][symbol]">
+                        <input class="currency-name" type="hidden" value="Bitcoin" name="edd_settings[ezdefi_currency][1][name]">
+                        <input class="currency-logo" type="hidden" value="<?php echo edd_ezdefi()->plugin_url() . '/assets/bitcoin-icon.png'; ?>" name="edd_settings[ezdefi_currency][1][logo]">
                         <input class="currency-desc" type="hidden" value="" name="edd_settings[ezdefi_currency][1][desc]">
-                        <input class="currency-chain" type="hidden" value="eth" name="edd_settings[ezdefi_currency][1][chain]">
+                        <input class="currency-chain" type="hidden" value="btc" name="edd_settings[ezdefi_currency][1][chain]">
                         <div class="view">
-                            <span>ntf</span>
+                            <span>Bitcoin</span>
                             <div class="actions">
                                 <a href="" class="editBtn" data-edit-btn><?php _e( 'Edit', 'edd-ezdefi' ); ?></a>
                                 |
@@ -279,7 +279,7 @@ class EDD_Ezdefi_Admin_Settings
                         </div>
                         <div class="edit">
                             <select name="edd_settings[ezdefi_currency][1][select]" class="select-select2">
-                                <option value="ntf">ntf</option>
+                                <option value="btc">Bitcoin</option>
                             </select>
                             <div class="actions">
                                 <a href="" class="cancelBtn" data-cancel-btn><?php _e( 'Cancel', 'edd-ezdefi' ); ?></a>
@@ -319,6 +319,71 @@ class EDD_Ezdefi_Admin_Settings
                         </div>
                         <div class="edit">
                             <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][decimal]" value="">
+                        </div>
+                    </td>
+                </tr>
+                <tr class="editing">
+                    <td class="sortable-handle"><span class="dashicons dashicons-menu"></span></td>
+                    <td class="logo">
+                        <img src="<?php echo edd_ezdefi()->plugin_url() . '/assets/ethereum-icon.png'; ?>" class="ezdefi-currency-logo" alt="">
+                    </td>
+                    <td class="name">
+                        <input class="currency-id" type="hidden" value="" name="edd_settings[ezdefi_currency][2][id]">
+                        <input class="currency-symbol" type="hidden" value="eth" name="edd_settings[ezdefi_currency][2][symbol]">
+                        <input class="currency-name" type="hidden" value="Ethereum" name="edd_settings[ezdefi_currency][2][name]">
+                        <input class="currency-logo" type="hidden" value="<?php echo edd_ezdefi()->plugin_url() . '/assets/ethereum-icon.png'; ?>" name="edd_settings[ezdefi_currency][2][logo]">
+                        <input class="currency-desc" type="hidden" value="" name="edd_settings[ezdefi_currency][2][desc]">
+                        <input class="currency-chain" type="hidden" value="eth" name="edd_settings[ezdefi_currency][2][chain]">
+                        <div class="view">
+                            <span>Ethereum</span>
+                            <div class="actions">
+                                <a href="" class="editBtn" data-edit-btn><?php _e( 'Edit', 'edd-ezdefi' ); ?></a>
+                                |
+                                <a href="" class="deleteBtn" data-delete-btn><?php _e( 'Delete', 'edd-ezdefi' ); ?></a>
+                            </div>
+                        </div>
+                        <div class="edit">
+                            <select name="edd_settings[ezdefi_currency][2][select]" class="select-select2">
+                                <option value="eth">Ethereum</option>
+                            </select>
+                            <div class="actions">
+                                <a href="" class="cancelBtn" data-cancel-btn><?php _e( 'Cancel', 'edd-ezdefi' ); ?></a>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="discount">
+                        <div class="view">
+                        </div>
+                        <div class="edit">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][discount]" value=""><span> %</span>
+                        </div>
+                    </td>
+                    <td class="lifetime">
+                        <div class="view">
+                        </div>
+                        <div class="edit">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][lifetime]" value="">
+                        </div>
+                    </td>
+                    <td class="wallet">
+                        <div class="view">
+                        </div>
+                        <div class="edit">
+                            <input type="text" class="currency-wallet" name="edd_settings[ezdefi_currency][2][wallet]" value="">
+                        </div>
+                    </td>
+                    <td class="distance">
+                        <div class="view">
+                        </div>
+                        <div class="edit">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][distance]" value="">
+                        </div>
+                    </td>
+                    <td class="decimal">
+                        <div class="view">
+                        </div>
+                        <div class="edit">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][decimal]" value="">
                         </div>
                     </td>
                 </tr>

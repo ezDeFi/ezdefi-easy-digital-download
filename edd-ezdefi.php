@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: ezDeFi - Bitcoin, Ethereum and Cryptocurrencies Payment Gateway for Easy Digital Downloads
- * Description: EZDefi Gateway integration for Easy Digital Downloads
+ * Description: EAccept Bitcoin, Ethereum and Cryptocurrencies on your Easy Digital Downloads store with ezDeFi
  * Version: 1.0
  * Author: Nexty Platform
  * Author URI: https://nexty.io

@@ -213,7 +213,7 @@ jQuery(function($) {
                 countDown.text('0:0');
                 self.timeout(panel);
             } else {
-                countDown.text(t.minutes + ':' + t.seconds);
+                countDown.text(t.text);
             }
         }, 1000);
     };
@@ -224,8 +224,7 @@ jQuery(function($) {
         var seconds = (t % 60000 / 1000).toFixed(0);
         return {
             'total': t,
-            'minutes': minutes,
-            'seconds': seconds
+            'text': (seconds == 60 ? (minutes +1) + ":00" : minutes + ":" + (seconds < 10 ? "0" : "") + seconds)
         };
     };
 

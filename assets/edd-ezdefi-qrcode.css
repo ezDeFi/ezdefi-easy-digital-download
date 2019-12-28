@@ -78,12 +78,17 @@
 }
 #edd-ezdefi-qrcode-section .currency-select .currency-item__wrap .currency-item .item__text {
   text-align: left;
-  flex-grow: 1;
+  width: calc(100% - 28px);
 }
 @media screen and (max-width: 575.98px) {
   #edd-ezdefi-qrcode-section .currency-select .currency-item__wrap .currency-item .item__text {
     font-size: 15px;
   }
+}
+#edd-ezdefi-qrcode-section .currency-select .currency-item__wrap .currency-item .item__text .item__price {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 #edd-ezdefi-qrcode-section .currency-select .currency-item__wrap .currency-item .item__text .item__info {
   flex-grow: 1;

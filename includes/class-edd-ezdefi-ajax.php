@@ -262,7 +262,10 @@ class EDD_Ezdefi_Ajax
                     } else {
                         $value = $payment['value'] / pow( 10, $payment['decimal'] );
                     }
-                    $value = rtrim( number_format( $value, 12 ), '0' ) + 0;
+                    $value = rtrim( number_format( $value, 12, '.', '' ), '0' );
+                    if(substr($value, -1) == '.') {
+                        $value = $value + 0;
+                    }
                 ?>
 				<p class="exchange">
 					<span><?php echo $order->currency; ?> <?php echo $total; ?></span>

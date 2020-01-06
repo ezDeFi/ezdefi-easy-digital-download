@@ -233,6 +233,7 @@ jQuery(function($) {
                     var query = {
                         action: 'edd_ezdefi_get_currency',
                         api_url: self.$form.find('.ezdefi_api_url input').val(),
+                        api_key: self.$form.find('.ezdefi_api_key input').val(),
                         keyword: params.term
                     };
 

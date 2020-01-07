@@ -39,7 +39,7 @@ class EDD_Ezdefi_Admin_Settings
 			'ezdefi_api_url' => array(
 				'id' => 'ezdefi_api_url',
 				'name' => __( 'API Url', 'edd-ezdefi' ),
-				'desc' => __( 'API Url Description', 'edd-ezdefi' ),
+				'desc' => '',
 				'type' => 'text',
 				'size' => 'regular',
 				'class' => 'ezdefi_api_url'
@@ -47,7 +47,7 @@ class EDD_Ezdefi_Admin_Settings
 			'ezdefi_api_key' => array(
 				'id' => 'ezdefi_api_key',
 				'name' => __( 'API Key', 'edd-ezdefi' ),
-				'desc' => __( 'API Key Description', 'edd-ezdefi' ),
+				'desc' => sprintf( __( '<a target="_blank" href="%s">Register to get API Key</a>', 'edd-ezdefi' ), 'https://merchant.ezdefi.com/register?utm_source=edd-download' ),
 				'type' => 'text',
 				'size' => 'regular',
 				'class' => 'ezdefi_api_key'

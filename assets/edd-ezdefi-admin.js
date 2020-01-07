@@ -2,6 +2,7 @@ jQuery(function($) {
     'use strict';
 
     var selectors = {
+        apiKeyInput: '.ezdefi_api_key input',
         amountIdCheckbox: 'input.ezdefi_amount_id_input',
         ezdefiWalletCheckbox: 'input.ezdefi_exdefi_wallet_input',
         symbolInput: '.currency-symbol',
@@ -31,7 +32,8 @@ jQuery(function($) {
         var toggleEdit = this.toggleEdit.bind(this);
         var toggleAmountSetting = this.toggleAmountSetting.bind(this);
         var onChangeDecimal = this.onChangeDecimal.bind(this);
-        var onBlurDecimal = this.onBlurDecimal.bind(this);
+        var onBlurDecimal = this.onBlurDecimal.bind(this)
+        var onChangeApiKey = this.onChangeApiKey.bind(this);
 
         this.init.call(this);
 
@@ -42,7 +44,8 @@ jQuery(function($) {
             .on('click', selectors.deleteBtn, removeCurrency)
             .on('change', selectors.amountIdCheckbox, toggleAmountSetting)
             .on('focus', selectors.decimalInput, onChangeDecimal)
-            .on('blur', selectors.decimalInput, onBlurDecimal);
+            .on('blur', selectors.decimalInput, onBlurDecimal)
+            .on('change', selectors.apiKeyInput, onChangeApiKey);
     };
 
     EDD_EZDefi_Admin.prototype.init = function() {
@@ -94,29 +97,6 @@ jQuery(function($) {
                 },
                 'edd_settings[ezdefi_api_key]': {
                     required: true,
-                    remote: {
-                        url: edd_ezdefi_data.ajax_url,
-                        type: 'POST',
-                        data: {
-                            action: 'edd_ezdefi_check_api_key',
-                            api_url: function() {
-                                return self.$form.find('.ezdefi_api_url input').val();
-                            },
-                            api_key: function() {
-                                return self.$form.find('.ezdefi_api_key input').val()
-                            },
-                        },
-                        complete: function (data) {
-                            var response = data.responseText;
-                            var $inputWrapper = self.$form.find('#edd_settings[ezdefi_api_key]').closest('td');
-                            if (response === 'true') {
-                                $inputWrapper.append('<span class="correct">Correct</span>');
-                                window.setTimeout(function () {
-                                    $inputWrapper.find('.correct').remove();
-                                }, 1000);
-                            }
-                        }
-                    }
                 },
                 'edd_settings[ezdefi_acceptable_variation]': {
                     required: {
@@ -140,11 +120,6 @@ jQuery(function($) {
                             return ! self.$form.find(selectors.amountIdCheckbox).is(':checked');
                         }
                     }
-                }
-            },
-            messages: {
-                'edd_settings[ezdefi_api_key]': {
-                    remote: 'API Key is not correct. Please check again'
                 }
             }
         });
@@ -437,6 +412,39 @@ jQuery(function($) {
     EDD_EZDefi_Admin.prototype.onBlurDecimal = function(e) {
         var td = $(e.target).closest('td');
         td.find('.edit').find('.error').remove();
+    };
+
+    EDD_EZDefi_Admin.prototype.onChangeApiKey = function(e) {
+        var self = this;
+        var $input = $(e.target);
+        $input.rules('add', {
+            remote: {
+                url: edd_ezdefi_data.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'edd_ezdefi_check_api_key',
+                    api_url: function() {
+                        return self.$form.find('.ezdefi_api_url input').val();
+                    },
+                    api_key: function() {
+                        return self.$form.find('.ezdefi_api_key input').val()
+                    },
+                },
+                complete: function (data) {
+                    var response = data.responseText;
+                    var $inputWrapper = self.$form.find('#edd_settings[ezdefi_api_key]').closest('td');
+                    if (response === 'true') {
+                        $inputWrapper.append('<span class="correct">Correct</span>');
+                        window.setTimeout(function () {
+                            $inputWrapper.find('.correct').remove();
+                        }, 1000);
+                    }
+                }
+            },
+            messages: {
+                remote: "API Key is not correct. Please check again"
+            }
+        });
     };
 
     new EDD_EZDefi_Admin();

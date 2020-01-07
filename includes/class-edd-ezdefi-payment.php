@@ -110,8 +110,6 @@ class EDD_Ezdefi_Payment
 
 		    return $this->process_transaction_callback( $value, $explorerUrl, $currency, $id);
 	    }
-
-	    wp_die();
     }
 
     public function process_payment_callback( $edd_payment_id, $ezdefi_payment_id )
@@ -121,19 +119,19 @@ class EDD_Ezdefi_Payment
 	    $edd_payment = edd_get_payment( $edd_payment_id );
 
 	    if( ! $edd_payment ) {
-		    wp_die();
+		    wp_send_json_error();
 	    }
 
 	    $response = $this->api->get_ezdefi_payment( $ezdefi_payment_id );
 
 	    if( is_wp_error( $response ) ) {
-		    wp_die();
+		    wp_send_json_error();
 	    }
 
 	    $ezdefi_payment_data = json_decode( $response['body'], true );
 
 	    if( $ezdefi_payment_data['code'] < 0 ) {
-		    wp_die();
+		    wp_send_json_error();
 	    }
 
 	    $ezdefi_payment_data = $ezdefi_payment_data['data'];
@@ -141,7 +139,7 @@ class EDD_Ezdefi_Payment
 	    $status = $ezdefi_payment_data['status'];
 
 	    if( $status === 'PENDING' || $status === 'EXPIRED' ) {
-	    	wp_die();
+	    	wp_send_json_error();
 	    }
 
 	    if( ( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] === true ) ) {
@@ -183,7 +181,7 @@ class EDD_Ezdefi_Payment
 		    $this->db->update_exception( $wheres, $exception_data );
 	    }
 
-	    wp_die();
+	    wp_send_json_success();
     }
 
     public function process_transaction_callback( $value, $explorerUrl, $currency, $id  )
@@ -191,19 +189,19 @@ class EDD_Ezdefi_Payment
 	    $response = $this->api->get_transaction( $id );
 
 	    if( is_wp_error( $response ) ) {
-		    wp_die();
+		    wp_send_json_error();
 	    }
 
 	    $response = json_decode( $response['body'], true );
 
 	    if( $response['code'] != 1 ) {
-		    wp_die();
+		    wp_send_json_error();
 	    }
 
 	    $transaction = $response['data'];
 
 	    if( $transaction['status'] != 'ACCEPTED' ) {
-		    wp_die();
+		    wp_send_json_error();
 	    }
 
 	    $data = array(
@@ -213,6 +211,8 @@ class EDD_Ezdefi_Payment
 	    );
 
 	    $this->db->add_exception( $data );
+
+	    wp_send_json_success();
     }
 }
 

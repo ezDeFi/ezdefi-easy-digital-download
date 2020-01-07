@@ -110,7 +110,7 @@ class EDD_Ezdefi_Api
 		    'safedist' => (isset($currency_data['distance'])) ? $currency_data['distance'] : '',
 //            'ucid' => $edd_payment->user_id,
 		    'ucid' => rand(1, 100),
-		    'duration' => (isset($currency_data['lifetime'])) ? $currency_data['lifetime'] : '',
+		    'duration' => (isset($currency_data['lifetime']) && !empty($currency_data['lifetime'])) ? ($currency_data['lifetime'] * 60) : '',
             'callback' => home_url() . '/?edd-ezdefi-callback'
 	    ];
 

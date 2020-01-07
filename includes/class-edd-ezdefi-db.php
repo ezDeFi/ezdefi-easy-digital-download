@@ -10,7 +10,7 @@ class EDD_Ezdefi_Db
 
 		$decimal = $currency_data['decimal'];
 		$symbol = $currency_data['symbol'];
-		$life_time = $currency_data['lifetime'];
+		$life_time = (!empty($currency_data['lifetime'])) ? ($currency_data['lifetime'] * 60) : 86400;
 
 		$price = round( $price, $decimal );
 

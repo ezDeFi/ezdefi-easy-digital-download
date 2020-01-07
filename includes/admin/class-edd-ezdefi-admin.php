@@ -11,8 +11,6 @@ class EDD_Ezdefi_Admin
 		add_action( 'init', array( $this, 'init' ), 5 );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_styles_scripts' ) );
-
-		add_filter( 'plugin_action_links', array( $this, 'add_action_links' ), 10, 2 );
 	}
 
 	/**
@@ -41,19 +39,6 @@ class EDD_Ezdefi_Admin
 				'ajax_url' => admin_url( 'admin-ajax.php' )
 			)
 		);
-	}
-
-	/**
-	 * Add action links in the plugin's row
-	 */
-	public function add_action_links( $links )
-	{
-		$plugin_links = array(
-			'<a href="admin.php?page=edd-settings&tab=gateways&section=ezdefi">' . esc_html__( 'Settings', 'edd-ezdefi' ) . '</a>',
-			'<a href="https://ezdefi.io">' . esc_html__( 'Support', 'edd-ezdefi' ) . '</a>'
-		);
-
-		return array_merge( $plugin_links, $links );
 	}
 }
 

@@ -1,11 +1,12 @@
 <?php
 /**
  * Plugin Name: ezDeFi - Bitcoin, Ethereum and Cryptocurrencies Payment Gateway for Easy Digital Downloads
- * Description: EAccept Bitcoin, Ethereum and Cryptocurrencies on your Easy Digital Downloads store with ezDeFi
- * Version: 1.0
- * Author: Nexty Platform
- * Author URI: https://nexty.io
- * License: GPL
+ * Plugin URI: https://ezdefi.io/
+ * Description: Accept Bitcoin, Ethereum and Cryptocurrencies on your Easy Digital Downloads store with ezDeFi
+ * Version: 1.0.0
+ * Author: ezDeFi
+ * Author URI: https://ezdefi.io/
+ * License: GPLv2 or later
  * Text Domain: edd-ezdefi
  * Domain Path: /languages
  */

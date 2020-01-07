@@ -251,9 +251,10 @@ class EDD_Ezdefi_Admin_Settings
 					</td>
                     <td class="decimal">
                         <div class="view">
+                            4
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][decimal]" value="">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][decimal]" value="4">
                         </div>
                     </td>
 				</tr>
@@ -316,9 +317,10 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="decimal">
                         <div class="view">
+                            8
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][decimal]" value="">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][decimal]" value="8">
                         </div>
                     </td>
                 </tr>
@@ -360,9 +362,10 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="lifetime">
                         <div class="view">
+                            8
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][lifetime]" value="">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][lifetime]" value="8">
                         </div>
                     </td>
                     <td class="wallet">

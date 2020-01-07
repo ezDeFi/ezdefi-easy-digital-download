@@ -406,6 +406,8 @@ jQuery(function($) {
         } else {
             td.find('.currency-desc').val('');
         }
+        tr.find('td.decimal').find('input').val(data.suggestedDecimal);
+        tr.find('td.decimal').find('.view').text(data.suggestedDecimal);
         tr.find('.logo img').attr('src', data.logo);
         td.find('.view span').text(data.name);
     };

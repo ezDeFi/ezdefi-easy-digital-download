@@ -93,7 +93,30 @@ jQuery(function($) {
                     url: true
                 },
                 'edd_settings[ezdefi_api_key]': {
-                    required: true
+                    required: true,
+                    remote: {
+                        url: edd_ezdefi_data.ajax_url,
+                        type: 'POST',
+                        data: {
+                            action: 'edd_ezdefi_check_api_key',
+                            api_url: function() {
+                                return self.$form.find('.ezdefi_api_url input').val();
+                            },
+                            api_key: function() {
+                                return self.$form.find('.ezdefi_api_key input').val()
+                            },
+                        },
+                        complete: function (data) {
+                            var response = data.responseText;
+                            var $inputWrapper = self.$form.find('#edd_settings[ezdefi_api_key]').closest('td');
+                            if (response === 'true') {
+                                $inputWrapper.append('<span class="correct">Correct</span>');
+                                window.setTimeout(function () {
+                                    $inputWrapper.find('.correct').remove();
+                                }, 1000);
+                            }
+                        }
+                    }
                 },
                 'edd_settings[ezdefi_acceptable_variation]': {
                     required: {
@@ -117,6 +140,11 @@ jQuery(function($) {
                             return ! self.$form.find(selectors.amountIdCheckbox).is(':checked');
                         }
                     }
+                }
+            },
+            messages: {
+                'edd_settings[ezdefi_api_key]': {
+                    remote: 'API Key is not correct. Please check again'
                 }
             }
         });

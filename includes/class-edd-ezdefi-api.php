@@ -192,6 +192,13 @@ class EDD_Ezdefi_Api
 	    return $response;
     }
 
+	public function check_api_key()
+	{
+		$response = $this->call( 'user/show', 'get' );
+
+		return $response;
+	}
+
 	public function get_list_currency( $keyword = '' )
 	{
 		$response = $this->call( 'token/list', 'get', array(

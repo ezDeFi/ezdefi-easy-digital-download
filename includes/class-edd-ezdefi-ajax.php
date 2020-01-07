@@ -14,6 +14,9 @@ class EDD_Ezdefi_Ajax
 
 	    $this->db = new EDD_Ezdefi_Db();
 
+	    add_action( 'wp_ajax_edd_ezdefi_check_api_key', array( $this, 'edd_ezdefi_check_api_key_ajax_callback' ) );
+	    add_action( 'wp_ajax_nopriv_edd_ezdefi_check_api_key', array( $this, 'edd_ezdefi_check_api_key_ajax_callback' ) );
+
         add_action( 'wp_ajax_edd_ezdefi_get_currency', array( $this, 'edd_ezdefi_get_currency_ajax_callback' ) );
         add_action( 'wp_ajax_nopriv_edd_ezdefi_get_currency', array( $this, 'edd_ezdefi_get_currency_ajax_callback' ) );
 
@@ -43,6 +46,35 @@ class EDD_Ezdefi_Ajax
 
 	    add_action( 'wp_ajax_edd_ezdefi_delete_amount_id', array( $this, 'edd_ezdefi_delete_amount_id_ajax_callback' ) );
 	    add_action( 'wp_ajax_nopriv_edd_ezdefi_delete_amount_id', array( $this, 'edd_ezdefi_delete_amount_id_ajax_callback' ) );
+    }
+
+	/**
+	 * Check API Key Ajax Callback
+	 */
+	public function edd_ezdefi_check_api_key_ajax_callback()
+    {
+	    if( ! isset( $_POST['api_url'] ) || ! isset( $_POST['api_key'] ) ) {
+		    wp_die('false');
+	    }
+
+	    $api_url = sanitize_text_field( $_POST['api_url'] );
+	    $api_key = sanitize_text_field( $_POST['api_key'] );
+
+	    $api = new WC_Ezdefi_Api( $api_url, $api_key );
+
+	    $response = $api->check_api_key();
+
+	    if( is_wp_error( $response ) ) {
+		    wp_die('false');
+	    }
+
+	    $response = json_decode( $response['body'], true );
+
+	    if( $response['code'] != 1 ) {
+		    wp_die('false');
+	    }
+
+	    wp_die('true');
     }
 
 	/** Get currency ajax callback */

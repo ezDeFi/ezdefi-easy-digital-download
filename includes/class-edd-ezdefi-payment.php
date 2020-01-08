@@ -148,7 +148,7 @@ class EDD_Ezdefi_Payment
 		    $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
 	    }
 
-	    $amount_id = number_format( $amount_id, 12 );
+	    $amount_id = number_format( $amount_id, 12, '.', '' );
 
 	    $currency = $ezdefi_payment_data['currency'];
 

@@ -205,7 +205,7 @@ class EDD_Ezdefi_Payment
 	    }
 
 	    $data = array(
-		    'amount_id' => number_format( $value, 12 ),
+		    'amount_id' => number_format( $value, 12, '.', '' ),
 		    'currency' => $currency,
 		    'explorer_url' => $explorerUrl,
 	    );

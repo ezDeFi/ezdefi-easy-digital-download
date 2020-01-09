@@ -98,69 +98,6 @@ form {
     }
 
     .wallet {
-      //width: 180px;
-
-      .edit {
-        input {
-          width: 100%;
-        }
-
-        .checking {
-          display: flex;
-          padding: 2px 0;
-
-          span {
-            font-size: 13px;
-
-            &.text {
-              color: #0073aa;
-            }
-
-            &.correct {
-              color: #567622;
-            }
-          }
-
-          .dots {
-            margin-left: 5px;
-            display: flex;
-            padding-bottom: 4px;
-            align-items: flex-end;
-
-            .dot {
-              display: inline-block;
-              width: 2px;
-              height: 2px;
-              margin-right: 2px;
-              border-radius: 50%;
-              background: #0073aa;
-              -webkit-animation: dot-dot-dot 1.4s linear infinite;
-              animation: dot-dot-dot 1.4s linear infinite;
-
-              &:nth-child(2) {
-                animation-delay: .2s;
-              }
-
-              &:nth-child(3) {
-                animation-delay: .4s;
-              }
-
-              @keyframes dot-dot-dot {
-                0%, 60%, 100% {
-                  -webkit-transform: initial;
-                  -ms-transform: initial;
-                  transform: initial;
-                }
-                30% {
-                  -webkit-transform: translateY(-4px);
-                  -ms-transform: translateY(-4px);
-                  transform: translateY(-4px);
-                }
-              }
-            }
-          }
-        }
-      }
     }
 
     tbody {
@@ -218,26 +155,46 @@ form {
           .edit {
             display: block;
           }
+
+          td.discount, td.lifetime {
+            .edit {
+              display: flex !important;
+              align-items: center;
+
+              span {
+                margin-left: 2px;
+              }
+            }
+          }
         }
       }
     }
   }
 }
 
-.select2-currency {
-  display: flex;
-  align-items: center;
-
-  .select2-currency__icon {
-    margin-right: 10px;
-
-    img {
-      width: 24px;
+.select2-container {
+  .select2-search--dropdown {
+    .select2-search__field {
+      padding-top: 0;
+      padding-bottom: 0;
     }
   }
 
-  .select2-currency__name {
-    text-transform: capitalize;
+  .select2-currency {
+    display: flex;
+    align-items: center;
+
+    .select2-currency__icon {
+      margin-right: 10px;
+
+      img {
+        width: 24px;
+      }
+    }
+
+    .select2-currency__name {
+      text-transform: capitalize;
+    }
   }
 }
 

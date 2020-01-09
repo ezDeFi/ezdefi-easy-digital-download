@@ -183,6 +183,7 @@
   border: 1px solid rgba(0, 0, 0, 0.125);
   border-top: none;
   outline: none;
+  background: transparent !important;
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment {
   padding: 20px 20px 0 20px;
@@ -229,6 +230,19 @@
 #edd-ezdefi-qrcode-section .ezdefi-payment .qrcode {
   display: inline-block;
   position: relative;
+  text-decoration: none;
+}
+#edd-ezdefi-qrcode-section .ezdefi-payment .qrcode:not(.expired) {
+  border: 1px solid rgba(0, 0, 0, 0.125);
+}
+#edd-ezdefi-qrcode-section .ezdefi-payment .qrcode:not(.expired):after {
+  content: "Click to pay";
+  font-size: 14px;
+  line-height: 12px;
+  position: absolute;
+  bottom: 5px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 #edd-ezdefi-qrcode-section .ezdefi-payment .qrcode.expired:before {
   content: "";
@@ -389,6 +403,12 @@
 #edd-ezdefi-qrcode-section .ezdefi-payment .app-link-list a img {
   width: 20px;
   margin-right: 5px;
+}
+#edd-ezdefi-qrcode-section #amount_id .ezdefi-payment .qrcode:not(.expired) {
+  padding-bottom: 12px;
+}
+#edd-ezdefi-qrcode-section #ezdefi_wallet .ezdefi-payment .qrcode:not(.expired) {
+  padding: 8px 8px 20px 8px !important;
 }
 #edd-ezdefi-qrcode-section .edd-ezdefi-loader {
   border: 3px solid #eee;

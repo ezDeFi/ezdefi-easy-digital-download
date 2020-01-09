@@ -223,16 +223,18 @@ class EDD_Ezdefi_Admin_Settings
 					</td>
 					<td class="discount">
 						<div class="view">
+                            0%
 						</div>
 						<div class="edit">
-							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][discount]" value=""><span> %</span>
+							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][discount]" value="0"><span> %</span>
 						</div>
 					</td>
 					<td class="lifetime">
 						<div class="view">
+                            15 minutes
 						</div>
 						<div class="edit">
-							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][lifetime]" value=""><span> m</span>
+							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][lifetime]" value="15"><span> m</span>
 						</div>
 					</td>
 					<td class="wallet">
@@ -244,9 +246,10 @@ class EDD_Ezdefi_Admin_Settings
 					</td>
 					<td class="distance">
 						<div class="view">
+                            1
 						</div>
 						<div class="edit">
-							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][distance]" value="">
+							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][distance]" value="1">
 						</div>
 					</td>
                     <td class="decimal">
@@ -289,16 +292,18 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="discount">
                         <div class="view">
+                            0%
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][discount]" value=""><span> %</span>
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][discount]" value="0"><span> %</span>
                         </div>
                     </td>
                     <td class="lifetime">
                         <div class="view">
+                            15 minutes
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][lifetime]" value=""><span> m</span>
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][lifetime]" value="15"><span> m</span>
                         </div>
                     </td>
                     <td class="wallet">
@@ -310,9 +315,10 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="distance">
                         <div class="view">
+                            1
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][distance]" value="">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][distance]" value="1">
                         </div>
                     </td>
                     <td class="decimal">
@@ -355,16 +361,18 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="discount">
                         <div class="view">
+                            0%
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][discount]" value=""><span> %</span>
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][discount]" value="0"><span> %</span>
                         </div>
                     </td>
                     <td class="lifetime">
                         <div class="view">
+                            15 minutes
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][lifetime]" value=""><span> m</span>
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][lifetime]" value="15"><span> m</span>
                         </div>
                     </td>
                     <td class="wallet">
@@ -376,9 +384,10 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="distance">
                         <div class="view">
+                            1
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][distance]" value="">
+                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][distance]" value="1">
                         </div>
                     </td>
                     <td class="decimal">

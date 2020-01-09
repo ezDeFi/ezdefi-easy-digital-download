@@ -51,6 +51,8 @@ jQuery(function($) {
     EDD_EZDefi_Admin.prototype.init = function() {
         var self = this;
 
+        self.$form.find(selectors.apiKeyInput).attr('autocomplete', 'off');
+
         self.customValidationRule();
         self.initValidation.call(this);
         self.initSort.call(this);

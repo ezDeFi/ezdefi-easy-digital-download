@@ -405,7 +405,7 @@ class EDD_Ezdefi_Admin_Settings
                 <tr>
                     <td colspan="8">
                         <a href="" class="addBtn button button-secondary">
-                            <?php echo __( 'Add Currency', 'woocommerce-gateway-ezdefi' ); ?>
+                            <?php echo __( 'Add Currency', 'edd-ezdefi' ); ?>
                         </a>
                     </td>
                 </tr>

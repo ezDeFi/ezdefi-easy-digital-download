@@ -81,7 +81,7 @@ class EDD_Ezdefi_Ajax
     public function edd_ezdefi_get_currency_ajax_callback()
     {
 	    if( ! isset( $_POST['keyword'] ) || ! isset( $_POST['api_url'] ) || ! isset( $_POST['api_key'] ) ) {
-		    wp_send_json_error( __( 'Can not get currency', 'woocommerce-gateway-ezdefi' ) );
+		    wp_send_json_error( __( 'Can not get currency', 'edd-ezdefi' ) );
 	    }
 
 	    $keyword = sanitize_text_field( $_POST['keyword'] );
@@ -286,7 +286,7 @@ class EDD_Ezdefi_Ajax
 		ob_start(); ?>
 		<div class="ezdefi-payment">
 			<?php if( ! $payment ) : ?>
-				<span><?php echo __( 'Can not get payment', 'woocommerce-gateway-ezdefi' ); ?></span>
+				<span><?php echo __( 'Can not get payment', 'edd-ezdefi' ); ?></span>
 			<?php else : ?>
                 <?php
                     if( ( isset( $payment['amountId'] ) && $payment['amountId'] === true ) ) {

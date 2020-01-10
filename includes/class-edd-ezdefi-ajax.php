@@ -310,9 +310,16 @@ class EDD_Ezdefi_Ajax
 				</p>
 				<p><?php _e( 'You have', 'edd-ezdefi' ); ?> <span class="count-down" data-endtime="<?php echo $payment['expiredTime']; ?>"></span> <?php _e( 'to scan this QR Code', 'edd-ezdefi' ); ?></p>
 				<p>
-					<a class="qrcode <?php echo (time() > strtotime($payment['expiredTime'])) ? 'expired' : ''; ?>" href="<?php echo $payment['deepLink']; ?>">
-						<img src="<?php echo $payment['qr']; ?>" />
-					</a>
+					<?php
+                        if( isset( $payment['amountId'] ) && $payment['amountId'] === true ) {
+                            $deepLink = $payment['deepLink'];
+                        } else {
+                            $deepLink = 'ezdefi://' . $payment['deepLink'];
+                        }
+					?>
+                    <a class="qrcode <?php echo (time() > strtotime($payment['expiredTime'])) ? 'expired' : ''; ?>" href="<?php echo $deepLink; ?>">
+                        <img src="<?php echo $payment['qr']; ?>" />
+                    </a>
 				</p>
 				<?php if( isset( $payment['amountId'] ) && $payment['amountId'] === true ) : ?>
                     <p class="receive-address">

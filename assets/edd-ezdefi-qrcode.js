@@ -14,7 +14,8 @@ jQuery(function($) {
         ezdefiEnableBtn: '.ezdefiEnableBtn',
         loader: '.edd-ezdefi-loader',
         copy: '.copy-to-clipboard',
-        qrcode: '.qrcode'
+        qrcode: '.qrcode',
+        changeQrcodeBtn: '.changeQrcodeBtn'
     };
 
     var EDD_EZDefi_Qrcode = function() {
@@ -29,6 +30,7 @@ jQuery(function($) {
         var init = this.init.bind(this);
         var onSelectItem = this.onSelectItem.bind(this);
         var onClickEzdefiLink = this.onClickEzdefiLink.bind(this);
+        var onUseAltQrcode = this.onUseAltQrcode.bind(this);
         var onClickQrcode = this.onClickQrcode.bind(this);
 
         init();
@@ -36,7 +38,8 @@ jQuery(function($) {
         $(document.body)
             .on('click', selectors.item, onSelectItem)
             .on('click', selectors.ezdefiEnableBtn, onClickEzdefiLink)
-            .on('click', selectors.qrcode, onClickQrcode);
+            .on('click', selectors.qrcode, onClickQrcode)
+            .on('click', selectors.changeQrcodeBtn, onUseAltQrcode);
     };
 
     EDD_EZDefi_Qrcode.prototype.init = function() {
@@ -174,6 +177,15 @@ jQuery(function($) {
         var self = this;
         e.preventDefault();
         self.$tabs.tabs('option', 'active', 1);
+    };
+
+    EDD_EZDefi_Qrcode.prototype.onUseAltQrcode = function(e) {
+        var self = this;
+        e.preventDefault();
+        this.$tabs.find('.qrcode img').hide();
+        this.$tabs.find('.qrcode__info--main').hide();
+        this.$tabs.find('.qrcode img.alt').show();
+        this.$tabs.find('.qrcode__info--alt').show();
     };
 
     EDD_EZDefi_Qrcode.prototype.checkPaymentStatus = function() {

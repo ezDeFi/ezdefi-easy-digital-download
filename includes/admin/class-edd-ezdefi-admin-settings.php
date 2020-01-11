@@ -118,7 +118,7 @@ class EDD_Ezdefi_Admin_Settings
 			<?php $currencies = edd_get_option( 'ezdefi_currency' );  ?>
 			<?php if( $currencies && !empty( $currencies ) ) : ; ?>
 				<?php foreach( $currencies as $index => $c ) : ?>
-					<tr>
+                    <tr data-saved="1">
 						<td class="sortable-handle"><span class="dashicons dashicons-menu"></span></td>
 						<td class="logo">
 							<?php if( isset( $c['logo'] ) ) : ?>
@@ -187,6 +187,7 @@ class EDD_Ezdefi_Admin_Settings
                             </div>
                             <div class="edit">
                                 <input type="number" class="small-text currency-decimal" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][decimal]" value="<?php echo isset( $c['decimal'] ) ? $c['decimal'] : '' ;?>">
+                                <input type="hidden" class="small-text currency-decimal-max" name="edd_settings[ezdefi_currency][<?php echo $index; ?>][decimal_max]" value="<?php echo $c['decimal_max']; ?>">
                             </div>
                         </td>
 					</tr>
@@ -231,7 +232,7 @@ class EDD_Ezdefi_Admin_Settings
 					</td>
 					<td class="lifetime">
 						<div class="view">
-                            15 minutes
+                            15m
 						</div>
 						<div class="edit">
 							<input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][lifetime]" value="15"><span> m</span>
@@ -257,7 +258,8 @@ class EDD_Ezdefi_Admin_Settings
                             4
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][0][decimal]" value="4">
+                            <input type="number" class="small-text currency-decimal" name="edd_settings[ezdefi_currency][0][decimal]" value="4">
+                            <input type="hidden" class="small-text currency-decimal-max" name="edd_settings[ezdefi_currency][0][decimal_max]" value="6">
                         </div>
                     </td>
 				</tr>
@@ -300,7 +302,7 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="lifetime">
                         <div class="view">
-                            15 minutes
+                            15m
                         </div>
                         <div class="edit">
                             <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][lifetime]" value="15"><span> m</span>
@@ -326,7 +328,8 @@ class EDD_Ezdefi_Admin_Settings
                             8
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][1][decimal]" value="8">
+                            <input type="number" class="small-text currency-decimal" name="edd_settings[ezdefi_currency][1][decimal]" value="8">
+                            <input type="hidden" class="small-text currency-decimal-max" name="edd_settings[ezdefi_currency][1][decimal_max]" value="8">
                         </div>
                     </td>
                 </tr>
@@ -369,7 +372,7 @@ class EDD_Ezdefi_Admin_Settings
                     </td>
                     <td class="lifetime">
                         <div class="view">
-                            15 minutes
+                            15m
                         </div>
                         <div class="edit">
                             <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][lifetime]" value="15"><span> m</span>
@@ -395,7 +398,8 @@ class EDD_Ezdefi_Admin_Settings
 	                        8
                         </div>
                         <div class="edit">
-                            <input type="number" class="small-text" name="edd_settings[ezdefi_currency][2][decimal]" value="8">
+                            <input type="number" class="small-text currency-decimal" name="edd_settings[ezdefi_currency][2][decimal]" value="8">
+                            <input type="hidden" class="small-text currency-decimal-max" name="edd_settings[ezdefi_currency][2][decimal_max]" value="18">
                         </div>
                     </td>
                 </tr>

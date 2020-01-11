@@ -81,9 +81,10 @@ jQuery(function($) {
                 if(element.hasClass('select-select2')) {
                     error.insertAfter(element.closest('.edit').find('.select2-container'));
                 } else {
-                    if(element.closest('td').find('span.error').length === 0) {
-                        error.appendTo(element.closest('td'));
+                    if (element.closest('td').find('span.error').length > 0) {
+                        element.closest('td').find('span.error').remove();
                     }
+                    error.appendTo(element.closest('td'));
                 }
             },
             highlight: function(element) {
@@ -157,7 +158,11 @@ jQuery(function($) {
             if(name.indexOf('discount') > 0) {
                 $('input[name="'+name+'"]').rules('add', {
                     min: 0,
-                    max: 100
+                    max: 100,
+                    messages: {
+                        min: jQuery.validator.format("Min: {0}"),
+                        max: jQuery.validator.format("Max: {0}")
+                    }
                 });
             }
 
@@ -191,26 +196,34 @@ jQuery(function($) {
             if(name.indexOf('lifetime') > 0) {
                 var $input = $('input[name="'+name+'"]');
                 $input.rules('add', {
-                    min: 0
+                    min: 0,
+                    messages: {
+                        min: jQuery.validator.format("Min: {0}")
+                    }
                 });
             }
 
             if(name.indexOf('distance') > 0) {
                 var $input = $('input[name="'+name+'"]');
                 $input.rules('add', {
-                    min: 0
+                    min: 0,
+                    messages: {
+                        min: jQuery.validator.format("Min: {0}")
+                    }
                 });
             }
 
             if(name.indexOf('decimal') > 0) {
                 var $input = $('input[name="'+name+'"]');
+                var decimal_max = parseInt($input.parent().find(".currency-decimal-max").val());
                 $input.rules('add', {
                     required: true,
                     min: 2,
-                    max: 12,
+                    max: decimal_max,
                     messages: {
-                        required: 'Please enter number of decimal',
-                        min: 'Please enter number equal or greater than 2',
+                        min: jQuery.validator.format("Min: {0}"),
+                        max: jQuery.validator.format("Max: {0}"),
+                        required: "Required"
                     }
                 });
             }
@@ -315,6 +328,7 @@ jQuery(function($) {
         var selectName = $clone.find('select').attr('name')
         var $select = $('<select name="'+selectName+'" class="select-select2"></select>');
 
+        $clone.attr('data-saved', '0');
         $clone.find('select, .select2-container').remove();
         $clone.find('.logo img').attr('src', '');
         $clone.find('.name .view span').empty();
@@ -392,9 +406,18 @@ jQuery(function($) {
         } else {
             td.find('.currency-desc').val('');
         }
-        tr.find('td.decimal').find('input').val(data.suggestedDecimal);
-        tr.find('td.decimal').find('.view').text(data.suggestedDecimal);
         tr.find('.logo img').attr('src', data.logo);
+        tr.find('.currency-decimal').val(data.suggestedDecimal);
+        tr.find('.currency-decimal').closest('td').find('.view').text(data.suggestedDecimal);
+        tr.find('.currency-decimal').rules('remove', 'max');
+        tr.find('.currency-decimal-max').val(data.decimal);
+        tr.find('.currency-decimal').rules('add', {
+            max: data.decimal,
+            messages: {
+                max: jQuery.validator.format("Max: {0}")
+            }
+        });
+        tr.find('.currency-decimal').valid();
         td.find('.view span').text(data.name);
     };
 
@@ -414,15 +437,17 @@ jQuery(function($) {
 
     EDD_EZDefi_Admin.prototype.onChangeDecimal = function(e) {
         var input = $(e.target);
-        if(input.val().length > 0) {
+        if(input.val().length > 0 && input.closest("tr").attr("data-saved") == "1") {
             var td = $(e.target).closest('td');
-            td.find('.edit').append('<span class="error">Changing decimal can cause to payment interruption</span>');
+            if (td.find("span.error").length === 0) {
+                td.find('.edit').append('<span class="error">Changing decimal can cause to payment interruption</span>');
+            }
         }
     };
 
     EDD_EZDefi_Admin.prototype.onBlurDecimal = function(e) {
         var td = $(e.target).closest('td');
-        td.find('.edit').find('.error').remove();
+        td.find('.edit').find('.decimal-warning').remove();
     };
 
     EDD_EZDefi_Admin.prototype.onChangeApiKey = function(e) {

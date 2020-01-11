@@ -182,10 +182,10 @@ jQuery(function($) {
     EDD_EZDefi_Qrcode.prototype.onUseAltQrcode = function(e) {
         var self = this;
         e.preventDefault();
-        this.$tabs.find('.qrcode img').hide();
-        this.$tabs.find('.qrcode__info--main').hide();
-        this.$tabs.find('.qrcode img.alt').show();
-        this.$tabs.find('.qrcode__info--alt').show();
+        this.$tabs.find('#amount_id .qrcode img.main').toggle();
+        this.$tabs.find('#amount_id .qrcode__info--main').toggle();
+        this.$tabs.find('#amount_id .qrcode img.alt').toggle();
+        this.$tabs.find('#amount_id .qrcode__info--alt').toggle();
     };
 
     EDD_EZDefi_Qrcode.prototype.checkPaymentStatus = function() {

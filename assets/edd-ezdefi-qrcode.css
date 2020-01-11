@@ -136,6 +136,7 @@
   padding: 10px 20px;
   display: block;
   text-decoration: none;
+  outline: none !important;
 }
 @media screen and (max-width: 575.98px) {
   #edd-ezdefi-qrcode-section .ezdefi-payment-tabs ul li a {
@@ -406,7 +407,7 @@
   margin-right: 5px;
 }
 #edd-ezdefi-qrcode-section #amount_id .ezdefi-payment .qrcode:not(.expired) {
-  padding-bottom: 12px;
+  padding: 6px 6px 18px 6px;
 }
 #edd-ezdefi-qrcode-section #ezdefi_wallet .ezdefi-payment .qrcode:not(.expired) {
   padding: 8px 8px 20px 8px !important;

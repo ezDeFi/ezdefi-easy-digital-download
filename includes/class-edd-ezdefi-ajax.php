@@ -318,7 +318,7 @@ class EDD_Ezdefi_Ajax
                         }
 					?>
                     <a class="qrcode <?php echo (time() > strtotime($payment['expiredTime'])) ? 'expired' : ''; ?>" href="<?php echo $deepLink; ?>">
-                        <img src="<?php echo $payment['qr']; ?>" />
+                        <img class="main" src="<?php echo $payment['qr']; ?>" />
 	                    <?php if( isset( $payment['amountId'] ) && $payment['amountId'] === true ) : ?>
 		                    <img class="alt" style="display: none" src="<?php echo 'https://chart.googleapis.com/chart?cht=qr&chl='.$payment['to'].'&chs=200x200&chld=L|0'; ?>" alt="">
 	                    <?php endif; ?>
@@ -354,11 +354,16 @@ class EDD_Ezdefi_Ajax
 	                    <p class="note">
 							<?php _e( 'If you have difficulty for sending exact amount, try to use', 'edd-ezdefi' ); ?> <a href="" class="ezdefiEnableBtn">ezDeFi Wallet</a>
 	                    </p>
+                        <p style="margin-top: 1rem">
+                            <a class="changeQrcodeBtn" href="">
+                                <strong>Use previous QR Code</strong>
+                            </a>
+                        </p>
 					</div>
 				<?php else : ?>
                     <p class="app-link-list">
-                        <a target="_blank" href="https://ezdefi.com/ios"><img src="<?php echo plugins_url( 'assets/ios-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
-                        <a target="_blank" href="https://ezdefi.com/android"><img src="<?php echo plugins_url( 'assets/android-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
+                        <a target="_blank" href="https://ezdefi.com/ios?utm=edd-download"><img src="<?php echo plugins_url( 'assets/ios-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for IOS', 'edd-ezdefi' ); ?></a>
+                        <a target="_blank" href="https://ezdefi.com/android?utm=edd-download"><img src="<?php echo plugins_url( 'assets/android-icon.png', EDD_EZDEFI_MAIN_FILE ); ?>" /><?php _e( 'Download ezDefi for Android', 'edd-ezdefi' ); ?></a>
                     </p>
 				<?php endif; ?>
 			<?php endif; ?>

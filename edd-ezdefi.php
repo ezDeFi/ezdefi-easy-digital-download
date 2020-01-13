@@ -80,8 +80,8 @@ class EDD_Ezdefi_Loader
 		$sql[] = "CREATE TABLE $table_name (
 			id int(11) NOT NULL AUTO_INCREMENT,
 			amount_key int(11) NOT NULL,
-			price decimal(30,30) NOT NULL,
-			amount_id decimal(30,30) NOT NULL,
+			price decimal(60,30) NOT NULL,
+			amount_id decimal(60,30) NOT NULL,
 			currency varchar(10) NOT NULL,
 			expired_time timestamp default current_timestamp,
 			PRIMARY KEY (id),
@@ -92,7 +92,7 @@ class EDD_Ezdefi_Loader
 
 		$sql[] = "CREATE TABLE $exception_table_name (
 			id int(11) NOT NULL AUTO_INCREMENT,
-			amount_id decimal(30,30) NOT NULL,
+			amount_id decimal(60,30) NOT NULL,
 			currency varchar(10) NOT NULL,
 			order_id int(11),
 			status varchar(20),
@@ -108,11 +108,11 @@ class EDD_Ezdefi_Loader
 		$wpdb->query("DROP PROCEDURE IF EXISTS `edd_ezdefi_generate_amount_id`" );
 		$wpdb->query("
 	        CREATE PROCEDURE `edd_ezdefi_generate_amount_id`(
-	            IN value DECIMAl(30,30),
+	            IN value DECIMAl(60,30),
 			    IN token VARCHAR(10),
 			    IN decimal_number INT(2),
                 IN life_time INT(11),
-			    OUT amount_id DECIMAL(30,30)
+			    OUT amount_id DECIMAL(60,30)
 			)
 			BEGIN
 			    DECLARE unique_id INT(11) DEFAULT 0;

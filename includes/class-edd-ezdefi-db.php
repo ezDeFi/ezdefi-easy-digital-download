@@ -191,7 +191,7 @@ class EDD_Ezdefi_Db
 						$conditions[] = " $column IS NULL ";
 						break;
 					default :
-						$conditions[] = " $column = '$value' ";
+						$conditions[] = " $column LIKE '$value%' ";
 						break;
 				}
 			}

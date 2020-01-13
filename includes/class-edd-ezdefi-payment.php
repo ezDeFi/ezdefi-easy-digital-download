@@ -148,8 +148,6 @@ class EDD_Ezdefi_Payment
 		    $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
 	    }
 
-	    $amount_id = number_format( $amount_id, 30, '.', '' );
-
 	    $currency = $ezdefi_payment_data['currency'];
 
 	    $exception_data = array(
@@ -158,7 +156,7 @@ class EDD_Ezdefi_Payment
 	    );
 
 	    $wheres = array(
-		    'amount_id' => $amount_id,
+		    'amount_id' => $this->sanitize_float_value( $amount_id ),
 		    'currency' => (string) $currency,
 		    'order_id' => (int) $edd_payment_id
 	    );
@@ -205,7 +203,7 @@ class EDD_Ezdefi_Payment
 	    }
 
 	    $data = array(
-		    'amount_id' => number_format( $value, 30, '.', '' ),
+		    'amount_id' => $this->sanitize_float_value( $value ),
 		    'currency' => $currency,
 		    'explorer_url' => $explorerUrl,
 	    );
@@ -214,6 +212,19 @@ class EDD_Ezdefi_Payment
 
 	    wp_send_json_success();
     }
+
+	protected function sanitize_float_value( $value )
+	{
+		$notation = explode('E', $value);
+
+		if(count($notation) === 2){
+			$exp = abs(end($notation)) + strlen($notation[0]);
+			$decimal = number_format($value, $exp);
+			$value = rtrim($decimal, '.0');
+		}
+
+		return str_replace( ',', '', $value );
+	}
 }
 
 new EDD_Ezdefi_Payment();

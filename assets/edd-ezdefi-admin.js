@@ -101,15 +101,6 @@ jQuery(function($) {
                 'edd_settings[ezdefi_api_key]': {
                     required: true,
                 },
-                'edd_settings[ezdefi_acceptable_variation]': {
-                    required: {
-                        depends: function(element) {
-                            return self.$form.find(selectors.paymentMethod + ':checked').val() != 'ezdefi_wallet';
-                        }
-                    },
-                    greaterThanZero: true,
-                    max: 100
-                },
                 'edd_settings[ezdefi_method][amount_id]': {
                     required: {
                         depends: function(element) {
@@ -140,7 +131,15 @@ jQuery(function($) {
             stop: function() {
                 $(this).find('tr').each(function (rowIndex) {
                     var row = $(this);
-                    self.updateAttr(row, rowIndex)
+                    self.updateAttr(row, rowIndex);
+                    row.find(".currency-decimal").rules("remove", "max");
+                    row.find(".currency-decimal").rules("add", {
+                        max: parseInt(row.find('.currency-decimal-max').val()),
+                        messages: {
+                            max: jQuery.validator.format("Max: {0}")
+                        }
+                    });
+                    row.find(".currency-decimal").valid();
                 });
             }
         }).disableSelection();
@@ -213,7 +212,7 @@ jQuery(function($) {
                 });
             }
 
-            if(name.indexOf('decimal') > 0) {
+            if(name.indexOf('decimal') > 0 && name.indexOf("decimal_max") < 0) {
                 var $input = $('input[name="'+name+'"]');
                 var decimal_max = parseInt($input.parent().find(".currency-decimal-max").val());
                 $input.rules('add', {
@@ -235,8 +234,14 @@ jQuery(function($) {
         var variation_setting = this.$form.find('.ezdefi_acceptable_variation');
         if(checked) {
             variation_setting.show();
+            this.$form.find('input[name*="ezdefi_acceptable_variation"]').rules('add', {
+                required: true,
+                greaterThanZero: true,
+                max: 100
+            });
         } else {
             variation_setting.hide();
+            this.$form.find('input[name*="ezdefi_acceptable_variation"]').rules('remove', 'required greaterThanZero max');
         }
     };
 

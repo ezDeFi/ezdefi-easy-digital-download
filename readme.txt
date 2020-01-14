@@ -4,7 +4,7 @@ Tags: bitcoin,ethereum,btc,eth,cryptocurrency,crypto,payment gateway,edd,bitcoin
 Requires at least: 4.9
 Tested up to: 5.3.2
 Requires PHP: 5.6
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,6 +81,11 @@ Track NTY, NewSD, NTF payment through [explorer.nexty.io](explorer.nexty.io)
 3. QRCode Page
 
 == Changelog ==
+
+= 1.0.2 =
+
+* Add new QR Code
+* Fix UI issues
 
 = 1.0.1 =
 

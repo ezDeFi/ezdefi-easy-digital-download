@@ -12,7 +12,7 @@ function edd_ezdefi_method_callback( $args )
     <p></p>
     <input name="<?php echo $field_key; ?>[ezdefi_wallet]" id="<?php echo $field_key; ?>[ezdefi_wallet]" type="checkbox" class="ezdefi_exdefi_wallet_input" value="1" <?php echo ( isset( $ezdefi_method['ezdefi_wallet'] ) && $ezdefi_method['ezdefi_wallet'] === '1' ) ? 'checked' : '' ;?>>
     <label for="<?php echo $field_key; ?>[ezdefi_wallet]"><?php _e( 'Pay with ezDeFi wallet', 'edd-ezdefi' ); ?></label>
-    <p class="description"><?php _e( 'This method is more powerful when amount uniqueness above method reaches allowable limit. Users just need to install ezDeFi wallet then import their private key to pay using qrCode.', 'edd-ezdefi' ); ?></p>
+    <p class="description"><?php _e( 'This method is more powerful when amount uniqueness of above method reaches allowable limit. Users need to install ezDeFi wallet then import their private key to pay using QR Code.', 'edd-ezdefi' ); ?></p>
 
     <?php echo ob_get_clean();
 }

@@ -3,7 +3,7 @@ jQuery(function($) {
 
     var selectors = {
         container: '#ezdefi-currency-select',
-        input: '#edd_ezdefi_currency_symbol',
+        input: '#edd-ezdefi-coin',
         item: '.currency-item',
         itemWrap: '.currency-item__wrap',
     };
@@ -30,15 +30,13 @@ jQuery(function($) {
 
         selected.addClass('selected');
 
-        var symbol = selected.attr('data-symbol');
+        var coinId = selected.attr('data-id');
 
-        console.log(symbol);
-
-        if(!symbol) {
+        if (!coinId || coinId.length === 0) {
             return false;
         }
 
-        $(selectors.input).val(symbol);
+        $(selectors.input).val(coinId);
     };
 
     new EDD_Ezdefi_Checkout();

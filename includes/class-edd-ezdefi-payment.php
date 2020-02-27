@@ -23,11 +23,19 @@ class EDD_Ezdefi_Payment
 
     public function process_payment($purchase_data)
     {
-	    $symbol = $purchase_data['post_data']['edd_ezdefi_currency_symbol'];
+        $coin_id = sanitize_text_field( $purchase_data['post_data']['edd_ezdefi_coin'] );
 
-	    $currency_data = $this->find_currency_data( $symbol );
+        $website_coins = $this->api->get_website_coins();
 
-	    if( $currency_data === false ) {
+        $coin_data = null;
+
+        foreach ( $website_coins as $key => $coin ) {
+            if ( $coin['_id'] == $coin_id ) {
+                $coin_data = $website_coins[$key];
+            }
+        }
+
+	    if( is_null( $coin_data ) ) {
 		    edd_send_back_to_checkout( '?payment-mode=ezdefi' );
 	    }
 
@@ -39,28 +47,11 @@ class EDD_Ezdefi_Payment
 
 	    $edd_payment = edd_get_payment( $edd_payment_id );
 
-	    $edd_payment->update_meta( '_edd_ezdefi_currency', $symbol );
+	    $edd_payment->update_meta( '_edd_ezdefi_coin', $coin_id );
 	    $edd_payment->save();
 
         edd_send_to_success_page();
     }
-
-	private function find_currency_data( $symbol ) {
-		$currency = edd_get_option( 'ezdefi_currency' );
-
-		$index = array_search( $symbol, array_column( $currency, 'symbol' ) );
-
-		if( $index === false ) {
-			return false;
-		}
-
-		return $currency[$index];
-	}
-
-	private function set_amount_id_invalid( $amount_id, $currency )
-	{
-		$this->db->set_amount_id_invalid( $amount_id, $currency );
-	}
 
     /** Create pending EDD Payment */
     protected function create_edd_payment($purchase_data)
@@ -122,19 +113,11 @@ class EDD_Ezdefi_Payment
 		    wp_send_json_error();
 	    }
 
-	    $response = $this->api->get_ezdefi_payment( $ezdefi_payment_id );
+        $ezdefi_payment_data = $this->api->get_ezdefi_payment( $ezdefi_payment_id );
 
-	    if( is_wp_error( $response ) ) {
-		    wp_send_json_error();
-	    }
-
-	    $ezdefi_payment_data = json_decode( $response['body'], true );
-
-	    if( $ezdefi_payment_data['code'] < 0 ) {
-		    wp_send_json_error();
-	    }
-
-	    $ezdefi_payment_data = $ezdefi_payment_data['data'];
+	    if( is_null( $ezdefi_payment_data ) ) {
+	        wp_send_json_error();
+        }
 
 	    $status = $ezdefi_payment_data['status'];
 
@@ -143,12 +126,15 @@ class EDD_Ezdefi_Payment
 	    }
 
 	    if( ( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] === true ) ) {
-		    $amount_id = $ezdefi_payment_data['originValue'];
+            $payment_method = 'amount_id';
+            $amount_id = $ezdefi_payment_data['originValue'];
 	    } else {
+            $payment_method = 'ezdefi_wallet';
 		    $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
 	    }
 
-	    $currency = $ezdefi_payment_data['currency'];
+        $amount_id = $this->sanitize_float_value( $amount_id );
+        $amount_id = str_replace( ',', '', $amount_id );
 
 	    $exception_data = array(
 		    'status' => strtolower($status),
@@ -156,16 +142,11 @@ class EDD_Ezdefi_Payment
 	    );
 
 	    $wheres = array(
-		    'amount_id' => $this->sanitize_float_value( $amount_id ),
-		    'currency' => (string) $currency,
-		    'order_id' => (int) $edd_payment_id
+		    'amount_id' => $amount_id,
+		    'currency' => (string) $ezdefi_payment_data['currency'],
+		    'order_id' => (int) $edd_payment_id,
+            'payment_method' => $payment_method
 	    );
-
-	    if( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] = true ) {
-		    $wheres['payment_method'] = 'amount_id';
-	    } else {
-		    $wheres['payment_method'] = 'ezdefi_wallet';
-	    }
 
 	    if( $status === 'DONE' ) {
 		    edd_update_payment_status( $edd_payment_id, 'publish' );

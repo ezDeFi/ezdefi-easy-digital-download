@@ -26,7 +26,7 @@ class EDD_Ezdefi_Shortcode
             return $output;
         }
 
-        if( empty( $edd_payment->get_meta( '_edd_ezdefi_currency' ) ) ) {
+        if( empty( $coin_id = $edd_payment->get_meta( '_edd_ezdefi_coin' ) ) ) {
             return $output;
         }
 
@@ -36,26 +36,35 @@ class EDD_Ezdefi_Shortcode
             return $output;
         }
 
-        $currency = edd_get_option( 'ezdefi_currency' );
+        $website_config = $this->api->get_website_config();
 
-	    $to = implode(',', array_map(function ( $item ) {
-		    return $item['symbol'];
-	    }, $currency ) );
-
-	    $exchanges = $this->api->get_token_exchanges(
-		    edd_get_cart_total(),
-		    edd_get_currency(),
-		    $to
-	    );
-
-	    $symbol = $edd_payment->get_meta( '_edd_ezdefi_currency' );
-	    $index = array_search( $symbol, array_column( $currency, 'symbol' ) );
-
-	    if( $index === false ) {
-	        return;
+        if ( is_null( $website_config ) ) {
+            return;
         }
 
-	    $selected_currency = $currency[$index];
+        $coins = $website_config['coins'];
+
+        $selected_currency = null;
+
+        foreach ( $coins as $key => $coin ) {
+            if ( $coin['_id'] == $coin_id ) {
+                $selected_currency = $coins[$key];
+            }
+        }
+
+        if( is_null( $selected_currency ) ) {
+            $selected_currency = $coins[0];
+        }
+
+        $to = implode(',', array_map( function ( $coin ) {
+            return $coin['token']['symbol'];
+        }, $coins ) );
+
+        $exchanges = $this->api->get_token_exchanges(
+            edd_get_cart_total(),
+            edd_get_currency(),
+            $to
+        );
 
 	    $payment_data = array(
 		    'uoid' => edd_get_payment_number( $edd_payment->ID ),
@@ -73,24 +82,29 @@ class EDD_Ezdefi_Shortcode
             <div class="edd-ezdefi-loader"></div>
             <div class="ezdefi-payment-tabs" style="display: none">
                 <ul>
-	                <?php
-	                foreach( $payment_method as $key => $value ) {
-		                echo '<li>';
-		                switch ($key) {
-			                case 'amount_id' :
-				                echo '<a href="#'.$key.'" id="tab-'.$key.'"><span class="large-screen">' . __( 'Pay with any crypto wallet', 'edd-ezdefi' ) . '</span><span class="small-screen">' . __( 'Any crypto wallet', 'edd-ezdefi' ) . '</span></a>';
-				                break;
-			                case 'ezdefi_wallet' :
-				                echo '<a href="#'.$key.'" id="tab-'.$key.'" style="background-image: url(' . edd_ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . ')"><span class="large-screen"> ' . __( 'Pay with ezDeFi wallet', 'edd-ezdefi' ) . '</span><span class="small-screen" style="background-image: url(' . edd_ezdefi()->plugin_url() . '/assets/ezdefi-icon.png' . ')"> ' . __( 'ezDeFi wallet', 'edd-ezdefi' ) . '</span></a>';
-				                break;
-		                }
-		                echo '</li>';
-	                }
-	                ?>
+                    <?php
+                    if( $website_config['website']['payAnyWallet'] == true ) {
+                        echo '<li>';
+                        echo '<a href="#amount_id" id="tab-amount_id><span class="large-screen">' . __( 'Pay with any crypto wallet', 'woocommerce-gateway-ezdefi' ) . '</span><span class="small-screen">' . __( 'Any crypto wallet', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
+                        echo '</li>';
+                    }
+
+                    if( $website_config['website']['payEzdefiWallet'] == true ) {
+                        echo '<li>';
+                        echo '<a href="#ezdefi_wallet" id="tab-ezdefi_wallet" style="background-image: url('.plugins_url( 'assets/images/ezdefi-icon.png', WC_EZDEFI_MAIN_FILE ).')"><span class="large-screen"> ' . __( 'Pay with ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span><span class="small-screen" style="background-image: url('.plugins_url( 'assets/images/ezdefi-icon.png', WC_EZDEFI_MAIN_FILE ).')"> ' . __( 'ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
+                        echo '</li>';
+                    }
+                    ?>
                 </ul>
-	            <?php foreach( $payment_method as $key => $value ) : ?>
-                    <div id="<?php echo $key;?>" class="ezdefi-payment-panel"></div>
-	            <?php endforeach; ?>
+                <?php
+                    if( $website_config['website']['payAnyWallet'] == true ) {
+                        echo '<div id="amount_id" class="ezdefi-payment-panel"></div>';
+                    }
+
+                    if( $website_config['website']['payEzdefiWallet'] == true ) {
+                        echo '<div id="ezdefi_wallet" class="ezdefi-payment-panel"></div>';
+                    }
+                ?>
             </div>
         </div>
         <?php

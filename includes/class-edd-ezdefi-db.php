@@ -4,61 +4,10 @@ defined( 'ABSPATH' ) or exit;
 
 class EDD_Ezdefi_Db
 {
-	public function generate_amount_id( $price, $currency_data )
-	{
-		global $wpdb;
-
-		$decimal = $currency_data['decimal'];
-		$symbol = $currency_data['symbol'];
-		$life_time = (!empty($currency_data['lifetime'])) ? ($currency_data['lifetime'] * 60) : 86400;
-
-		$price = round( $price, $decimal );
-
-		$wpdb->query(
-			$wpdb->prepare("
-				CALL edd_ezdefi_generate_amount_id(%s, %s, %d, %d, @amount_id)
-			", $price, $symbol, $decimal, $life_time)
-		);
-
-		$result = $wpdb->get_row( "SELECT @amount_id", ARRAY_A );
-
-		if( ! $result ) {
-			return null;
-		}
-
-		$amount_id = floatval( $result['@amount_id'] );
-
-		$acceptable_variation = $this->get_acceptable_variation();
-
-		$variation_percent = $acceptable_variation / 100;
-
-		$min = floatval( $price - ( $price * $variation_percent ) );
-		$max = floatval( $price + ( $price * $variation_percent ) );
-
-		if( ( $amount_id < $min ) || ( $amount_id > $max ) ) {
-			return null;
-		}
-
-		return $amount_id;
-	}
-
-	public function get_currency_option( $symbol )
-	{
-		$currency_data = edd_get_option( 'ezdefi_currency' );
-
-		$index = array_search( $symbol, array_column( $currency_data, 'symbol' ) );
-
-		if( $index === false ) {
-			return null;
-		}
-
-		return $currency_data[$index];
-	}
-
-	public function get_acceptable_variation()
-	{
-		return edd_get_option( 'ezdefi_acceptable_variation' );
-	}
+    public function get_public_key()
+    {
+        return edd_get_option( 'ezdefi_public_key' );
+    }
 
 	public function delete_amount_id_exception($amount_id, $currency, $order_id)
 	{
@@ -83,7 +32,6 @@ class EDD_Ezdefi_Db
 
 		return $wpdb->query( $query );
 	}
-
 
 	public function add_exception( $data )
 	{

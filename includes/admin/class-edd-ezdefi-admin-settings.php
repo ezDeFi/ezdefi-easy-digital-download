@@ -51,7 +51,7 @@ class EDD_Ezdefi_Admin_Settings
 			),
             'ezdefi_public_key' => array(
                 'id' => 'ezdefi_public_key',
-                'name' => __( 'Public Key', 'edd-ezdefi' ),
+                'name' => __( 'Website ID', 'edd-ezdefi' ),
                 'desc' => '',
                 'type' => 'text',
                 'size' => 'regular',

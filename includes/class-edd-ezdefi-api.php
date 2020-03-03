@@ -141,8 +141,9 @@ class EDD_Ezdefi_Api
             'uoid' => $uoid,
             'to' => $coin_data['wallet_address'],
             'value' => $value,
-//		    'callback' => home_url() . '/?edd-ezdefi-callback',
-            'callback' => 'http://718bdab4.ngrok.io/?edd-ezdefi-callback',
+            'safedist' => $coin_data['block_confirm'],
+		    'duration' => $coin_data['duration'] * 60,
+		    'callback' => home_url() . '/?edd-ezdefi-callback',
             'coinId' => $coin_data['_id']
 	    ];
 

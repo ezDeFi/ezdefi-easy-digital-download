@@ -80,7 +80,7 @@ class EDD_Ezdefi_Ajax
         $api_url = sanitize_text_field( $_POST['api_url'] );
         $api_key = sanitize_text_field( $_POST['api_key'] );
 
-        $api = new WC_Ezdefi_Api( $api_url, $api_key );
+        $api = new EDD_Ezdefi_Api( $api_url, $api_key );
         $api->set_public_key( $_POST['public_key'] );
 
         $response = $api->get_website_config();

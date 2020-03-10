@@ -91,7 +91,7 @@ class EDD_Ezdefi_Shortcode
 
                     if( $website_config['website']['payEzdefiWallet'] == true ) {
                         echo '<li>';
-                        echo '<a href="#ezdefi_wallet" id="tab-ezdefi_wallet" style="background-image: url('.plugins_url( 'assets/images/ezdefi-icon.png', WC_EZDEFI_MAIN_FILE ).')"><span class="large-screen"> ' . __( 'Pay with ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span><span class="small-screen" style="background-image: url('.plugins_url( 'assets/images/ezdefi-icon.png', WC_EZDEFI_MAIN_FILE ).')"> ' . __( 'ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
+                        echo '<a href="#ezdefi_wallet" id="tab-ezdefi_wallet" style="background-image: url(' . edd_ezdefi()->plugin_url() . '/assets/ezdefi-icon.png'.')"><span class="large-screen"> ' . __( 'Pay with ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span><span class="small-screen" style="background-image: url('.edd_ezdefi()->plugin_url().'/assets/ezdefi-icon.png'.')"> ' . __( 'ezDeFi wallet', 'woocommerce-gateway-ezdefi' ) . '</span></a>';
                         echo '</li>';
                     }
                     ?>

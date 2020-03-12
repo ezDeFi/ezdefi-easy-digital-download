@@ -120,7 +120,7 @@ jQuery(function($) {
 
   EDD_EZDefi_Qrcode.prototype.onClickEzdefiLink = function(e) {
     e.preventDefault();
-    self.$tabs.tabs('option', 'active', 1);
+    this.$tabs.tabs('option', 'active', 1);
   };
 
   EDD_EZDefi_Qrcode.prototype.onUseAltQrcode = function(e) {

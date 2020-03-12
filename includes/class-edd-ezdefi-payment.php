@@ -25,6 +25,11 @@ class EDD_Ezdefi_Payment
     {
         $coin_id = sanitize_text_field( $purchase_data['post_data']['edd_ezdefi_coin'] );
 
+        if( empty( $coin_id ) ) {
+            edd_set_error( 'missing_ezdefi_coin', __( 'Please select cryptocurrency', 'edd-ezdefi' ) );
+            edd_send_back_to_checkout( '?payment-mode=ezdefi' );
+        }
+
         $website_coins = $this->api->get_website_coins();
 
         $coin_data = null;

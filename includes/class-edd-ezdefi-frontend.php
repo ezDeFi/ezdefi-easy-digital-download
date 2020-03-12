@@ -14,6 +14,8 @@ class EDD_Ezdefi_Frontend
         add_action( 'edd_ezdefi_cc_form', array( $this, 'currency_select_after_cc_form' ) );
 
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
+        add_filter( 'do_shortcode_tag', array( $this, 'prepend_content_to_checkout_shortcode' ), 10, 4 );
     }
 
     /** Load needed CSS and JS file */
@@ -46,6 +48,27 @@ class EDD_Ezdefi_Frontend
         </fieldset>
 
         <?php echo ob_get_clean();
+    }
+
+    /**
+     * Show error when customer not select cryptocurrency
+     *
+     * @param $output
+     * @param $tag
+     */
+    public function prepend_content_to_checkout_shortcode( $output, $tag )
+    {
+        if ( $tag != 'download_checkout' ) {
+            return $output;
+        }
+
+        $errors = edd_get_errors();
+
+        if ( isset( $errors['missing_ezdefi_coin'] ) ) {
+            return edd_print_errors() . $output;
+        }
+
+        return $output;
     }
 }
 

@@ -2,6 +2,7 @@ jQuery(function($) {
   'use strict';
 
   var selectors = {
+    apiUrlInput: '.ezdefi_api_url input',
     apiKeyInput: '.ezdefi_api_key input',
     publicKeyInput: '.ezdefi_public_key input'
   };
@@ -14,10 +15,12 @@ jQuery(function($) {
     this.initValidation.call(this);
 
     var onChangeApiKey = this.onChangeApiKey.bind(this);
+    var onChangeApiUrl = this.onChangeApiUrl.bind(this);
     var onChangePublicKey = this.onChangePublicKey.bind(this);
 
     $(document.body)
       .on('change', selectors.apiKeyInput, onChangeApiKey)
+      .on('change', selectors.apiUrlInput, onChangeApiUrl)
       .on('change', selectors.publicKeyInput, onChangePublicKey);
   };
 
@@ -87,6 +90,13 @@ jQuery(function($) {
         remote: 'API Key is not correct. Please check again'
       }
     });
+  };
+
+  EDD_EZDefi_Admin.prototype.onChangeApiUrl = function(e) {
+    var input = $(e.currentTarget);
+    if(input.val().length === 0) {
+      input.attr('placeholder', 'https://merchant-api.ezdefi.com/api/');
+    }
   };
 
   EDD_EZDefi_Admin.prototype.onChangePublicKey = function(e) {

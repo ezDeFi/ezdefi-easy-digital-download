@@ -112,7 +112,7 @@ class EDD_Ezdefi_Ajax
 
         $params = array(
             'uoid' => '',
-            'coin_data' => '',
+            'coin_id' => '',
             'method' => '',
         );
 
@@ -124,7 +124,27 @@ class EDD_Ezdefi_Ajax
             }
         }
 
-        $coin_data = array_map( 'sanitize_text_field', $params['coin_data'] );
+        $website_coins = $this->api->get_website_coins();
+
+        if( is_null( $website_coins ) ) {
+            wp_send_json_error( $message );
+        }
+
+        $coin_id = sanitize_text_field( $params['coin_id'] );
+
+        $coin_data = array();
+
+        foreach( $website_coins as $website_coin ) {
+            if( $website_coin['_id'] === $coin_id ) {
+                $coin_data = $website_coin;
+                break;
+            }
+        }
+
+        if( empty( $coin_data ) ) {
+            wp_send_json_error( $message );
+        }
+
 
         $uoid = sanitize_key( $params['uoid'] );
 
@@ -164,7 +184,7 @@ class EDD_Ezdefi_Ajax
 
         $data = array(
             'amount_id' => str_replace( ',', '', $value),
-            'currency' => $coin_data['symbol'],
+            'currency' => $coin_data['token']['symbol'],
             'order_id' => substr( $payment['uoid'], 0, strpos( $payment['uoid'],'-' ) ),
             'status' => 'not_paid',
             'payment_method' => ( $amount_id ) ? 'amount_id' : 'ezdefi_wallet'
@@ -182,7 +202,8 @@ class EDD_Ezdefi_Ajax
 
 	public function generate_payment_html( $payment, $order, $coin_data ) {
         $total = $order->total;
-        $total = $total - ( $total * ( $coin_data['discount'] / 100 ) );
+        $discount = $coin_data['discount'];
+        $total = $total * ( number_format( ( 100 - $discount ) / 100, 8 ) );
 		ob_start(); ?>
 		<div class="ezdefi-payment">
 			<?php if( ! $payment ) : ?>

@@ -126,7 +126,7 @@ class EDD_Ezdefi_Api
     	$value = $this->calculate_discounted_price( $edd_payment->subtotal, $coin_data['discount'] );
 
 	    if( $amountId ) {
-            $rate = $this->get_token_exchange( $edd_payment->currency, $coin_data['symbol'] );
+            $rate = $this->get_token_exchange( $edd_payment->currency, $coin_data['token']['symbol'] );
 
             if( is_null( $rate ) ) {
                 return new WP_Error( 'create_ezdefi_payment', 'Can not create payment.' );

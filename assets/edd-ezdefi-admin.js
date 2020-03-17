@@ -20,7 +20,7 @@ jQuery(function($) {
 
     $(document.body)
       .on('change', selectors.apiKeyInput, onChangeApiKey)
-      .on('change', selectors.apiUrlInput, onChangeApiUrl)
+      .on('keyup', selectors.apiUrlInput, onChangeApiUrl)
       .on('change', selectors.publicKeyInput, onChangePublicKey);
   };
 

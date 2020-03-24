@@ -37,6 +37,7 @@ class EDD_Ezdefi
 		if( defined( 'DOING_CRON' ) || is_admin() ) {
 			require_once( $this->plugin_path() . '/includes/admin/class-edd-ezdefi-admin.php' );
 			require_once( $this->plugin_path() . '/includes/admin/class-edd-ezdefi-exception-page.php' );
+            require_once( $this->plugin_path() . '/includes/admin/class-edd-ezdefi-admin-notices.php' );
 		}
 	}
 

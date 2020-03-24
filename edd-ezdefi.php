@@ -44,6 +44,8 @@ class EDD_Ezdefi_Loader
 	{
 		add_action( 'plugins_loaded', array( $this, 'init_plugin' ) );
 
+        add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( $this, 'plugin_action_links' ) );
+
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
 
 		$this->define_constants();
@@ -106,6 +108,22 @@ class EDD_Ezdefi_Loader
 		define( 'EDD_EZDEFI_VERSION', '1.0.0' );
 		define( 'EDD_EZDEFI_MAIN_FILE', __FILE__ );
 	}
+
+    /**
+     * Add action link
+     *
+     * @param $links
+     *
+     * @return array
+     */
+    public function plugin_action_links( $links )
+    {
+        $plugin_links = array(
+            '<a href="' . admin_url( 'admin.php?page=edd-settings&tab=gateways&section=ezdefi' ) . '">' . __( 'Settings', 'woocommerce-gateway-ezdefi' ) . '</a>'
+        );
+
+        return array_merge( $plugin_links, $links );
+    }
 
 	/**
 	 * Get EDD_Ezdefi_Loader instance

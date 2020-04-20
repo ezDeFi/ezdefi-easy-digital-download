@@ -9,29 +9,52 @@ class EDD_Ezdefi_Db
         return edd_get_option( 'ezdefi_public_key' );
     }
 
-	public function delete_amount_id_exception($amount_id, $currency, $order_id)
-	{
-		global $wpdb;
+    public function delete_exception( $exception_id )
+    {
+        global $wpdb;
 
-		$table_name = $wpdb->prefix . 'edd_ezdefi_exception';
+        $table_name = $wpdb->prefix . 'edd_ezdefi_exception';
 
-		if( is_null( $order_id ) ) {
-			return $wpdb->query( "DELETE FROM $table_name WHERE amount_id = $amount_id AND currency = '$currency' AND order_id IS NULL LIMIT 1" );
-		}
+        $query = "DELETE FROM $table_name WHERE id = $exception_id";
 
-		return $wpdb->query( "DELETE FROM $table_name WHERE amount_id = $amount_id AND currency = '$currency' AND order_id = $order_id LIMIT 1" );
-	}
+        return $wpdb->query( $query );
+    }
 
-	public function delete_exception_by_order_id($order_id)
-	{
-		global $wpdb;
+    public function delete_exceptions( $wheres = array() )
+    {
+        global $wpdb;
 
-		$table_name = $wpdb->prefix . 'edd_ezdefi_exception';
+        $exception_table = $wpdb->prefix . 'edd_ezdefi_exception';
 
-		$query = "DELETE FROM $table_name WHERE order_id = $order_id";
+        if( empty( $wheres ) ) {
+            return;
+        }
 
-		return $wpdb->query( $query );
-	}
+        $query = "DELETE FROM $exception_table";
+
+        $conditions = array();
+
+        foreach( $wheres as $column => $value ) {
+            $type = gettype( $value );
+            switch ($type) {
+                case 'integer' :
+                    $conditions[] = " $column = $value ";
+                    break;
+                case 'NULL' :
+                    $conditions[] = " $column IS NULL ";
+                    break;
+                default :
+                    $conditions[] = " $column = '$value' ";
+                    break;
+            }
+        }
+
+        if( ! empty( $conditions ) ) {
+            $query .= ' WHERE ' . implode( $conditions, 'AND' );
+        }
+
+        return $wpdb->query( $query );
+    }
 
 	public function add_exception( $data )
 	{
@@ -52,7 +75,7 @@ class EDD_Ezdefi_Db
 		return $wpdb->query($query);
 	}
 
-	public function get_exception( $params = array(), $offset = 0, $per_page = 15 )
+	public function get_exceptions( $params = array(), $offset = 0, $per_page = 15 )
 	{
 		global $wpdb;
 
@@ -66,7 +89,8 @@ class EDD_Ezdefi_Db
 			'order_id' => '',
 			'email' => '',
 			'payment_method' => '',
-			'status' => ''
+			'status' => '',
+            'confirmed' => '',
 		);
 
 		$params = array_merge( $default, $params );
@@ -75,24 +99,38 @@ class EDD_Ezdefi_Db
 
 		$sql = array();
 
-		foreach( $params as $column => $param ) {
-			if( ! empty( $param ) && in_array( $column, array_keys( $default ) ) && $column != 'amount_id' ) {
-				$sql[] = ( $column === 'email' ) ? " t2.billing_email = '$param' " : " t1.$column = '$param' ";
-			}
-		}
+        foreach( $params as $column => $param ) {
+            if( $column === 'type' ) {
+                switch ( $params['type'] ) {
+                    case 'pending' :
+                        $sql[] = " t1.confirmed = 0 ";
+                        $sql[] = " t1.explorer_url IS NOT NULL ";
+                        break;
+                    case 'confirmed' :
+                        $sql[] = " t1.confirmed = 1 ";
+                        break;
+                    case 'archived' :
+                        $sql[] = " t1.confirmed = 0 ";
+                        $sql[] = " t1.explorer_url IS NULL ";
+                        break;
+                }
+            }  elseif ( ! empty( $param ) && in_array( $column, array_keys( $default ) ) ) {
+                switch ( $column ) {
+                    case 'amount_id' :
+                        $sql[] = " t1.amount_id RLIKE '^$param' ";
+                        break;
+                    case 'email' :
+                        $sql[] = " t2.billing_email = '$param' ";
+                        break;
+                    default :
+                        $sql[] = " t1.$column = '$param' ";
+                        break;
+                }
+            }
+        }
 
 		if( ! empty( $sql ) ) {
 			$query .= ' WHERE ' . implode( $sql, 'AND' );
-		}
-
-		if( ! empty( $params['amount_id'] ) ) {
-			$amount_id = $params['amount_id'];
-			if( ! empty( $sql ) ) {
-				$query .= " AND";
-			} else {
-				$query .= " WHERE";
-			}
-			$query .= " amount_id RLIKE '^$amount_id'";
 		}
 
 		$query .= " ORDER BY id DESC LIMIT $offset, $per_page";
@@ -118,7 +156,9 @@ class EDD_Ezdefi_Db
 		}
 
 		$query = "UPDATE $exception_table SET";
+
 		$comma = " ";
+
 		foreach ( $data as $column => $value ) {
 			if( is_null( $value ) ) {
 				$query .= $comma . $column . " = NULL";
@@ -127,26 +167,31 @@ class EDD_Ezdefi_Db
 			}
 			$comma = ", ";
 		}
+
 		$conditions = array();
-		foreach( $wheres as $column => $value ) {
-			if( ! empty( $value ) ) {
-				$type = gettype( $value );
-				switch ($type) {
-					case 'integer' :
-						$conditions[] = " $column = $value ";
-						break;
-					case 'NULL' :
-						$conditions[] = " $column IS NULL ";
-						break;
-					default :
-						$conditions[] = " $column LIKE '$value%' ";
-						break;
-				}
-			}
-		}
+
+        foreach( $wheres as $column => $value ) {
+            if( ! empty( $value ) ) {
+                $type = gettype( $value );
+                switch ($type) {
+                    case 'integer' :
+                        $conditions[] = " $column = $value ";
+                        break;
+                    case 'NULL' :
+                        $conditions[] = " $column IS NULL ";
+                        break;
+                    default :
+                        $conditions[] = " $column = '$value' ";
+                        break;
+                }
+            }
+        }
+
 		if( ! empty( $conditions ) ) {
 			$query .= ' WHERE ' . implode( $conditions, 'AND' );
 		}
+
+        $query .= ' ORDER BY id DESC LIMIT 1';
 
 		return $wpdb->query( $query );
 	}

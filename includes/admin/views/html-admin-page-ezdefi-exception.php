@@ -6,6 +6,11 @@ defined( 'ABSPATH' ) or exit;
 <div class="wrap">
 	<h1 class="wp-heading-inline">ezDeFi Exception Management</h1>
 	<hr class="wp-header-end">
+    <nav class="nav-tab-wrapper" id="edd-ezdefi-exception-tab">
+        <a href="?post_type=download&page=edd-ezdefi-exception&type=pending" data-type="pending" class="nav-tab <?php echo ( ( ! $_GET['type'] ) || ( isset( $_GET['type'] ) && $_GET['type'] == 'pending' ) ) ? 'nav-tab-active' : ''; ?>">Pending</a>
+        <a href="?post_type=download&page=edd-ezdefi-exception&type=confirmed" data-type="confirmed" class="nav-tab <?php echo ( isset( $_GET['type'] ) && $_GET['type'] == 'confirmed' ) ? 'nav-tab-active' : ''; ?>">Confirmed</a>
+        <a href="?post_type=download&page=edd-ezdefi-exception&type=archived" data-type="archived" class="nav-tab <?php echo ( isset( $_GET['type'] ) && $_GET['type'] == 'archived' ) ? 'nav-tab-active' : ''; ?>">Archived</a>
+    </nav>
     <table class="widefat" id="edd-ezdefi-exception-table-filter">
         <thead>
             <th><strong>Filter</strong></th>

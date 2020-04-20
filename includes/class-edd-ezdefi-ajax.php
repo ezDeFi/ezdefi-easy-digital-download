@@ -185,7 +185,7 @@ class EDD_Ezdefi_Ajax
         $data = array(
             'amount_id' => str_replace( ',', '', $value),
             'currency' => $coin_data['token']['symbol'],
-            'order_id' => substr( $payment['uoid'], 0, strpos( $payment['uoid'],'-' ) ),
+            'order_id' => edd_ezdefi_sanitize_uoid( $payment['uoid'] ),
             'status' => 'not_paid',
             'payment_method' => ( $amount_id ) ? 'amount_id' : 'ezdefi_wallet'
         );
@@ -216,7 +216,7 @@ class EDD_Ezdefi_Ajax
                         $value = $payment['value'] / pow( 10, $payment['decimal'] );
                     }
 
-                    $notation = explode('E', $value);
+                    $notation = explode('E', strtoupper( $value ));
 
                     if(count($notation) === 2){
                         $exp = abs(end($notation)) + strlen($notation[0]);
@@ -225,7 +225,7 @@ class EDD_Ezdefi_Ajax
                     }
                 ?>
 				<p class="exchange">
-					<span><?php echo $total; ?> <?php echo $order->currency; ?></span>
+					<span><?php echo edd_ezdefi_sanitize_float_value( $total ); ?> <?php echo $order->currency; ?></span>
 					<img width="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAQAAAAAYLlVAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAAHdElNRQfjChgQMyxZjA7+AAACP0lEQVRo3u2YvWsUQRTAf8nFQs5LCEY0aCGIB1ErRVMoFpYGTGNlo2AnBxHlrLQJKVSwiV//gqCV4gemEGJhiBYXRAtBDIhICiUGL8GP3Fjs7rs5vN0o5M1LsW+a2XkDv9/MvF12t4B2dDDODqbVOan46zgaVKzwN3A4O4VuarGAo8EZC4VeXnoKJruQK+QKa12hI2VyFyUFhY08Ymfcd1S49feU7VSZ5DPL4qrXGpxuhW/iJj8DgJutTrGJ38vHoPCobUnwg9QN8HeTItzGNP2yF7M85D11lTvhLAPSn2CYpah7R5zmOUmnChrgsrf6p6xPhvfRiAe/slsNnoqHcRketsDDbDw8ZYPvlsR5CzwMSGpICT+WhYdBSR4Ov3p9gbGV8Hr3PEAPx6XvPXZC7sBm3qSvPoRApJCB71KB+jHHERbab34YAZjLSuoW4T+EuYBNHJXC32W+A2taYAN9lgJFHjDZfGsNHUWe4XC8VVHwirD9hBLPZcpM+mN0NQTaHUGR+xySq3vpj1Gd8FfvuKjCyDiC5OyjdklpkSeE0N+aCLF6gNGY8IuCBb4zfklxzFjg4ZRQRi3wB/guB1AOjV9HhUXh3Ibo87zEYw7KpFqUWPUoUWaIrXL9gf18iRSeGPyamGdPYlI2wL/zflPQx4+g8CWu0tN6OiNBwL/5xAQjXhWQFCFc4IqMvOYY3xSKcIHlrPQ5z/UVvSr3wQqRK+QKuYIfVU9hSuGt+L924ZoFvqmgji+kZl6wSI2qtsAfm/EoPAbFFD0AAAAldEVYdGRhdGU6Y3JlYXRlADIwMTktMTAtMjRUMTY6NTE6NDQrMDA6MDBiAik3AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE5LTEwLTI0VDE2OjUxOjQ0KzAwOjAwE1+RiwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=" />
 					<span><?php echo $value . ' ' . $payment['currency']; ?></span>
 				</p>
@@ -305,7 +305,7 @@ class EDD_Ezdefi_Ajax
 
 		$post_data = array_map( 'sanitize_text_field', $_POST );
 
-		$data = $this->db->get_exception( $post_data, $offset, $per_page );
+		$data = $this->db->get_exceptions( $post_data, $offset, $per_page );
 
 		$total = $data['total'];
 
@@ -356,15 +356,13 @@ class EDD_Ezdefi_Ajax
 
 	public function edd_ezdefi_assign_amount_id_ajax_callback()
 	{
-		if( ! isset( $_POST['amount_id'] ) || ! isset( $_POST['order_id'] ) || ! isset( $_POST['currency'] ) ) {
+        if( ! isset( $_POST['order_id'] ) || ! isset( $_POST['exception_id'] ) ) {
             wp_send_json_error();
         }
 
-		$amount_id = sanitize_text_field( $_POST['amount_id'] );
+        $exception_id = sanitize_key( $_POST['exception_id'] );
 
-		$currency = sanitize_text_field( $_POST['currency'] );
-
-		$old_order_id = ( $_POST['old_order_id'] && ! empty( $_POST['old_order_id'] ) ) ? sanitize_key( $_POST['old_order_id'] ) : null;
+        $old_order_id = ( isset( $_POST['old_order_id'] ) && ! empty( $_POST['old_order_id'] ) ) ? sanitize_key( $_POST['old_order_id'] ) : null;
 
 		$order_id = sanitize_key( $_POST['order_id'] );
 
@@ -376,25 +374,33 @@ class EDD_Ezdefi_Ajax
 
 		edd_update_payment_status( $order_id, 'publish' );
 
-		if( is_null( $old_order_id ) ) {
-			$this->db->delete_amount_id_exception( $amount_id, $currency, $old_order_id );
-			$this->db->delete_exception_by_order_id( $order_id );
-		} else {
-			$this->db->delete_exception_by_order_id( $old_order_id );
-		}
+		if( $old_order_id && $old_order_id != $order_id && edd_get_payment( $old_order_id ) ) {
+            edd_update_payment_status( $old_order_id, 'pending' );
+        }
+
+        $this->db->update_exception(
+            array( 'id' => (int) $exception_id ),
+            array(
+                'order_id' => $order_id,
+                'confirmed' => 1
+            )
+        );
+
+        $this->db->delete_exceptions( array(
+            'order_id' => $order_id,
+            'confirmed' => 0
+        ) );
 
 		wp_send_json_success();
 	}
 
 	public function edd_ezdefi_reverse_edd_payment_ajax_callback()
 	{
-		if( ! isset( $_POST['amount_id'] ) || ! isset( $_POST['order_id'] ) || ! isset( $_POST['currency'] ) ) {
-			wp_send_json_error();
-		}
+        if( ! isset( $_POST['order_id'] ) || ! isset( $_POST['exception_id'] ) ) {
+            wp_send_json_error();
+        }
 
-		$amount_id = sanitize_text_field( $_POST['amount_id'] );
-
-		$currency = sanitize_text_field( $_POST['currency'] );
+        $exception_id = sanitize_key( $_POST['exception_id'] );
 
 		$order_id = sanitize_key( $_POST['order_id'] );
 
@@ -406,33 +412,28 @@ class EDD_Ezdefi_Ajax
 
 		edd_update_payment_status( $order_id, 'pending' );
 
-		$wheres = array(
-			'amount_id' => $amount_id,
-			'currency' => $currency,
-			'order_id' => $order_id,
-			'status' => 'done'
-		);
+        $this->db->update_exception(
+            array( 'id' => (int) $exception_id ),
+            array(
+                'order_id' => null,
+                'confirmed' => 0
+            )
+        );
 
-		$data = array(
-			'order_id' => null,
-			'status' => null,
-			'payment_method' => null
-		);
-
-		$this->db->update_exception( $wheres, $data );
-
-		wp_send_json_success();
+        wp_send_json_success();
 	}
 
 	public function edd_ezdefi_delete_amount_id_ajax_callback()
 	{
-		$amount_id = sanitize_text_field( $_POST['amount_id'] );
+        if( ! isset( $_POST['exception_id'] ) ) {
+            wp_send_json_error();
+        }
 
-		$currency = sanitize_text_field( $_POST['currency'] );
+        $exception_id = sanitize_key( $_POST['exception_id'] );
 
-		$order_id = ( ! empty( $_POST['order_id'] ) ) ? sanitize_key( $_POST['order_id'] ) : null;
+        $this->db->delete_exception( $exception_id );
 
-	    $this->db->delete_amount_id_exception( $amount_id, $currency, $order_id );
+        wp_send_json_success();
 	}
 }
 

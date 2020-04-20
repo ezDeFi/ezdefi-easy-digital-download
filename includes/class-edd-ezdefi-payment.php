@@ -124,48 +124,49 @@ class EDD_Ezdefi_Payment
 	        wp_send_json_error();
         }
 
-	    $status = $ezdefi_payment_data['status'];
+        $status = $ezdefi_payment_data['status'];
+        $uoid = (int) edd_ezdefi_sanitize_uoid( $ezdefi_payment_data['uoid'] );
+        $payment_method = edd_ezdefi_is_pay_any_wallet( $ezdefi_payment_data ) ? 'amount_id' : 'ezdefi_wallet';
 
-	    if( $status === 'PENDING' || $status === 'EXPIRED' ) {
-	    	wp_send_json_error();
-	    }
 
-	    if( ( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] === true ) ) {
-            $payment_method = 'amount_id';
-            $amount_id = $ezdefi_payment_data['originValue'];
-	    } else {
-            $payment_method = 'ezdefi_wallet';
-		    $amount_id = $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] );
-	    }
+        if( $status != 'DONE' && $status != 'EXPIRED_DONE' ) {
+            wp_send_json_error();
+        }
 
-        $amount_id = $this->sanitize_float_value( $amount_id );
-        $amount_id = str_replace( ',', '', $amount_id );
+        if( $status === 'DONE' ) {
+            edd_update_payment_status( $edd_payment_id, 'publish' );
+            edd_empty_cart();
 
-	    $exception_data = array(
-		    'status' => strtolower($status),
-		    'explorer_url' => (string) self::EXPLORER_URL . $ezdefi_payment_data['transactionHash']
-	    );
+            if( $payment_method === 'ezdefi_wallet' ) {
+                $this->db->delete_exceptions( array(
+                    'order_id' => $uoid
+                ) );
 
-	    $wheres = array(
-		    'amount_id' => $amount_id,
-		    'currency' => (string) $ezdefi_payment_data['currency'],
-		    'order_id' => (int) $edd_payment_id,
-            'payment_method' => $payment_method
-	    );
+                wp_send_json_success();
+            }
+        }
 
-	    if( $status === 'DONE' ) {
-		    edd_update_payment_status( $edd_payment_id, 'publish' );
-		    edd_empty_cart();
-		    $this->db->update_exception( $wheres, $exception_data );
+        $value = ( $payment_method === 'amount_id' ) ? $ezdefi_payment_data['originValue'] : ( $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] ) );
 
-		    if( ! isset( $ezdefi_payment_data['amountId'] ) || ( isset( $ezdefi_payment_data['amountId'] ) && $ezdefi_payment_data['amountId'] != true ) ) {
-			    $this->db->delete_exception_by_order_id( $wheres['order_id'] );
-		    }
-	    } elseif( $status === 'EXPIRED_DONE' ) {
-		    $this->db->update_exception( $wheres, $exception_data );
-	    }
+        $this->db->update_exception(
+            array(
+                'order_id' => $uoid,
+                'payment_method' => $payment_method,
+            ),
+            array(
+                'amount_id' => edd_ezdefi_sanitize_float_value( $value ),
+                'currency' => $ezdefi_payment_data['token']['symbol'],
+                'status' => strtolower( $status ),
+                'explorer_url' => $ezdefi_payment_data['explorer']['tx'] . $ezdefi_payment_data['transactionHash']
+            )
+        );
 
-	    wp_send_json_success();
+        $this->db->delete_exceptions( array(
+            'order_id' => $uoid,
+            'explorer_url' => null,
+        ) );
+
+        wp_send_json_success();
     }
 
     public function process_transaction_callback( $value, $explorerUrl, $currency, $id  )

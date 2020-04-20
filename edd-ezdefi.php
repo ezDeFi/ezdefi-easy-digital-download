@@ -85,7 +85,8 @@ class EDD_Ezdefi_Loader
 			order_id int(11),
 			status varchar(20),
 			payment_method varchar(100),
-			explorer_url varchar(200),
+			explorer_url varchar(200) DEFAULT NULL,
+			confirmed tinyint(1) DEFAULT 0 NOT NULL,
 			PRIMARY KEY (id)
 		) $charset_collate;";
 

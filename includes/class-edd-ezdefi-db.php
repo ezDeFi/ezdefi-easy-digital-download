@@ -112,6 +112,7 @@ class EDD_Ezdefi_Db
                     case 'archived' :
                         $sql[] = " t1.confirmed = 0 ";
                         $sql[] = " t1.explorer_url IS NULL ";
+                        $sql[] = " t1.is_show = 1 ";
                         break;
                 }
             }  elseif ( ! empty( $param ) && in_array( $column, array_keys( $default ) ) ) {
@@ -145,7 +146,7 @@ class EDD_Ezdefi_Db
 		);
 	}
 
-	public function update_exception( $wheres = array(), $data = array() )
+	public function update_exceptions( $wheres = array(), $data = array(), $limit = null )
 	{
 		global $wpdb;
 
@@ -161,7 +162,7 @@ class EDD_Ezdefi_Db
 
 		foreach ( $data as $column => $value ) {
 			if( is_null( $value ) ) {
-				$query .= $comma . $column . " = NULL";
+				$query .= $comma . $column . " IS NULL";
 			} else {
 				$query .= $comma . $column . " = '" . $value . "'";
 			}
@@ -191,7 +192,9 @@ class EDD_Ezdefi_Db
 			$query .= ' WHERE ' . implode( $conditions, 'AND' );
 		}
 
-        $query .= ' ORDER BY id DESC LIMIT 1';
+        if( is_numeric( $limit ) ) {
+            $query .= " ORDER BY id DESC LIMIT $limit";
+        }
 
 		return $wpdb->query( $query );
 	}

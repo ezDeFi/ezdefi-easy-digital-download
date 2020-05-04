@@ -148,7 +148,7 @@ class EDD_Ezdefi_Payment
 
         $value = ( $payment_method === 'amount_id' ) ? $ezdefi_payment_data['originValue'] : ( $ezdefi_payment_data['value'] / pow( 10, $ezdefi_payment_data['decimal'] ) );
 
-        $this->db->update_exception(
+        $this->db->update_exceptions(
             array(
                 'order_id' => $uoid,
                 'payment_method' => $payment_method,
@@ -158,7 +158,8 @@ class EDD_Ezdefi_Payment
                 'currency' => $ezdefi_payment_data['token']['symbol'],
                 'status' => strtolower( $status ),
                 'explorer_url' => $ezdefi_payment_data['explorer']['tx'] . $ezdefi_payment_data['transactionHash']
-            )
+            ),
+            1
         );
 
         $this->db->delete_exceptions( array(

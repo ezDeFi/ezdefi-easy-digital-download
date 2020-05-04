@@ -378,7 +378,7 @@ class EDD_Ezdefi_Ajax
             edd_update_payment_status( $old_order_id, 'pending' );
         }
 
-        $this->db->update_exception(
+        $this->db->update_exceptions(
             array( 'id' => (int) $exception_id ),
             array(
                 'order_id' => $order_id,
@@ -386,10 +386,15 @@ class EDD_Ezdefi_Ajax
             )
         );
 
-        $this->db->delete_exceptions( array(
-            'order_id' => $order_id,
-            'confirmed' => 0
-        ) );
+        $this->db->update_exceptions(
+            array(
+                'order_id' => $order_id,
+                'explorer_url' => null
+            ),
+            array(
+                'is_show' => 0
+            )
+        );
 
 		wp_send_json_success();
 	}
@@ -412,11 +417,20 @@ class EDD_Ezdefi_Ajax
 
 		edd_update_payment_status( $order_id, 'pending' );
 
-        $this->db->update_exception(
+        $this->db->update_exceptions(
             array( 'id' => (int) $exception_id ),
             array(
-                'order_id' => null,
                 'confirmed' => 0
+            )
+        );
+
+        $this->db->update_exceptions(
+            array(
+                'order_id' => $order_id,
+                'explorer_url' => null
+            ),
+            array(
+                'is_show' => 1
             )
         );
 

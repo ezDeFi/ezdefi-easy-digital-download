@@ -196,6 +196,7 @@ jQuery(function($) {
     EDD_Ezdefi_Assign.prototype.renderHtml = function(data, offset) {
         var self = this;
         if(data.length === 0) {
+            self.$table.find('tbody tr').not('.spinner-row').remove();
             self.$table.append("<tr><td colspan='5'>Not found</td></tr>");
             return;
         }
@@ -269,6 +270,8 @@ jQuery(function($) {
             var last_td;
 
             if(row['confirmed'] == 1) {
+                html.find('td.order-column .actions').remove();
+                html.find('td.order-column .select-order').remove();
                 last_td = $(
                     "<td>" +
                     "<button class='button reverseBtn'>Reverse</button> " +

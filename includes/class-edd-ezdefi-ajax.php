@@ -223,6 +223,8 @@ class EDD_Ezdefi_Ajax
                         $decimal = number_format($value, $exp);
                         $value = rtrim($decimal, '.0');
                     }
+
+                    $value = rtrim($value, '.');
                 ?>
 				<p class="exchange">
 					<span><?php echo edd_ezdefi_sanitize_float_value( $total ); ?> <?php echo $order->currency; ?></span>

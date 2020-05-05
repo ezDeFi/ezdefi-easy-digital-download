@@ -127,7 +127,7 @@ class EDD_Ezdefi_Payment
         $status = $ezdefi_payment_data['status'];
         $uoid = (int) edd_ezdefi_sanitize_uoid( $ezdefi_payment_data['uoid'] );
         $payment_method = edd_ezdefi_is_pay_any_wallet( $ezdefi_payment_data ) ? 'amount_id' : 'ezdefi_wallet';
-
+        $explorer_url = $ezdefi_payment_data['explorer']['tx'] . $ezdefi_payment_data['transactionHash'];
 
         if( $status != 'DONE' && $status != 'EXPIRED_DONE' ) {
             wp_send_json_error();
@@ -135,6 +135,7 @@ class EDD_Ezdefi_Payment
 
         if( $status === 'DONE' ) {
             edd_update_payment_status( $edd_payment_id, 'publish' );
+            edd_insert_payment_note( $edd_payment_id, "Ezdefi Explorer URL: $explorer_url" );
             edd_empty_cart();
 
             if( $payment_method === 'ezdefi_wallet' ) {
@@ -157,7 +158,7 @@ class EDD_Ezdefi_Payment
                 'amount_id' => edd_ezdefi_sanitize_float_value( $value ),
                 'currency' => $ezdefi_payment_data['token']['symbol'],
                 'status' => strtolower( $status ),
-                'explorer_url' => $ezdefi_payment_data['explorer']['tx'] . $ezdefi_payment_data['transactionHash']
+                'explorer_url' => $explorer_url
             ),
             1
         );

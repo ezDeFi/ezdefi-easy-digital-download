@@ -419,11 +419,22 @@ class EDD_Ezdefi_Ajax
 
 		edd_update_payment_status( $order_id, 'pending' );
 
+        $exception = $this->db->get_exception( $exception_id );
+
+        if( is_null( $exception->explorer_url ) || empty( $exception->explorer_url ) ) {
+            $data_update = array(
+                'confirmed' => 0
+            );
+        } else {
+            $data_update = array(
+                'confirmed' => 0,
+                'order_id' => null,
+            );
+        }
+
         $this->db->update_exceptions(
             array( 'id' => (int) $exception_id ),
-            array(
-                'confirmed' => 0
-            )
+            $data_update
         );
 
         $this->db->update_exceptions(

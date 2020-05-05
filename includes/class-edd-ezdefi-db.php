@@ -146,6 +146,17 @@ class EDD_Ezdefi_Db
 		);
 	}
 
+    public function get_exception( $exception_id )
+    {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'edd_ezdefi_exception';
+
+        $query = "SELECT * FROM $table_name WHERE id = $exception_id";
+
+        return $wpdb->get_row( $query );
+    }
+
 	public function update_exceptions( $wheres = array(), $data = array(), $limit = null )
 	{
 		global $wpdb;
@@ -162,7 +173,7 @@ class EDD_Ezdefi_Db
 
 		foreach ( $data as $column => $value ) {
 			if( is_null( $value ) ) {
-				$query .= $comma . $column . " IS NULL";
+				$query .= $comma . $column . " = NULL";
 			} else {
 				$query .= $comma . $column . " = '" . $value . "'";
 			}

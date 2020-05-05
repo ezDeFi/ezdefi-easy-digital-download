@@ -195,8 +195,8 @@ jQuery(function($) {
 
     EDD_Ezdefi_Assign.prototype.renderHtml = function(data, offset) {
         var self = this;
+        this.$table.find('tbody tr').not('.spinner-row').remove();
         if(data.length === 0) {
-            self.$table.find('tbody tr').not('.spinner-row').remove();
             self.$table.append("<tr><td colspan='5'>Not found</td></tr>");
             return;
         }

@@ -227,6 +227,21 @@ class EDD_Ezdefi_Api
 		return $response;
 	}
 
+    public function update_callback_url()
+    {
+        return wp_remote_request(
+            $this->build_path( 'website/update_callback' ),
+            array(
+                'method' => 'PUT',
+                'headers' => $this->get_headers(),
+                'body' => array(
+                    'websiteId' => $this->get_public_key(),
+                    'callback' => home_url() . '/?edd-ezdefi-callback'
+                )
+            )
+        );
+    }
+
     protected function parse_response( $response )
     {
         if( is_wp_error( $response ) ) {

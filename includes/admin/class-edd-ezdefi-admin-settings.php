@@ -10,6 +10,7 @@ class EDD_Ezdefi_Admin_Settings
 	public function __construct() {
 		add_filter( 'edd_settings_sections_gateways', array( $this, 'register_settings_section' ) );
 		add_filter( 'edd_settings_gateways', array( $this, 'register_settings' ) );
+		add_action( 'update_option_edd_settings', array( $this, 'update_callback_url' ), 10, 3 );
 	}
 
 	/**
@@ -63,6 +64,18 @@ class EDD_Ezdefi_Admin_Settings
 
 		return $gateway_settings;
 	}
+
+	public function update_callback_url( $old_value, $value, $option )
+    {
+        if( ! isset( $value['gateways']['ezdefi'] ) ) {
+            return;
+        }
+
+        $api = new EDD_Ezdefi_Api();
+        $api->update_callback_url();
+
+        return;
+    }
 }
 
 new EDD_Ezdefi_Admin_Settings();

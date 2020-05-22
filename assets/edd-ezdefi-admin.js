@@ -8,7 +8,7 @@ jQuery(function($) {
   };
 
   var EDD_EZDefi_Admin = function() {
-    this.$form = $('form');
+    this.$form = $('.edd-settings-content form');
 
     this.$form.find(selectors.apiKeyInput).attr('autocomplete', 'off');
     this.$form.find(selectors.apiUrlInput).attr('placeholder', 'https://merchant-api.ezdefi.com/api/');

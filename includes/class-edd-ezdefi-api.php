@@ -227,15 +227,17 @@ class EDD_Ezdefi_Api
 		return $response;
 	}
 
-    public function update_callback_url()
+    public function update_callback_url( $api_url, $api_key, $public_key )
     {
         return wp_remote_request(
-            $this->build_path( 'website/update_callback' ),
+            rtrim( $api_url, '/' ) . '/' . 'website/update_callback',
             array(
                 'method' => 'PUT',
-                'headers' => $this->get_headers(),
+                'headers' => array(
+                    'api-key' => $api_key,
+                ),
                 'body' => array(
-                    'websiteId' => $this->get_public_key(),
+                    'websiteId' => $public_key,
                     'callback' => home_url() . '/?edd-ezdefi-callback'
                 )
             )

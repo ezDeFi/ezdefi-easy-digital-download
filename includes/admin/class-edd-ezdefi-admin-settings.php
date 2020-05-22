@@ -67,12 +67,12 @@ class EDD_Ezdefi_Admin_Settings
 
 	public function update_callback_url( $old_value, $value, $option )
     {
-        if( ! isset( $value['gateways']['ezdefi'] ) ) {
+        if( ! isset( $value['ezdefi_api_url'] ) || ! isset( $value['ezdefi_api_key'] ) || ! isset( $value['ezdefi_public_key'] ) ) {
             return;
         }
 
         $api = new EDD_Ezdefi_Api();
-        $api->update_callback_url();
+        $api->update_callback_url( $value['ezdefi_api_url'], $value['ezdefi_api_key'], $value['ezdefi_public_key'] );
 
         return;
     }

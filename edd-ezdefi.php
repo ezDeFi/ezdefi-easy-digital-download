@@ -56,7 +56,17 @@ class EDD_Ezdefi_Loader
             $this, 'update_database'
         ) );
 
+        add_filter( 'cron_schedules', array(
+            $this, 'add_cron_schedule'
+        ) );
+
+        add_action( 'edd_ezdefi_weekly_event', array(
+            $this, 'clear_database'
+        ) );
+
 		register_activation_hook( __FILE__, array( $this, 'activate' ) );
+
+		register_deactivation_hook( __FILE__, array( $this, 'deactivate' ) );
 
 		$this->define_constants();
 	}
@@ -123,6 +133,7 @@ class EDD_Ezdefi_Loader
         $wpdb->query( "DROP TABLE IF EXISTS $amount_table_name" );
         $wpdb->query( "DROP PROCEDURE IF EXISTS `edd_ezdefi_generate_amount_id`" );
         $wpdb->query( "DROP EVENT IF EXISTS `edd_ezdefi_clear_amount_table`" );
+        $wpdb->query( "DROP EVENT IF EXISTS `edd_ezdefi_clear_exception_table`" );
 
         $exception_table_name = $wpdb->prefix . 'edd_ezdefi_exception';
 
@@ -135,6 +146,35 @@ class EDD_Ezdefi_Loader
         update_option( 'edd_ezdefi_version', $this->version );
 
         wp_safe_redirect( admin_url() );
+    }
+
+    /**
+     * Add weekly cron schedule
+     *
+     * @param $schedules
+     *
+     * @return mixed
+     */
+    public function add_cron_schedule( $schedules )
+    {
+        $schedules['weekly'] = array(
+            'interval' => 604800,
+            'display' => __( 'Once Weekly' )
+        );
+
+        return $schedules;
+    }
+
+    /**
+     * Create database weekly
+     */
+    public function clear_database()
+    {
+        global $wpdb;
+
+        $exception_table_name = $wpdb->prefix . 'edd_ezdefi_exception';
+
+        $wpdb->query( "DELETE FROM $exception_table_name;" );
     }
 
 	/**
@@ -166,13 +206,20 @@ class EDD_Ezdefi_Loader
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		dbDelta( $sql );
 
-		$wpdb->query( "
-			CREATE EVENT IF NOT EXISTS `edd_ezdefi_clear_exception_table`
-			ON SCHEDULE EVERY 7 DAY
-			DO
-				DELETE FROM $exception_table_name;
-		" );
+        if (! wp_next_scheduled ( 'edd_ezdefi_weekly_event' ) ) {
+            wp_schedule_event( time(), 'weekly', 'edd_ezdefi_weekly_event' );
+        }
+
+        update_option( 'edd_ezdefi_version', '2.0.0' );
 	}
+
+    /**
+     * Run when deactivate plugin
+     */
+    public static function deactivate()
+    {
+        wp_clear_scheduled_hook( 'edd_ezdefi_weekly_event' );
+    }
 
 	/**
 	 * Define constants

@@ -145,6 +145,10 @@ class EDD_Ezdefi_Loader
 
         update_option( 'edd_ezdefi_version', $this->version );
 
+        if (! wp_next_scheduled ( 'edd_ezdefi_weekly_event' ) ) {
+            wp_schedule_event( time(), 'weekly', 'edd_ezdefi_weekly_event' );
+        }
+
         wp_safe_redirect( admin_url() );
     }
 
